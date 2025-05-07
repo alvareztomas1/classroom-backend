@@ -1,0 +1,30 @@
+name: CI workflow
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['*']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: NPM or Yarn install with caching
+        uses: bahmutov/npm-install@v1.10.9
+
+      - name: Build and test with coverage
+        run: npm run test:cov
