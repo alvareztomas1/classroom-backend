@@ -4,17 +4,16 @@
   "tabWidth": 2,
   "printWidth": 80,
   "endOfLine": "lf",
-  "plugins": [
-    "@trivago/prettier-plugin-sort-imports"
-  ],
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
     "^@data/(.*)$",
     "^@common/(.*)$",
     "^@config/(.*)$",
     "^@test/(.*)$",
-    "^@/(.*)$",
+    "^@module/(.*)$",
     "^@root/(.*)$",
+    "^@/(.*)$",
     "^[./]"
   ],
   "importOrderSeparation": true,
