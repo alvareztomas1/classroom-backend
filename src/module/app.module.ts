@@ -6,6 +6,7 @@ import { environmentConfig } from '@config/environment.config';
 import { datasourceOptions } from '@config/orm.config';
 
 import { ResponseSerializerService } from '@module/app/service/response-serializer.service';
+import { IamModule } from '@module/iam/iam.module';
 
 @Global()
 @Module({
@@ -20,6 +21,7 @@ import { ResponseSerializerService } from '@module/app/service/response-serializ
         autoLoadEntities: true,
       }),
     }),
+    IamModule,
   ],
   providers: [ResponseSerializerService],
   exports: [ResponseSerializerService],
