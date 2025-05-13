@@ -22,7 +22,8 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./typeorm.custom-cli.ts",
     "migration:create": "cross-var npm run typeorm -- migration:create ./data/migrations/$npm_config_name",
     "migration:run": "npm run typeorm -- migration:run -d ./src/config/orm.config.ts",
-    "migration:generate": "cross-var npm run typeorm -- migration:generate -d ./src/config/orm.config.ts ./data/migrations/$npm_config_name"
+    "migration:generate": "cross-var npm run typeorm -- migration:generate -d ./src/config/orm.config.ts ./data/migrations/$npm_config_name",
+    "cognito:prepare": "cross-env ./data/scripts/create_user_pool.sh"
   },
   "lint-staged": {
     "src/**/*.ts": [
