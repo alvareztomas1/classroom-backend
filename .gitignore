@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+# Docker
+/data/docker
+
 # Logs
 logs
 *.log
@@ -18,6 +21,7 @@ lerna-debug.log*
 # Tests
 /coverage
 /.nyc_output
+/data/sqlite
 
 # IDEs and editors
 /.idea
