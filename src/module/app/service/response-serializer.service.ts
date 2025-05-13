@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
@@ -6,42 +6,31 @@ import {
   SerializedResponseDto,
   SerializedResponseDtoCollection,
 } from '@common/base/application/dto/serialized-response.dto';
-import {
-  ICollectionLinks,
-  IResponseDtoLinks,
-} from '@common/base/application/dto/serialized-response.interface';
-import { HttpMethod } from '@common/base/application/enum/http-method.enum';
+import { IResponseDtoLinks } from '@common/base/application/dto/serialized-response.interface';
+
+import { LinkBuilderService } from '@module/app/service/link-builder.service';
+import { ISingleEntityLinkBuilder } from '@module/app/service/link-builder.service.interface';
 
 @Injectable()
 export class ResponseSerializerService {
-  private appBaseUrl: string;
-
-  constructor(private readonly configService: ConfigService) {
-    this.appBaseUrl = this.configService.get('server.baseUrl');
+  private baseAppUrl: string;
+  private linkBuilderService: LinkBuilderService;
+  constructor(
+    @Inject(ConfigService) private readonly configService: ConfigService,
+  ) {
+    this.baseAppUrl = this.configService.get('server.baseUrl');
+    this.linkBuilderService = new LinkBuilderService(this.baseAppUrl);
   }
 
   serializeResponseDto<ResponseDto extends object>(
     id: string,
     responseDto: ResponseDto,
     entityName: string,
+    customLinkBuilder?: ISingleEntityLinkBuilder,
   ): SerializedResponseDto<ResponseDto> {
-    const links: IResponseDtoLinks = {
-      self: {
-        href: `${this.appBaseUrl}/${entityName}/${id}`,
-        rel: 'self',
-        method: HttpMethod.GET,
-      },
-      update: {
-        href: `${this.appBaseUrl}/${entityName}/${id}`,
-        rel: 'update',
-        method: HttpMethod.PUT,
-      },
-      delete: {
-        href: `${this.appBaseUrl}/${entityName}/${id}`,
-        rel: 'delete',
-        method: HttpMethod.DELETE,
-      },
-    };
+    const links: IResponseDtoLinks = customLinkBuilder
+      ? customLinkBuilder.buildSingleEntityLinks(this.baseAppUrl, entityName)
+      : this.linkBuilderService.buildSingleEntityLinks(entityName, id);
 
     return new SerializedResponseDto(responseDto, links);
   }
@@ -51,7 +40,8 @@ export class ResponseSerializerService {
     entityName: string,
     { itemCount, pageCount, pageNumber, pageSize }: IPagingCollectionData,
   ): SerializedResponseDtoCollection<ResponseDto> {
-    const links = this.fromPagingDataToCollectionLinks(entityName, {
+    const links = this.linkBuilderService.buildCollectionLinks(entityName, {
+      itemCount,
       pageCount,
       pageNumber,
       pageSize,
@@ -63,50 +53,5 @@ export class ResponseSerializerService {
       pageNumber,
       pageSize,
     });
-  }
-
-  private fromPagingDataToCollectionLinks(
-    entityName: string,
-    {
-      pageCount,
-      pageNumber,
-      pageSize,
-    }: Omit<IPagingCollectionData, 'itemCount'>,
-  ): ICollectionLinks {
-    const links: ICollectionLinks = {
-      self: {
-        href: `${this.appBaseUrl}/${entityName}?page[number]=${pageNumber}&page[size]=${pageSize}`,
-        rel: 'self',
-        method: HttpMethod.GET,
-      },
-      first: {
-        href: `${this.appBaseUrl}/${entityName}?page[number]=1&page[size]=${pageSize}`,
-        rel: 'first',
-        method: HttpMethod.GET,
-      },
-      last: {
-        href: `${this.appBaseUrl}/${entityName}?page[number]=${pageCount}&page[size]=${pageSize}`,
-        rel: 'last',
-        method: HttpMethod.GET,
-      },
-    };
-
-    if (pageNumber > 1) {
-      links.previous = {
-        href: `${this.appBaseUrl}/${entityName}?page[number]=${pageNumber - 1}&page[size]=${pageSize}`,
-        rel: 'previous',
-        method: HttpMethod.GET,
-      };
-    }
-
-    if (pageNumber < pageCount) {
-      links.next = {
-        href: `${this.appBaseUrl}/${entityName}?page[number]=${pageNumber + 1}&page[size]=${pageSize}`,
-        rel: 'next',
-        method: HttpMethod.GET,
-      };
-    }
-
-    return links;
   }
 }

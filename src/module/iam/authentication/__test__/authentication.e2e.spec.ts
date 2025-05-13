@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { HttpStatus } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
+
+import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { setupApp } from '@config/app.config';
 
@@ -8,6 +11,7 @@ import { SignUpDto } from '@module/iam/authentication/application/service/dto/si
 import { PASSWORD_VALIDATION_ERROR } from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
 import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
 import { PasswordValidationException } from '@module/iam/authentication/infrastructure/cognito/exception/password-validation.exception';
+import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 
 import {
   identityProviderServiceMock,
@@ -51,8 +55,27 @@ describe('Authentication Module', () => {
         .then(({ body }) => {
           expect(body).toEqual(
             expect.objectContaining({
-              email: signUpDto.email,
-              externalId,
+              data: expect.objectContaining({
+                email: signUpDto.email,
+                externalId,
+                firstName: signUpDto.firstName,
+                lastName: signUpDto.lastName,
+                avatarUrl: signUpDto.avatarUrl,
+                role: AppRole.Regular,
+                isVerified: false,
+              }),
+              links: expect.objectContaining({
+                self: expect.objectContaining({
+                  href: expect.stringContaining('/user/me'),
+                  rel: 'self',
+                  method: HttpMethod.GET,
+                }),
+                update: expect.objectContaining({
+                  href: expect.stringContaining('/user/me'),
+                  rel: 'update',
+                  method: HttpMethod.PUT,
+                }),
+              }),
             }),
           );
         });
@@ -88,8 +111,27 @@ describe('Authentication Module', () => {
         .then(({ body }) => {
           expect(body).toEqual(
             expect.objectContaining({
-              email: signUpDto.email,
-              externalId,
+              data: expect.objectContaining({
+                email: signUpDto.email,
+                externalId,
+                firstName: signUpDto.firstName,
+                lastName: signUpDto.lastName,
+                avatarUrl: signUpDto.avatarUrl,
+                role: AppRole.Regular,
+                isVerified: false,
+              }),
+              links: expect.objectContaining({
+                self: expect.objectContaining({
+                  href: expect.stringContaining('/user/me'),
+                  rel: 'self',
+                  method: HttpMethod.GET,
+                }),
+                update: expect.objectContaining({
+                  href: expect.stringContaining('/user/me'),
+                  rel: 'update',
+                  method: HttpMethod.PUT,
+                }),
+              }),
             }),
           );
         });
@@ -115,8 +157,27 @@ describe('Authentication Module', () => {
         .then(({ body }) => {
           expect(body).toEqual(
             expect.objectContaining({
-              email: signUpDto.email,
-              externalId,
+              data: expect.objectContaining({
+                email: signUpDto.email,
+                externalId,
+                firstName: signUpDto.firstName,
+                lastName: signUpDto.lastName,
+                avatarUrl: null,
+                role: AppRole.Regular,
+                isVerified: false,
+              }),
+              links: expect.objectContaining({
+                self: expect.objectContaining({
+                  href: expect.stringContaining('/user/me'),
+                  rel: 'self',
+                  method: HttpMethod.GET,
+                }),
+                update: expect.objectContaining({
+                  href: expect.stringContaining('/user/me'),
+                  rel: 'update',
+                  method: HttpMethod.PUT,
+                }),
+              }),
             }),
           );
         });

@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
+
+import { ResponseSerializerService } from '@module/app/service/response-serializer.service';
 import {
   SIGNUP_CONFLICT_TITLE,
   USER_ALREADY_SIGNED_UP_ERROR,
@@ -17,6 +20,7 @@ import {
   IUserRepository,
   USER_REPOSITORY_KEY,
 } from '@module/iam/user/application/repository/user.repository.interface';
+import { UserLinkBuilderService } from '@module/iam/user/application/service/link-builder/user-link-builder.service';
 import { User } from '@module/iam/user/domain/user.entity';
 
 @Injectable()
@@ -27,9 +31,13 @@ export class AuthenticationService {
     @Inject(USER_REPOSITORY_KEY)
     private readonly userRepository: IUserRepository,
     private readonly userMapper: UserMapper,
+    private readonly responseSerializerService: ResponseSerializerService,
+    private readonly userLinkBuilderService: UserLinkBuilderService,
   ) {}
 
-  async handleSignUp(signUpDto: SignUpDto): Promise<UserResponseDto> {
+  async handleSignUp(
+    signUpDto: SignUpDto,
+  ): Promise<SerializedResponseDto<UserResponseDto>> {
     const { email, password, firstName, lastName, avatarUrl } = signUpDto;
 
     const existingUser = await this.userRepository.getOneByEmail(email);
@@ -68,7 +76,7 @@ export class AuthenticationService {
     lastName: string,
     avatarUrl?: string,
     userId?: string,
-  ): Promise<UserResponseDto> {
+  ): Promise<SerializedResponseDto<UserResponseDto>> {
     let userToSaveId = userId;
 
     if (!userToSaveId) {
@@ -88,6 +96,11 @@ export class AuthenticationService {
       externalId,
     });
 
-    return this.userMapper.fromEntityToResponseDto(user);
+    return this.responseSerializerService.serializeResponseDto(
+      user.id,
+      this.userMapper.fromEntityToResponseDto(user),
+      User.getEntityName(),
+      this.userLinkBuilderService,
+    );
   }
 }
