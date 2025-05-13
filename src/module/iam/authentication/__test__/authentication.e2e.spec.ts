@@ -1,0 +1,158 @@
+import { HttpStatus } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import request from 'supertest';
+
+import { setupApp } from '@config/app.config';
+
+import { SignUpDto } from '@module/iam/authentication/application/service/dto/sign-up.dto';
+import { PASSWORD_VALIDATION_ERROR } from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
+import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
+import { PasswordValidationException } from '@module/iam/authentication/infrastructure/cognito/exception/password-validation.exception';
+
+import {
+  identityProviderServiceMock,
+  testModuleBootstrapper,
+} from '@/test/test.module.bootstrapper';
+
+describe('Authentication Module', () => {
+  let app: NestExpressApplication;
+
+  beforeAll(async () => {
+    const moduleRef = await testModuleBootstrapper();
+    app = moduleRef.createNestApplication();
+    setupApp(app);
+
+    await app.init();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('POST - /auth/sign-up', () => {
+    it('Should allow users to sign up', async () => {
+      const externalId = '00000000-0000-0000-0000-000000000001';
+      identityProviderServiceMock.signUp.mockResolvedValueOnce({
+        externalId,
+      });
+
+      const signUpDto: SignUpDto = {
+        email: 'john.doe@test.com',
+        password: '$Test123',
+        firstName: 'John',
+        lastName: 'Doe',
+        avatarUrl: 'https://gravatar.com/avatar/1234567890',
+      };
+
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/sign-up')
+        .send(signUpDto)
+        .expect(HttpStatus.CREATED)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              email: signUpDto.email,
+              externalId,
+            }),
+          );
+        });
+    });
+
+    it('Should allow users to retry their sign up if the external provider failed', async () => {
+      identityProviderServiceMock.signUp.mockRejectedValueOnce(
+        new CouldNotSignUpException('Could not sign up'),
+      );
+
+      const signUpDto: SignUpDto = {
+        email: 'jane.doe@test.com',
+        password: '$Test123',
+        firstName: 'Jane',
+        lastName: 'Doe',
+        avatarUrl: 'https://gravatar.com/avatar/1234567890',
+      };
+
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/sign-up')
+        .send(signUpDto)
+        .expect(HttpStatus.INTERNAL_SERVER_ERROR);
+
+      const externalId = '00000000-0000-0000-0000-000000000002';
+      identityProviderServiceMock.signUp.mockResolvedValueOnce({
+        externalId,
+      });
+
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/sign-up')
+        .send(signUpDto)
+        .expect(HttpStatus.CREATED)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              email: signUpDto.email,
+              externalId,
+            }),
+          );
+        });
+    });
+
+    it('Should throw an error if user already signed up', async () => {
+      const externalId = '00000000-0000-0000-0000-000000000003';
+      identityProviderServiceMock.signUp.mockResolvedValueOnce({
+        externalId,
+      });
+
+      const signUpDto: SignUpDto = {
+        email: 'thomas.doe@test.com',
+        password: '$Test123',
+        firstName: 'John',
+        lastName: 'Doe',
+      };
+
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/sign-up')
+        .send(signUpDto)
+        .expect(HttpStatus.CREATED)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              email: signUpDto.email,
+              externalId,
+            }),
+          );
+        });
+
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/sign-up')
+        .send(signUpDto)
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          expect((body as { message: string }).message).toBe(
+            'User already signed up',
+          );
+        });
+    });
+
+    it('Should throw an error if password is invalid', async () => {
+      const expectedError = new PasswordValidationException(
+        PASSWORD_VALIDATION_ERROR,
+      );
+      identityProviderServiceMock.signUp.mockRejectedValueOnce(expectedError);
+      const signUpDto: SignUpDto = {
+        email: 'some@account.com',
+        password: '123456',
+        firstName: 'test',
+        lastName: 'test',
+      };
+
+      await request(app.getHttpServer())
+        .post('/api/v1/auth/sign-up')
+        .send(signUpDto)
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          expect((body as { message: string }).message).toEqual(
+            expectedError.message,
+          );
+        });
+    });
+  });
+});
