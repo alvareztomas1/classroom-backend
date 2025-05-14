@@ -3,10 +3,13 @@ import { HttpStatus } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 
+import { loadFixtures } from '@data/util/fixture-loader';
+
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { IAppErrorResponse } from '@common/base/application/exception/app-error-response.interface';
 
 import { setupApp } from '@config/app.config';
+import { datasourceOptions } from '@config/orm.config';
 
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import { PASSWORD_VALIDATION_ERROR } from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
@@ -29,6 +32,10 @@ describe('Authentication Module', () => {
     setupApp(app);
 
     await app.init();
+  });
+
+  beforeEach(async () => {
+    await loadFixtures(`${__dirname}/fixture`, datasourceOptions);
   });
 
   afterEach(() => {
