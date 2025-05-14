@@ -43,10 +43,15 @@ export class ResponseSerializerService {
         hasDelete,
       );
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id: _, ...attributes } = responseDto as {
+      id: string;
+    } & ResponseDto;
+
     const serializedResponseData: ISerializedResponseData<ResponseDto> = {
       type: entityName,
       id,
-      attributes: responseDto,
+      attributes: attributes as ResponseDto,
     };
 
     return new SerializedResponseDto(serializedResponseData, links);
@@ -65,11 +70,16 @@ export class ResponseSerializerService {
     });
 
     const serializedResponseData: ISerializedResponseData<ResponseDto>[] =
-      responseDtos.map((responseDto) => ({
-        type: entityName,
-        id: (responseDto as unknown as { id: string }).id,
-        attributes: responseDto,
-      }));
+      responseDtos.map((responseDto) => {
+        const { id, ...attributes } = responseDto as {
+          id: string;
+        } & ResponseDto;
+        return {
+          type: entityName,
+          id,
+          attributes: attributes as ResponseDto,
+        };
+      });
 
     return new SerializedResponseDtoCollection(serializedResponseData, links, {
       itemCount,
