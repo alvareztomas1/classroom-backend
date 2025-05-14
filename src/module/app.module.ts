@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { environmentConfig } from '@config/environment.config';
 import { datasourceOptions } from '@config/orm.config';
 
+import { AppService } from '@module/app/service/app.service';
 import { ResponseSerializerService } from '@module/app/service/response-serializer.service';
 import { IamModule } from '@module/iam/iam.module';
 
@@ -23,7 +24,7 @@ import { IamModule } from '@module/iam/iam.module';
     }),
     IamModule,
   ],
-  providers: [ResponseSerializerService],
-  exports: [ResponseSerializerService],
+  providers: [ResponseSerializerService, AppService],
+  exports: [ResponseSerializerService, AppService],
 })
 export class AppModule {}
