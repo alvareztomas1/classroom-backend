@@ -6,16 +6,15 @@ import {
 } from '@common/base/application/dto/serialized-response.interface';
 
 export interface ILinkBuilderService {
-  buildSingleEntityLinks(entityName: string, dto: IDto): IResponseDtoLinks;
+  buildSingleEntityLinks(
+    currentRequestUrl: string,
+    entityName: string,
+    dto: IDto,
+    hasUpdate?: boolean,
+    hasDelete?: boolean,
+  ): IResponseDtoLinks;
   buildCollectionLinks(
     entityName: string,
     pagingData: IPagingCollectionData,
   ): ICollectionLinks;
-}
-
-export interface ISingleEntityLinkBuilder {
-  buildSingleEntityLinks(
-    baseUrl: string,
-    entityName: string,
-  ): IResponseDtoLinks;
 }

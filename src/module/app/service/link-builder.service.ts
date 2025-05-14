@@ -13,23 +13,33 @@ export class LinkBuilderService implements ILinkBuilderService {
     this.appBaseUrl = appBaseUrl;
   }
 
-  buildSingleEntityLinks(entityName: string, id: string): IResponseDtoLinks {
+  buildSingleEntityLinks(
+    currentRequestUrl: string,
+    entityName: string,
+    id: string,
+    hasUpdate?: boolean,
+    hasDelete?: boolean,
+  ): IResponseDtoLinks {
     return {
       self: {
-        href: `${this.appBaseUrl}/${entityName}/${id}`,
+        href: currentRequestUrl,
         rel: 'self',
         method: HttpMethod.GET,
       },
-      update: {
-        href: `${this.appBaseUrl}/${entityName}/${id}`,
-        rel: 'update',
-        method: HttpMethod.PUT,
-      },
-      delete: {
-        href: `${this.appBaseUrl}/${entityName}/${id}`,
-        rel: 'delete',
-        method: HttpMethod.DELETE,
-      },
+      ...(hasUpdate && {
+        update: {
+          href: `${this.appBaseUrl}/${entityName}/${id}`,
+          rel: 'update',
+          method: HttpMethod.PUT,
+        },
+      }),
+      ...(hasDelete && {
+        delete: {
+          href: `${this.appBaseUrl}/${entityName}/${id}`,
+          rel: 'delete',
+          method: HttpMethod.DELETE,
+        },
+      }),
     };
   }
 
