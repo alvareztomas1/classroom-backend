@@ -62,11 +62,13 @@ export class BaseCRUDService<
     const entity = await this.repository.getOneByIdOrFail(id);
     const responseDto = this.mapper.fromEntityToResponseDto(entity);
 
-    return this.responseSerializer.serializeResponseDto(
+    return this.responseSerializer.serializeResponseDto({
       id,
       responseDto,
-      this.entityName,
-    );
+      entityName: this.entityName,
+      hasDelete: true,
+      hasUpdate: true,
+    });
   }
 
   async saveOne(
@@ -76,11 +78,13 @@ export class BaseCRUDService<
     const savedEntity = await this.repository.saveOne(entity);
     const responseDto = this.mapper.fromEntityToResponseDto(savedEntity);
 
-    return this.responseSerializer.serializeResponseDto(
-      savedEntity.id,
+    return this.responseSerializer.serializeResponseDto({
+      id: savedEntity.id,
       responseDto,
-      this.entityName,
-    );
+      entityName: this.entityName,
+      hasDelete: true,
+      hasUpdate: true,
+    });
   }
 
   async updateOne(
@@ -91,11 +95,13 @@ export class BaseCRUDService<
     const updatedEntity = await this.repository.updateOneByIdOrFail(id, entity);
     const responseDto = this.mapper.fromEntityToResponseDto(updatedEntity);
 
-    return this.responseSerializer.serializeResponseDto(
+    return this.responseSerializer.serializeResponseDto({
       id,
       responseDto,
-      this.entityName,
-    );
+      entityName: this.entityName,
+      hasDelete: true,
+      hasUpdate: true,
+    });
   }
 
   async deleteOneByIdOrFail(id: string): Promise<void> {

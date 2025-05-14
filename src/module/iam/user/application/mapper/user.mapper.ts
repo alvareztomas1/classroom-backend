@@ -31,7 +31,6 @@ export class UserMapper
 
   fromEntityToResponseDto(entity: User): UserResponseDto {
     return new UserResponseDto(
-      entity.id,
       entity.email,
       entity.firstName,
       entity.lastName,
