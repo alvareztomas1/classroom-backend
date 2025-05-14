@@ -1,13 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
+import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
 import { ResponseSerializerService } from '@module/app/service/response-serializer.service';
+import { AUTHENTICATION_NAME } from '@module/iam/authentication/application/domain/authentication.name';
+import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import {
   SIGNUP_CONFLICT_TITLE,
+  USER_ALREADY_CONFIRMED_ERROR,
   USER_ALREADY_SIGNED_UP_ERROR,
 } from '@module/iam/authentication/application/exception/authentication-exception-messages';
+import { UserAlreadyConfirmed } from '@module/iam/authentication/application/exception/user-already-confirmed.exception';
 import { UserAlreadySignedUp } from '@module/iam/authentication/application/exception/user-already-signed-up.exception';
 import {
   IDENTITY_PROVIDER_SERVICE_KEY,
@@ -64,6 +69,33 @@ export class AuthenticationService {
     throw new UserAlreadySignedUp({
       message: USER_ALREADY_SIGNED_UP_ERROR,
       title: SIGNUP_CONFLICT_TITLE,
+    });
+  }
+
+  async handleConfirmUser(
+    confirmUserDto: ConfirmUserDto,
+  ): Promise<SerializedResponseDto<ISuccessfulOperationResponse>> {
+    const { email, code } = confirmUserDto;
+    const existingUser = await this.userRepository.getOneByEmailOrFail(email);
+
+    if (existingUser.isVerified) {
+      throw new UserAlreadyConfirmed({
+        message: USER_ALREADY_CONFIRMED_ERROR,
+      });
+    }
+
+    const confirmUserResponse = await this.identityProviderService.confirmUser(
+      existingUser.email,
+      code,
+    );
+
+    await this.userRepository.updateOneOrFail(existingUser.id, {
+      isVerified: true,
+    });
+
+    return this.responseSerializerService.serializeResponseDto({
+      responseDto: confirmUserResponse,
+      entityName: AUTHENTICATION_NAME,
     });
   }
 
