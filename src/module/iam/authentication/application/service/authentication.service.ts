@@ -3,12 +3,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
 
 import { ResponseSerializerService } from '@module/app/service/response-serializer.service';
+import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import {
   SIGNUP_CONFLICT_TITLE,
   USER_ALREADY_SIGNED_UP_ERROR,
 } from '@module/iam/authentication/application/exception/authentication-exception-messages';
 import { UserAlreadySignedUp } from '@module/iam/authentication/application/exception/user-already-signed-up.exception';
-import { SignUpDto } from '@module/iam/authentication/application/service/dto/sign-up.dto';
 import {
   IDENTITY_PROVIDER_SERVICE_KEY,
   IIdentityProviderService,
@@ -20,7 +20,6 @@ import {
   IUserRepository,
   USER_REPOSITORY_KEY,
 } from '@module/iam/user/application/repository/user.repository.interface';
-import { UserLinkBuilderService } from '@module/iam/user/application/service/link-builder/user-link-builder.service';
 import { User } from '@module/iam/user/domain/user.entity';
 
 @Injectable()
@@ -32,7 +31,6 @@ export class AuthenticationService {
     private readonly userRepository: IUserRepository,
     private readonly userMapper: UserMapper,
     private readonly responseSerializerService: ResponseSerializerService,
-    private readonly userLinkBuilderService: UserLinkBuilderService,
   ) {}
 
   async handleSignUp(
@@ -96,11 +94,10 @@ export class AuthenticationService {
       externalId,
     });
 
-    return this.responseSerializerService.serializeResponseDto(
-      user.id,
-      this.userMapper.fromEntityToResponseDto(user),
-      User.getEntityName(),
-      this.userLinkBuilderService,
-    );
+    return this.responseSerializerService.serializeResponseDto({
+      responseDto: this.userMapper.fromEntityToResponseDto(user),
+      id: user.id,
+      entityName: User.getEntityName(),
+    });
   }
 }

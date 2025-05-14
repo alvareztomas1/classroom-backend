@@ -2,15 +2,16 @@ import { IPagingCollectionData } from '@common/base/application/dto/collection.i
 import {
   ICollectionLinks,
   IResponseDtoLinks,
+  ISerializedResponseData,
 } from '@common/base/application/dto/serialized-response.interface';
 
 export class SerializedResponseDtoCollection<ResponseDto extends object> {
-  data: ResponseDto[];
+  data: ISerializedResponseData<ResponseDto>[];
   links: ICollectionLinks;
   meta: IPagingCollectionData;
 
   constructor(
-    data: ResponseDto[],
+    data: ISerializedResponseData<ResponseDto>[],
     links: ICollectionLinks,
     meta: IPagingCollectionData,
   ) {
@@ -21,10 +22,13 @@ export class SerializedResponseDtoCollection<ResponseDto extends object> {
 }
 
 export class SerializedResponseDto<ResponseDto extends object> {
-  data: ResponseDto;
+  data: ISerializedResponseData<ResponseDto>;
   links: IResponseDtoLinks;
 
-  constructor(data: ResponseDto, links: IResponseDtoLinks) {
+  constructor(
+    data: ISerializedResponseData<ResponseDto>,
+    links: IResponseDtoLinks,
+  ) {
     this.data = data;
     this.links = links;
   }

@@ -2,8 +2,8 @@ import { Body, Controller, Post } from '@nestjs/common';
 
 import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
 
+import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import { AuthenticationService } from '@module/iam/authentication/application/service/authentication.service';
-import { SignUpDto } from '@module/iam/authentication/application/service/dto/sign-up.dto';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
 
 @Controller('auth')
