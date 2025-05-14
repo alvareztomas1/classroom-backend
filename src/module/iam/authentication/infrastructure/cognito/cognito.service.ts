@@ -5,7 +5,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { ISignUpResponse } from '@module/iam/authentication/application/service/dto/sign-up-response.interface';
+import { ISignUpResponse } from '@module/iam/authentication/application/dto/sign-up-response.interface';
 import { IIdentityProviderService } from '@module/iam/authentication/application/service/identity-provider.service.interface';
 import { PASSWORD_VALIDATION_ERROR } from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
 import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
