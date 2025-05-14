@@ -1,18 +1,29 @@
 import {
   CognitoIdentityProviderClient,
+  ConfirmSignUpCommand,
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
 import { setupApp } from '@config/app.config';
 
 import { AppModule } from '@module/app.module';
 import { IDENTITY_PROVIDER_SERVICE_KEY } from '@module/iam/authentication/application/service/identity-provider.service.interface';
 import { CognitoService } from '@module/iam/authentication/infrastructure/cognito/cognito.service';
-import { PASSWORD_VALIDATION_ERROR } from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
+import { CodeMismatchException } from '@module/iam/authentication/infrastructure/cognito/exception/code-mismatch.exception';
+import {
+  CODE_MISMATCH_ERROR,
+  EXPIRED_CODE_ERROR,
+  PASSWORD_VALIDATION_ERROR,
+  UNEXPECTED_ERROR_CODE_ERROR,
+} from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
 import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
+import { ExpiredCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/expired-code.exception';
 import { PasswordValidationException } from '@module/iam/authentication/infrastructure/cognito/exception/password-validation.exception';
+import { UnexpectedErrorCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/unexpected-code.exception';
 
 jest.mock('@aws-sdk/client-cognito-identity-provider', () => ({
   CognitoIdentityProviderClient: jest.fn().mockImplementation(() => ({
@@ -20,6 +31,8 @@ jest.mock('@aws-sdk/client-cognito-identity-provider', () => ({
   })),
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   SignUpCommand: jest.fn((input) => input),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  ConfirmSignUpCommand: jest.fn((input) => input),
 }));
 
 describe('CognitoService', () => {
@@ -100,6 +113,74 @@ describe('CognitoService', () => {
       ).rejects.toThrow(
         new CouldNotSignUpException({
           message: error.message,
+        }),
+      );
+    });
+  });
+
+  describe('CognitoService confirmUser method', () => {
+    it('Should confirm an user successfully', async () => {
+      const expectedResponse: ISuccessfulOperationResponse = {
+        message: 'User successfully confirmed',
+        success: true,
+      };
+
+      const confirmCommand = {
+        ClientId: 'mock-client-id',
+        Username: 'test@example.com',
+        ConfirmationCode: '123456',
+      };
+
+      const result = await cognitoService.confirmUser(
+        'test@example.com',
+        '123456',
+      );
+      expect(result).toEqual(expectedResponse);
+
+      expect(ConfirmSignUpCommand).toHaveBeenCalledWith(confirmCommand);
+
+      expect(clientMock.send).toHaveBeenCalledTimes(1);
+      expect(clientMock.send).toHaveBeenCalledWith(confirmCommand);
+    });
+
+    it('Should throw a CodeMismatchException if code is invalid', async () => {
+      const error = new Error('CodeMismatchException');
+      error.name = 'CodeMismatchException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.confirmUser('test@example.com', 'invalid-code'),
+      ).rejects.toThrow(
+        new CodeMismatchException({
+          message: CODE_MISMATCH_ERROR,
+        }),
+      );
+    });
+
+    it('Should throw a ExpiredCodeException if code is expired', async () => {
+      const error = new Error('ExpiredCodeException');
+      error.name = 'ExpiredCodeException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.confirmUser('test@example.com', 'expired-code'),
+      ).rejects.toThrow(
+        new ExpiredCodeException({
+          message: EXPIRED_CODE_ERROR,
+        }),
+      );
+    });
+
+    it('Should throw a UnexpectedErrorCodeException with an different error than CodeMismatchException or ExpiredCodeException', async () => {
+      const error = new Error('SomeOtherException');
+      error.name = 'SomeOtherException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.confirmUser('test@example.com', '123456'),
+      ).rejects.toThrow(
+        new UnexpectedErrorCodeException({
+          message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${error.name}`,
         }),
       );
     });

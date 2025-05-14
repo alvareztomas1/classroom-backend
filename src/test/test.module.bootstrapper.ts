@@ -5,6 +5,7 @@ import { IDENTITY_PROVIDER_SERVICE_KEY } from '@module/iam/authentication/applic
 
 export const identityProviderServiceMock = {
   signUp: jest.fn(),
+  confirmUser: jest.fn(),
 };
 
 export const testModuleBootstrapper = (): Promise<TestingModule> => {

@@ -1,0 +1,16 @@
+entity: User
+items:
+  admin-user:
+    email: 'test_admin@email.co'
+    firstName: test_admin
+    lastName: test_admin
+    externalId: '00000000-0000-0000-0000-00000000000X'
+    roles: admin
+    isVerified: true
+  confirm-user:
+    email: 'test_confirm@email.co'
+    firstName: test_confirm
+    lastName: email
+    externalId: '00000000-0000-0000-0000-00000000000Y'
+    role: admin
+    isVerified: false
