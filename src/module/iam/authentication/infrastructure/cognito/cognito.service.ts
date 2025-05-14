@@ -1,15 +1,26 @@
 import {
   CognitoIdentityProviderClient,
+  ConfirmSignUpCommand,
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
+
 import { ISignUpResponse } from '@module/iam/authentication/application/dto/sign-up-response.interface';
 import { IIdentityProviderService } from '@module/iam/authentication/application/service/identity-provider.service.interface';
-import { PASSWORD_VALIDATION_ERROR } from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
+import { CodeMismatchException } from '@module/iam/authentication/infrastructure/cognito/exception/code-mismatch.exception';
+import {
+  CODE_MISMATCH_ERROR,
+  EXPIRED_CODE_ERROR,
+  PASSWORD_VALIDATION_ERROR,
+  UNEXPECTED_ERROR_CODE_ERROR,
+} from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
 import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
+import { ExpiredCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/expired-code.exception';
 import { PasswordValidationException } from '@module/iam/authentication/infrastructure/cognito/exception/password-validation.exception';
+import { UnexpectedErrorCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/unexpected-code.exception';
 
 @Injectable()
 export class CognitoService implements IIdentityProviderService {
@@ -48,6 +59,40 @@ export class CognitoService implements IIdentityProviderService {
       throw new CouldNotSignUpException({
         message: (error as Error).message,
       });
+    }
+  }
+
+  async confirmUser(
+    email: string,
+    code: string,
+  ): Promise<ISuccessfulOperationResponse> {
+    try {
+      const command = new ConfirmSignUpCommand({
+        ClientId: this.clientId,
+        Username: email,
+        ConfirmationCode: code,
+      });
+
+      await this.client.send(command);
+      return {
+        success: true,
+        message: 'User successfully confirmed',
+      };
+    } catch (error) {
+      switch ((error as Error).name) {
+        case 'CodeMismatchException':
+          throw new CodeMismatchException({
+            message: CODE_MISMATCH_ERROR,
+          });
+        case 'ExpiredCodeException':
+          throw new ExpiredCodeException({
+            message: EXPIRED_CODE_ERROR,
+          });
+        default:
+          throw new UnexpectedErrorCodeException({
+            message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${(error as Error).name}`,
+          });
+      }
     }
   }
 }
