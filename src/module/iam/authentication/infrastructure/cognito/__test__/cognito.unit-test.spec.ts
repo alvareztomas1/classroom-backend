@@ -84,7 +84,9 @@ describe('CognitoService', () => {
       await expect(
         cognitoService.signUp('test@example.com', 'badpass'),
       ).rejects.toThrow(
-        new PasswordValidationException(PASSWORD_VALIDATION_ERROR),
+        new PasswordValidationException({
+          message: PASSWORD_VALIDATION_ERROR,
+        }),
       );
     });
 
@@ -95,7 +97,11 @@ describe('CognitoService', () => {
 
       await expect(
         cognitoService.signUp('test@example.com', 'password'),
-      ).rejects.toThrow(new CouldNotSignUpException(error.message));
+      ).rejects.toThrow(
+        new CouldNotSignUpException({
+          message: error.message,
+        }),
+      );
     });
   });
 });

@@ -41,9 +41,13 @@ export class CognitoService implements IIdentityProviderService {
       return { externalId: result.UserSub };
     } catch (error) {
       if ((error as Error).name === 'InvalidPasswordException') {
-        throw new PasswordValidationException(PASSWORD_VALIDATION_ERROR);
+        throw new PasswordValidationException({
+          message: PASSWORD_VALIDATION_ERROR,
+        });
       }
-      throw new CouldNotSignUpException((error as Error).message);
+      throw new CouldNotSignUpException({
+        message: (error as Error).message,
+      });
     }
   }
 }
