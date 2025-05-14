@@ -61,10 +61,10 @@ export class AuthenticationService {
       );
     }
 
-    throw new UserAlreadySignedUp(
-      USER_ALREADY_SIGNED_UP_ERROR,
-      SIGNUP_CONFLICT_TITLE,
-    );
+    throw new UserAlreadySignedUp({
+      message: USER_ALREADY_SIGNED_UP_ERROR,
+      title: SIGNUP_CONFLICT_TITLE,
+    });
   }
 
   private async signUpAndSave(

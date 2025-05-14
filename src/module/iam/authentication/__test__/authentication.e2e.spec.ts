@@ -4,6 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
+import { IAppErrorResponse } from '@common/base/application/exception/app-error-response.interface';
 
 import { setupApp } from '@config/app.config';
 
@@ -83,7 +84,9 @@ describe('Authentication Module', () => {
 
     it('Should allow users to retry their sign up if the external provider failed', async () => {
       identityProviderServiceMock.signUp.mockRejectedValueOnce(
-        new CouldNotSignUpException('Could not sign up'),
+        new CouldNotSignUpException({
+          message: 'Could not sign up',
+        }),
       );
 
       const signUpDto: SignUpDto = {
@@ -184,16 +187,23 @@ describe('Authentication Module', () => {
         .send(signUpDto)
         .expect(HttpStatus.BAD_REQUEST)
         .then(({ body }) => {
-          expect((body as { message: string }).message).toBe(
-            'User already signed up',
+          expect(body as IAppErrorResponse).toMatchObject(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                detail: 'User already signed up',
+                status: '400',
+                source: { pointer: '/api/v1/auth/sign-up' },
+                title: 'Signup Conflict',
+              }),
+            }),
           );
         });
     });
 
     it('Should throw an error if password is invalid', async () => {
-      const expectedError = new PasswordValidationException(
-        PASSWORD_VALIDATION_ERROR,
-      );
+      const expectedError = new PasswordValidationException({
+        message: PASSWORD_VALIDATION_ERROR,
+      });
       identityProviderServiceMock.signUp.mockRejectedValueOnce(expectedError);
       const signUpDto: SignUpDto = {
         email: 'some@account.com',
@@ -207,9 +217,14 @@ describe('Authentication Module', () => {
         .send(signUpDto)
         .expect(HttpStatus.BAD_REQUEST)
         .then(({ body }) => {
-          expect((body as { message: string }).message).toEqual(
-            expectedError.message,
-          );
+          expect(body as IAppErrorResponse).toMatchObject({
+            error: expect.objectContaining({
+              detail: expectedError.message,
+              status: '400',
+              source: { pointer: '/api/v1/auth/sign-up' },
+              title: 'Password validation',
+            }),
+          });
         });
     });
   });
