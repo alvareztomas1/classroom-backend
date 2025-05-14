@@ -56,9 +56,9 @@ export class UserPostgresRepository implements IUserRepository {
     });
 
     if (!user) {
-      throw new EmailNotFoundException(
-        `User with email ${email} was not found`,
-      );
+      throw new EmailNotFoundException({
+        message: `User with email ${email} was not found`,
+      });
     }
 
     return user;
@@ -78,7 +78,9 @@ export class UserPostgresRepository implements IUserRepository {
     });
 
     if (!userToUpdate) {
-      throw new UserNotFoundException(`User with ID ${id} was not found`);
+      throw new UserNotFoundException({
+        message: `User with ID ${id} was not found`,
+      });
     }
 
     return this.repository.save(userToUpdate);
