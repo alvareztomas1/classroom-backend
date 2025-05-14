@@ -26,3 +26,9 @@ export interface ISerializedCollection<Entity extends object> {
   links: ICollectionLinks;
   meta: IPagingCollectionData;
 }
+
+export interface ISerializedResponseData<ResponseDto extends IDto> {
+  type: string;
+  id?: string;
+  attributes: ResponseDto;
+}
