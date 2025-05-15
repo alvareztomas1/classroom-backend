@@ -3,6 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
+import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
+import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import {
   SIGNUP_CONFLICT_TITLE,
@@ -65,6 +67,21 @@ export class AuthenticationService {
       message: USER_ALREADY_SIGNED_UP_ERROR,
       title: SIGNUP_CONFLICT_TITLE,
     });
+  }
+
+  async handleSignIn(signInDto: SignInDto): Promise<SignInResponseDto> {
+    const { email, password } = signInDto;
+    const existingUser = await this.userRepository.getOneByEmailOrFail(email);
+
+    const response = await this.identityProviderService.signIn(
+      existingUser.email,
+      password,
+    );
+
+    return {
+      ...response,
+      type: AUTHENTICATION_NAME,
+    };
   }
 
   async handleConfirmUser(
