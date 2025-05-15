@@ -52,7 +52,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
             currentRequestUrl,
             currentRequestMethod as HttpMethod,
             baseAppUrl,
-            linksMetadata,
+            linksMetadata ?? [],
           );
         }
       }),
