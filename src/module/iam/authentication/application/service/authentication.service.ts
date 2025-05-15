@@ -1,9 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
-import { ResponseSerializerService } from '@module/app/application/service/response-serializer.service';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import {
@@ -35,12 +33,9 @@ export class AuthenticationService {
     @Inject(USER_REPOSITORY_KEY)
     private readonly userRepository: IUserRepository,
     private readonly userMapper: UserMapper,
-    private readonly responseSerializerService: ResponseSerializerService,
   ) {}
 
-  async handleSignUp(
-    signUpDto: SignUpDto,
-  ): Promise<SerializedResponseDto<UserResponseDto>> {
+  async handleSignUp(signUpDto: SignUpDto): Promise<UserResponseDto> {
     const { email, password, firstName, lastName, avatarUrl } = signUpDto;
 
     const existingUser = await this.userRepository.getOneByEmail(email);
@@ -74,7 +69,7 @@ export class AuthenticationService {
 
   async handleConfirmUser(
     confirmUserDto: ConfirmUserDto,
-  ): Promise<SerializedResponseDto<ISuccessfulOperationResponse>> {
+  ): Promise<ISuccessfulOperationResponse> {
     const { email, code } = confirmUserDto;
     const existingUser = await this.userRepository.getOneByEmailOrFail(email);
 
@@ -93,10 +88,10 @@ export class AuthenticationService {
       isVerified: true,
     });
 
-    return this.responseSerializerService.serializeResponseDto({
-      responseDto: confirmUserResponse,
-      entityName: AUTHENTICATION_NAME,
-    });
+    return {
+      ...confirmUserResponse,
+      type: AUTHENTICATION_NAME,
+    };
   }
 
   private async signUpAndSave(
@@ -106,7 +101,7 @@ export class AuthenticationService {
     lastName: string,
     avatarUrl?: string,
     userId?: string,
-  ): Promise<SerializedResponseDto<UserResponseDto>> {
+  ): Promise<UserResponseDto> {
     let userToSaveId = userId;
 
     if (!userToSaveId) {
@@ -126,10 +121,6 @@ export class AuthenticationService {
       externalId,
     });
 
-    return this.responseSerializerService.serializeResponseDto({
-      responseDto: this.userMapper.fromEntityToResponseDto(user),
-      id: user.id,
-      entityName: User.getEntityName(),
-    });
+    return this.userMapper.fromEntityToResponseDto(user);
   }
 }

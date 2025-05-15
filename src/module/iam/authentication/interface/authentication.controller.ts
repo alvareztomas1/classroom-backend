@@ -1,6 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
-import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
@@ -13,9 +12,7 @@ export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Post('sign-up')
-  async handleSignUp(
-    @Body() signUpDto: SignUpDto,
-  ): Promise<SerializedResponseDto<UserResponseDto>> {
+  async handleSignUp(@Body() signUpDto: SignUpDto): Promise<UserResponseDto> {
     return this.authenticationService.handleSignUp(signUpDto);
   }
 
@@ -23,7 +20,7 @@ export class AuthenticationController {
   @HttpCode(HttpStatus.OK)
   async confirmUser(
     @Body() confirmUserDto: ConfirmUserDto,
-  ): Promise<SerializedResponseDto<ISuccessfulOperationResponse>> {
+  ): Promise<ISuccessfulOperationResponse> {
     return this.authenticationService.handleConfirmUser(confirmUserDto);
   }
 }
