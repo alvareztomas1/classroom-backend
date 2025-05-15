@@ -1,8 +1,10 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
-import { GetCurrentEndpointInterceptor } from '@module/app/application/interceptor/get-current-endpoint.interceptor';
-import { AppService } from '@module/app/application/service/app.service';
+import { ResponseFormatterInterceptor } from '@module/app/application/interceptor/response-formatter.interceptor';
+import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
 import { AppExceptionFilter } from '@module/app/infrastructure/nestjs/app-exception.filter';
 
 export const setupApp = (app: NestExpressApplication): void => {
@@ -15,7 +17,11 @@ export const setupApp = (app: NestExpressApplication): void => {
   app.set('query parser', 'extended');
 
   app.useGlobalInterceptors(
-    new GetCurrentEndpointInterceptor(app.get(AppService)),
+    new ResponseFormatterInterceptor(
+      app.get(Reflector),
+      app.get(LinkBuilderService),
+      app.get(ConfigService),
+    ),
   );
 
   app.useGlobalFilters(new AppExceptionFilter());
