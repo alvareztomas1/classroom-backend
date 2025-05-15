@@ -9,7 +9,7 @@ import { ICRUDService } from '@common/base/application/service/crud-service.inte
 import IEntity from '@common/base/domain/entity.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 
-import { ResponseSerializerService } from '@module/app/service/response-serializer.service';
+import { ResponseSerializerService } from '@module/app/application/service/response-serializer.service';
 
 export class BaseCRUDService<
   Entity extends IEntity,

@@ -1,9 +1,9 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
+import { GetCurrentEndpointInterceptor } from '@module/app/application/interceptor/get-current-endpoint.interceptor';
+import { AppService } from '@module/app/application/service/app.service';
 import { AppExceptionFilter } from '@module/app/infrastructure/nestjs/app-exception.filter';
-import { GetCurrentEndpointInterceptor } from '@module/app/interceptor/get-current-endpoint.interceptor';
-import { AppService } from '@module/app/service/app.service';
 
 export const setupApp = (app: NestExpressApplication): void => {
   app.enableVersioning({

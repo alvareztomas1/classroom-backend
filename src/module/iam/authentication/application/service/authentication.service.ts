@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
-import { ResponseSerializerService } from '@module/app/service/response-serializer.service';
+import { ResponseSerializerService } from '@module/app/application/service/response-serializer.service';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import {
