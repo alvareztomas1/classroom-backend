@@ -11,10 +11,10 @@ import { IAppErrorResponse } from '@common/base/application/exception/app-error-
 import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
-import { AUTHENTICATION_NAME } from '@module/iam/authentication/application/domain/authentication.name';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import { USER_ALREADY_CONFIRMED_ERROR } from '@module/iam/authentication/application/exception/authentication-exception-messages';
+import { AUTHENTICATION_NAME } from '@module/iam/authentication/domain/authentication.name';
 import { CodeMismatchException } from '@module/iam/authentication/infrastructure/cognito/exception/code-mismatch.exception';
 import {
   CODE_MISMATCH_ERROR,

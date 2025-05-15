@@ -7,7 +7,7 @@ import {
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 
-import { AppService } from '@module/app/service/app.service';
+import { AppService } from '@module/app/application/service/app.service';
 
 @Injectable()
 export class GetCurrentEndpointInterceptor implements NestInterceptor {

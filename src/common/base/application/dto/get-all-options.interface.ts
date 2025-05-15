@@ -1,7 +1,7 @@
-import { Base } from '@common/base/application/domain/base.entity';
-import IEntity from '@common/base/application/domain/entity.interface';
 import { IDto } from '@common/base/application/dto/dto.interface';
 import { SortType } from '@common/base/application/enum/sort-type.enum';
+import { Base } from '@common/base/domain/base.entity';
+import IEntity from '@common/base/domain/entity.interface';
 
 export type SimpleProps<T> = {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type

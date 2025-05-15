@@ -12,8 +12,8 @@ import {
   ISerializedResponseData,
 } from '@common/base/application/dto/serialized-response.interface';
 
-import { AppService } from '@module/app/service/app.service';
-import { LinkBuilderService } from '@module/app/service/link-builder.service';
+import { AppService } from '@module/app/application/service/app.service';
+import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
 
 @Injectable()
 export class ResponseSerializerService {

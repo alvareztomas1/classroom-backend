@@ -1,4 +1,4 @@
-import IEntity from '@common/base/application/domain/entity.interface';
+import IEntity from '@common/base/domain/entity.interface';
 
 export abstract class Base implements IEntity {
   id?: string;

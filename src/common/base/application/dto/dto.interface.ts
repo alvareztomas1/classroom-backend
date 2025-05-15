@@ -1,4 +1,4 @@
-import { default as IEntity } from '@common/base/application/domain/entity.interface';
+import IEntity from '@common/base/domain/entity.interface';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface IDto {}
