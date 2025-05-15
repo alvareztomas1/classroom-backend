@@ -5,6 +5,8 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { Hypermedia } from '@common/base/infrastructure/decorator/hypermedia.decorator';
 
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
+import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
+import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import { AuthenticationService } from '@module/iam/authentication/application/service/authentication.service';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
@@ -28,6 +30,12 @@ export class AuthenticationController {
   ])
   async handleSignUp(@Body() signUpDto: SignUpDto): Promise<UserResponseDto> {
     return this.authenticationService.handleSignUp(signUpDto);
+  }
+
+  @Post('sign-in')
+  @HttpCode(HttpStatus.OK)
+  async handleSignIn(@Body() signInDto: SignInDto): Promise<SignInResponseDto> {
+    return this.authenticationService.handleSignIn(signInDto);
   }
 
   @Post('confirm-user')

@@ -1,6 +1,7 @@
 import {
   CognitoIdentityProviderClient,
   ConfirmSignUpCommand,
+  InitiateAuthCommand,
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -17,13 +18,19 @@ import { CodeMismatchException } from '@module/iam/authentication/infrastructure
 import {
   CODE_MISMATCH_ERROR,
   EXPIRED_CODE_ERROR,
+  INVALID_PASSWORD_ERROR,
+  NEW_PASSWORD_REQUIRED_ERROR,
   PASSWORD_VALIDATION_ERROR,
   UNEXPECTED_ERROR_CODE_ERROR,
+  USER_NOT_CONFIRMED_ERROR,
 } from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
 import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
 import { ExpiredCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/expired-code.exception';
+import { InvalidPasswordException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-password.exception';
+import { NewPasswordRequiredException } from '@module/iam/authentication/infrastructure/cognito/exception/new-password-required.exception';
 import { PasswordValidationException } from '@module/iam/authentication/infrastructure/cognito/exception/password-validation.exception';
 import { UnexpectedErrorCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/unexpected-code.exception';
+import { UserNotConfirmedException } from '@module/iam/authentication/infrastructure/cognito/exception/user-not-confirmed.exception';
 
 jest.mock('@aws-sdk/client-cognito-identity-provider', () => ({
   CognitoIdentityProviderClient: jest.fn().mockImplementation(() => ({
@@ -33,6 +40,11 @@ jest.mock('@aws-sdk/client-cognito-identity-provider', () => ({
   SignUpCommand: jest.fn((input) => input),
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   ConfirmSignUpCommand: jest.fn((input) => input),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  InitiateAuthCommand: jest.fn((input) => input),
+  AuthFlowType: {
+    USER_PASSWORD_AUTH: 'test-user-password-auth',
+  },
 }));
 
 describe('CognitoService', () => {
@@ -178,6 +190,112 @@ describe('CognitoService', () => {
 
       await expect(
         cognitoService.confirmUser('test@example.com', '123456'),
+      ).rejects.toThrow(
+        new UnexpectedErrorCodeException({
+          message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${error.name}`,
+        }),
+      );
+    });
+  });
+
+  describe('CognitoService signIn method', () => {
+    it('Should sign in a user successfully', async () => {
+      jest.spyOn(clientMock, 'send').mockResolvedValueOnce({
+        AuthenticationResult: {
+          AccessToken: 'mock-access-token',
+          RefreshToken: 'mock-refresh-token',
+        },
+      });
+      const expectedUserSub = 'abc-123';
+      const signInCommand = {
+        ClientId: 'mock-client-id',
+        AuthFlow: 'test-user-password-auth',
+        AuthParameters: {
+          USERNAME: 'test@example.com',
+          PASSWORD: 'Password123!',
+        },
+      };
+      clientMock.send.mockResolvedValueOnce({ UserSub: expectedUserSub });
+
+      const result = await cognitoService.signIn(
+        'test@example.com',
+        'Password123!',
+      );
+      expect(result).toEqual({
+        accessToken: 'mock-access-token',
+        refreshToken: 'mock-refresh-token',
+      });
+
+      expect(InitiateAuthCommand).toHaveBeenCalledTimes(1);
+      expect(InitiateAuthCommand).toHaveBeenCalledWith(signInCommand);
+
+      expect(clientMock.send).toHaveBeenCalledTimes(1);
+      expect(clientMock.send).toHaveBeenCalledWith(signInCommand);
+    });
+
+    it('Should throw a UserNotConfirmedException if user is not confirmed', async () => {
+      const error = new Error('UserNotConfirmedException');
+      error.name = 'UserNotConfirmedException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.signIn('test@example.com', 'Password123!'),
+      ).rejects.toThrow(
+        new UserNotConfirmedException({
+          message: USER_NOT_CONFIRMED_ERROR,
+        }),
+      );
+    });
+
+    it('Should throw a InvalidPasswordException if password is invalid', async () => {
+      const error = new Error('InvalidPasswordException');
+      error.name = 'InvalidPasswordException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.signIn('test@example.com', 'invalid-password'),
+      ).rejects.toThrow(
+        new InvalidPasswordException({
+          message: INVALID_PASSWORD_ERROR,
+        }),
+      );
+    });
+
+    it('Should throw a NotAuthorizedException if user is not authorized', async () => {
+      const error = new Error('NotAuthorizedException');
+      error.name = 'NotAuthorizedException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.signIn('test@example.com', 'Password123!'),
+      ).rejects.toThrow(
+        new PasswordValidationException({
+          message: PASSWORD_VALIDATION_ERROR,
+        }),
+      );
+    });
+
+    it('Should throw a PasswordResetRequiredException if password is reset', async () => {
+      const error = new Error('PasswordResetRequiredException');
+      error.name = 'PasswordResetRequiredException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.signIn('test@example.com', 'Password123!'),
+      ).rejects.toThrow(
+        new NewPasswordRequiredException({
+          message: NEW_PASSWORD_REQUIRED_ERROR,
+        }),
+      );
+    });
+
+    it('Should throw a UnexpectedErrorCodeException with an different error than UserNotConfirmedException, InvalidPasswordException, NotAuthorizedException or PasswordResetRequiredException', async () => {
+      const error = new Error('SomeOtherException');
+      error.name = 'SomeOtherException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.signIn('test@example.com', 'Password123!'),
       ).rejects.toThrow(
         new UnexpectedErrorCodeException({
           message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${error.name}`,
