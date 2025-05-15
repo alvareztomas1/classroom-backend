@@ -5,14 +5,10 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 export interface ILink {
   href: string;
   method: HttpMethod;
-  rel?: string;
+  rel: string;
 }
 
-export interface IResponseDtoLinks {
-  self: ILink;
-  update?: ILink;
-  delete?: ILink;
-}
+export type IResponseDtoLinks = ILink[];
 
 export interface ICollectionLinks {
   self: ILink;

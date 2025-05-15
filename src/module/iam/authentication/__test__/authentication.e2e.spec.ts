@@ -88,13 +88,23 @@ describe('Authentication Module', () => {
                   isVerified: false,
                 }),
               }),
-              links: expect.objectContaining({
-                self: expect.objectContaining({
+              links: expect.arrayContaining([
+                expect.objectContaining({
                   href: expect.stringContaining('/auth/sign-up'),
                   rel: 'self',
-                  method: HttpMethod.GET,
+                  method: HttpMethod.POST,
                 }),
-              }),
+                expect.objectContaining({
+                  href: expect.stringContaining('/auth/confirm-user'),
+                  rel: 'confirm-user',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining('/auth/sign-in'),
+                  rel: 'sign-in',
+                  method: HttpMethod.POST,
+                }),
+              ]),
             }),
           );
         });
@@ -145,13 +155,23 @@ describe('Authentication Module', () => {
                   isVerified: false,
                 }),
               }),
-              links: expect.objectContaining({
-                self: expect.objectContaining({
+              links: expect.arrayContaining([
+                expect.objectContaining({
                   href: expect.stringContaining('/auth/sign-up'),
                   rel: 'self',
-                  method: HttpMethod.GET,
+                  method: HttpMethod.POST,
                 }),
-              }),
+                expect.objectContaining({
+                  href: expect.stringContaining('/auth/confirm-user'),
+                  rel: 'confirm-user',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining('/auth/sign-in'),
+                  rel: 'sign-in',
+                  method: HttpMethod.POST,
+                }),
+              ]),
             }),
           );
         });
@@ -189,13 +209,23 @@ describe('Authentication Module', () => {
                   isVerified: false,
                 }),
               }),
-              links: expect.objectContaining({
-                self: expect.objectContaining({
+              links: expect.arrayContaining([
+                expect.objectContaining({
                   href: expect.stringContaining('/auth/sign-up'),
                   rel: 'self',
-                  method: HttpMethod.GET,
+                  method: HttpMethod.POST,
                 }),
-              }),
+                expect.objectContaining({
+                  href: expect.stringContaining('/auth/confirm-user'),
+                  rel: 'confirm-user',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining('/auth/sign-in'),
+                  rel: 'sign-in',
+                  method: HttpMethod.POST,
+                }),
+              ]),
             }),
           );
         });
@@ -273,13 +303,18 @@ describe('Authentication Module', () => {
                 ...successResponse,
               }),
             }),
-            links: expect.objectContaining({
-              self: expect.objectContaining({
+            links: expect.arrayContaining([
+              expect.objectContaining({
                 href: expect.stringContaining('/auth/confirm-user'),
                 rel: 'self',
-                method: HttpMethod.GET,
+                method: HttpMethod.POST,
               }),
-            }),
+              expect.objectContaining({
+                href: expect.stringContaining('/auth/sign-in'),
+                rel: 'sign-in',
+                method: HttpMethod.POST,
+              }),
+            ]),
           });
 
           expect(body).toEqual(expectedResponse);

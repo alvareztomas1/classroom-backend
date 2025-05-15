@@ -13,3 +13,8 @@ export interface IDtoMapper<
   fromCreateDtoToEntity(dto: CreateDto): Entity;
   fromUpdateDtoToEntity(dto: UpdateDto): Entity;
 }
+
+export interface IResponseDto extends IDto {
+  id?: string;
+  type: string;
+}
