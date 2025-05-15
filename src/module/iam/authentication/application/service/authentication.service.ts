@@ -4,7 +4,6 @@ import { SerializedResponseDto } from '@common/base/application/dto/serialized-r
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
 import { ResponseSerializerService } from '@module/app/service/response-serializer.service';
-import { AUTHENTICATION_NAME } from '@module/iam/authentication/application/domain/authentication.name';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import {
@@ -18,6 +17,7 @@ import {
   IDENTITY_PROVIDER_SERVICE_KEY,
   IIdentityProviderService,
 } from '@module/iam/authentication/application/service/identity-provider.service.interface';
+import { AUTHENTICATION_NAME } from '@module/iam/authentication/domain/authentication.name';
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
 import { UserMapper } from '@module/iam/user/application/mapper/user.mapper';

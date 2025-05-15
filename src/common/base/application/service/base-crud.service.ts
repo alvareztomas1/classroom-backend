@@ -1,4 +1,3 @@
-import { default as IEntity } from '@common/base/application/domain/entity.interface';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { IDto, IDtoMapper } from '@common/base/application/dto/dto.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
@@ -7,6 +6,7 @@ import {
   SerializedResponseDtoCollection,
 } from '@common/base/application/dto/serialized-response.dto';
 import { ICRUDService } from '@common/base/application/service/crud-service.interface';
+import IEntity from '@common/base/domain/entity.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 
 import { ResponseSerializerService } from '@module/app/service/response-serializer.service';

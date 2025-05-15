@@ -1,10 +1,10 @@
-import IEntity from '@common/base/application/domain/entity.interface';
 import { IDto } from '@common/base/application/dto/dto.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
 import {
   SerializedResponseDto,
   SerializedResponseDtoCollection,
 } from '@common/base/application/dto/serialized-response.dto';
+import IEntity from '@common/base/domain/entity.interface';
 
 export interface ICRUDService<
   Entity extends IEntity,

@@ -7,13 +7,13 @@ import {
   Repository,
 } from 'typeorm';
 
-import Entity from '@common/base/application/domain/entity.interface';
 import { ICollection } from '@common/base/application/dto/collection.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
+import IEntity from '@common/base/domain/entity.interface';
 import { IRepository } from '@common/base/infrastructure/database/repository.interface';
 import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
-abstract class BaseRepository<T extends Entity> implements IRepository<T> {
+abstract class BaseRepository<T extends IEntity> implements IRepository<T> {
   protected readonly repository: Repository<T>;
 
   constructor(repository: Repository<T>) {

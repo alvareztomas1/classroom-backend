@@ -1,4 +1,4 @@
-import { Base } from '@common/base/application/domain/base.entity';
+import { Base } from '@common/base/domain/base.entity';
 
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 
