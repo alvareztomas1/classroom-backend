@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
+import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
@@ -89,7 +89,7 @@ export class AuthenticationService {
 
   async handleConfirmUser(
     confirmUserDto: ConfirmUserDto,
-  ): Promise<ISuccessfulOperationResponse> {
+  ): Promise<SuccessOperationResponseDto> {
     const { email, code } = confirmUserDto;
     const existingUser = await this.userRepository.getOneByEmailOrFail(email);
 
@@ -108,15 +108,16 @@ export class AuthenticationService {
       isVerified: true,
     });
 
-    return {
-      ...confirmUserResponse,
-      type: AUTHENTICATION_NAME,
-    };
+    return new SuccessOperationResponseDto(
+      confirmUserResponse.message,
+      confirmUserResponse.success,
+      AUTHENTICATION_NAME,
+    );
   }
 
   async handleForgotPassword(
     forgotPasswordDto: ForgotPasswordDto,
-  ): Promise<ISuccessfulOperationResponse> {
+  ): Promise<SuccessOperationResponseDto> {
     const { email } = forgotPasswordDto;
     const existingUser = await this.userRepository.getOneByEmailOrFail(email);
 
@@ -124,15 +125,16 @@ export class AuthenticationService {
       existingUser.email,
     );
 
-    return {
-      ...response,
-      type: AUTHENTICATION_NAME,
-    };
+    return new SuccessOperationResponseDto(
+      response.message,
+      response.success,
+      AUTHENTICATION_NAME,
+    );
   }
 
   async handleConfirmPassword(
     confirmPasswordDto: ConfirmPasswordDto,
-  ): Promise<ISuccessfulOperationResponse> {
+  ): Promise<SuccessOperationResponseDto> {
     const { email, newPassword, code } = confirmPasswordDto;
     const existingUser = await this.userRepository.getOneByEmailOrFail(email);
 
@@ -142,15 +144,16 @@ export class AuthenticationService {
       code,
     );
 
-    return {
-      ...response,
-      type: AUTHENTICATION_NAME,
-    };
+    return new SuccessOperationResponseDto(
+      response.message,
+      response.success,
+      AUTHENTICATION_NAME,
+    );
   }
 
   async handleResendConfirmationCode(
     resendConfirmationCodeDto: ResendConfirmationCodeDto,
-  ): Promise<ISuccessfulOperationResponse> {
+  ): Promise<SuccessOperationResponseDto> {
     const { email } = resendConfirmationCodeDto;
     const existingUser = await this.userRepository.getOneByEmailOrFail(email);
 
@@ -158,10 +161,11 @@ export class AuthenticationService {
       existingUser.email,
     );
 
-    return {
-      ...response,
-      type: AUTHENTICATION_NAME,
-    };
+    return new SuccessOperationResponseDto(
+      response.message,
+      response.success,
+      AUTHENTICATION_NAME,
+    );
   }
 
   private async signUpAndSave(
