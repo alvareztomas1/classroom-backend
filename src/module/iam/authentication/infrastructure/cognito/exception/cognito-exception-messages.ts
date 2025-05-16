@@ -9,3 +9,4 @@ export const USER_NOT_CONFIRMED_ERROR =
   'User account not confirmed. Please confirm your account then try again';
 export const NEW_PASSWORD_REQUIRED_ERROR =
   'User must provide new password in order to complete authentication';
+export const INVALID_REFRESH_TOKEN_ERROR = 'Invalid or malformed refresh token';

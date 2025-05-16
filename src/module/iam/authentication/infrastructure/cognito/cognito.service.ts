@@ -14,6 +14,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
+import { IRefreshSessionResponse } from '@module/iam/authentication/application/dto/refresh-session-response.dto';
 import { ISignInResponse } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { ISignUpResponse } from '@module/iam/authentication/application/dto/sign-up-response.interface';
 import { IIdentityProviderService } from '@module/iam/authentication/application/service/identity-provider.service.interface';
@@ -22,6 +23,7 @@ import {
   CODE_MISMATCH_ERROR,
   EXPIRED_CODE_ERROR,
   INVALID_PASSWORD_ERROR,
+  INVALID_REFRESH_TOKEN_ERROR,
   NEW_PASSWORD_REQUIRED_ERROR,
   PASSWORD_VALIDATION_ERROR,
   UNEXPECTED_ERROR_CODE_ERROR,
@@ -30,6 +32,7 @@ import {
 import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
 import { ExpiredCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/expired-code.exception';
 import { InvalidPasswordException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-password.exception';
+import { InvalidRefreshTokenException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-refresh-token.exception';
 import { NewPasswordRequiredException } from '@module/iam/authentication/infrastructure/cognito/exception/new-password-required.exception';
 import { PasswordValidationException } from '@module/iam/authentication/infrastructure/cognito/exception/password-validation.exception';
 import { UnexpectedErrorCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/unexpected-code.exception';
@@ -228,6 +231,32 @@ export class CognitoService implements IIdentityProviderService {
         message: 'A new confirmation code has been sent',
       };
     } catch (error) {
+      throw new UnexpectedErrorCodeException({
+        message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${(error as Error).name}`,
+      });
+    }
+  }
+
+  async refreshSession(refreshToken: string): Promise<IRefreshSessionResponse> {
+    try {
+      const command = new InitiateAuthCommand({
+        AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
+        ClientId: this.clientId,
+        AuthParameters: {
+          REFRESH_TOKEN: refreshToken,
+        },
+      });
+
+      const result = await this.client.send(command);
+      return {
+        accessToken: result.AuthenticationResult.AccessToken,
+      };
+    } catch (error) {
+      if ((error as Error).name === 'NotAuthorizedException') {
+        throw new InvalidRefreshTokenException({
+          message: INVALID_REFRESH_TOKEN_ERROR,
+        });
+      }
       throw new UnexpectedErrorCodeException({
         message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${(error as Error).name}`,
       });
