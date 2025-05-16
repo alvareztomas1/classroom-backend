@@ -5,6 +5,7 @@ import { ISuccessfulOperationResponse } from '@common/base/application/dto/succe
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
+import { ResendConfirmationCodeDto } from '@module/iam/authentication/application/dto/resend-confirmation-code.dto';
 import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
@@ -139,6 +140,22 @@ export class AuthenticationService {
       existingUser.email,
       newPassword,
       code,
+    );
+
+    return {
+      ...response,
+      type: AUTHENTICATION_NAME,
+    };
+  }
+
+  async handleResendConfirmationCode(
+    resendConfirmationCodeDto: ResendConfirmationCodeDto,
+  ): Promise<ISuccessfulOperationResponse> {
+    const { email } = resendConfirmationCodeDto;
+    const existingUser = await this.userRepository.getOneByEmailOrFail(email);
+
+    const response = await this.identityProviderService.resendConfirmationCode(
+      existingUser.email,
     );
 
     return {
