@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
+import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
 import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
@@ -120,6 +121,24 @@ export class AuthenticationService {
 
     const response = await this.identityProviderService.forgotPassword(
       existingUser.email,
+    );
+
+    return {
+      ...response,
+      type: AUTHENTICATION_NAME,
+    };
+  }
+
+  async handleConfirmPassword(
+    confirmPasswordDto: ConfirmPasswordDto,
+  ): Promise<ISuccessfulOperationResponse> {
+    const { email, newPassword, code } = confirmPasswordDto;
+    const existingUser = await this.userRepository.getOneByEmailOrFail(email);
+
+    const response = await this.identityProviderService.confirmPassword(
+      existingUser.email,
+      newPassword,
+      code,
     );
 
     return {

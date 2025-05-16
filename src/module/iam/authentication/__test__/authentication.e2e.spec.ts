@@ -5,13 +5,13 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
-import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { IAppErrorResponse } from '@common/base/application/exception/app-error-response.interface';
 
 import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
+import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
 import { ISignInResponse } from '@module/iam/authentication/application/dto/sign-in-response.dto';
@@ -697,7 +697,7 @@ describe('Authentication Module', () => {
         .post(url)
         .send(forgotPasswordDto)
         .expect(HttpStatus.OK)
-        .then(({ body }: { body: ISuccessfulOperationResponse }) => {
+        .then(({ body }) => {
           expect(body).toEqual(
             expect.objectContaining({
               data: expect.objectContaining({
@@ -773,6 +773,205 @@ describe('Authentication Module', () => {
             },
           };
           expect(body).toEqual(expectedResponse);
+        });
+    });
+  });
+
+  describe('POST - /auth/confirm-password', () => {
+    const url = '/api/v1/auth/confirm-password';
+    it('Should respond with a success message when provided a email, password and code', async () => {
+      identityProviderServiceMock.confirmPassword.mockResolvedValueOnce({
+        success: true,
+        message: 'Your password has been correctly updated',
+      });
+      const confirmPasswordDto: ConfirmPasswordDto = {
+        email: 'test_admin@email.co',
+        code: '123456',
+        newPassword: 'password',
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(confirmPasswordDto)
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              data: expect.objectContaining({
+                type: AUTHENTICATION_NAME,
+                attributes: expect.objectContaining({
+                  success: true,
+                  message: 'Your password has been correctly updated',
+                }),
+              }),
+              links: expect.arrayContaining([
+                {
+                  href: expect.stringContaining(url),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                },
+                {
+                  href: expect.stringContaining(
+                    '/auth/resend-confirmation-code',
+                  ),
+                  rel: 'resend-confirmation-code',
+                  method: HttpMethod.POST,
+                },
+                {
+                  href: expect.stringContaining('/auth/sign-in'),
+                  rel: 'sign-in',
+                  method: HttpMethod.POST,
+                },
+              ]),
+            }),
+          );
+        });
+    });
+
+    it('Should respond with a CodeMismatchError when the code is invalid', async () => {
+      const error = new CodeMismatchException({
+        message: CODE_MISMATCH_ERROR,
+      });
+      identityProviderServiceMock.confirmPassword.mockRejectedValueOnce(error);
+      const confirmPasswordDto: ConfirmPasswordDto = {
+        email: 'test_admin@email.co',
+        code: '654321',
+        newPassword: 'password',
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(confirmPasswordDto)
+        .expect(HttpStatus.UNAUTHORIZED)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.UNAUTHORIZED.toString(),
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/confirm-password',
+                }),
+                title: 'Code mismatch',
+                detail: CODE_MISMATCH_ERROR,
+              }),
+            }),
+          );
+        });
+    });
+
+    it('Should respond with an EmailNotFound error when the user does not exist', async () => {
+      const email = 'fake@fake.co';
+
+      const confirmPasswordDto: ConfirmPasswordDto = {
+        email,
+        code: '654321',
+        newPassword: 'password',
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(confirmPasswordDto)
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.NOT_FOUND.toString(),
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/confirm-password',
+                }),
+                title: 'Email not found',
+                detail: `User with email ${email} was not found`,
+              }),
+            }),
+          );
+        });
+    });
+
+    it('Should respond with a PasswordValidationException when password is not strong enough', async () => {
+      const error = new PasswordValidationException({
+        message: PASSWORD_VALIDATION_ERROR,
+      });
+      identityProviderServiceMock.confirmPassword.mockRejectedValueOnce(error);
+      const confirmPasswordDto: ConfirmPasswordDto = {
+        email: 'test_admin@email.co',
+        code: '654321',
+        newPassword: 'password',
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(confirmPasswordDto)
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.BAD_REQUEST.toString(),
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/confirm-password',
+                }),
+                title: 'Password validation',
+                detail: PASSWORD_VALIDATION_ERROR,
+              }),
+            }),
+          );
+        });
+    });
+
+    it('Should respond with an UnexpectedErrorCodeException when an unexpected error occurs', async () => {
+      const error = new UnexpectedErrorCodeException({
+        message: UNEXPECTED_ERROR_CODE_ERROR,
+      });
+      identityProviderServiceMock.confirmPassword.mockRejectedValueOnce(error);
+      const forgotPasswordDto: ConfirmPasswordDto = {
+        email: 'test_admin@email.co',
+        code: '654321',
+        newPassword: 'password',
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(forgotPasswordDto)
+        .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/confirm-password',
+                }),
+                title: 'Unexpected error code',
+                detail: UNEXPECTED_ERROR_CODE_ERROR,
+              }),
+            }),
+          );
+        });
+    });
+
+    it('Should respond with an ExpiredCodeException when the code has expired', async () => {
+      const error = new ExpiredCodeException({
+        message: EXPIRED_CODE_ERROR,
+      });
+      identityProviderServiceMock.confirmPassword.mockRejectedValueOnce(error);
+      const confirmPasswordDto: ConfirmPasswordDto = {
+        email: 'test_admin@email.co',
+        code: '654321',
+        newPassword: 'password',
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(confirmPasswordDto)
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.BAD_REQUEST.toString(),
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/confirm-password',
+                }),
+                title: 'Expired code',
+                detail: EXPIRED_CODE_ERROR,
+              }),
+            }),
+          );
         });
     });
   });
