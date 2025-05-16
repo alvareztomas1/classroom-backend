@@ -4,6 +4,7 @@ import {
   ConfirmSignUpCommand,
   ForgotPasswordCommand,
   InitiateAuthCommand,
+  ResendConfirmationCodeCommand,
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -51,6 +52,8 @@ jest.mock('@aws-sdk/client-cognito-identity-provider', () => ({
   ForgotPasswordCommand: jest.fn((input) => input),
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   ConfirmForgotPasswordCommand: jest.fn((input) => input),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  ResendConfirmationCodeCommand: jest.fn((input) => input),
 }));
 
 describe('CognitoService', () => {
@@ -443,6 +446,47 @@ describe('CognitoService', () => {
       ).rejects.toThrow(
         new PasswordValidationException({
           message: PASSWORD_VALIDATION_ERROR,
+        }),
+      );
+    });
+  });
+
+  describe('CognitoService resendConfirmationCode method', () => {
+    it('Should resend a confirmation code successfully', async () => {
+      const resendConfirmationCodeCommand = {
+        ClientId: 'mock-client-id',
+        Username: 'test@example.com',
+      };
+
+      const response =
+        await cognitoService.resendConfirmationCode('test@example.com');
+
+      expect(clientMock.send).toHaveBeenCalledTimes(1);
+      expect(clientMock.send).toHaveBeenCalledWith(
+        resendConfirmationCodeCommand,
+      );
+
+      expect(ResendConfirmationCodeCommand).toHaveBeenCalledTimes(1);
+      expect(ResendConfirmationCodeCommand).toHaveBeenCalledWith(
+        resendConfirmationCodeCommand,
+      );
+
+      expect(response).toEqual({
+        success: true,
+        message: 'A new confirmation code has been sent',
+      });
+    });
+
+    it('Should throw a UnexpectedErrorCodeException if an unexpected error occurs', async () => {
+      const error = new Error('SomeOtherException');
+      error.name = 'SomeOtherException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.resendConfirmationCode('test@example.com'),
+      ).rejects.toThrow(
+        new UnexpectedErrorCodeException({
+          message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${error.name}`,
         }),
       );
     });

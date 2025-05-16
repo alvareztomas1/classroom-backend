@@ -18,4 +18,5 @@ export interface IIdentityProviderService {
     newPassword: string,
     code: string,
   ): Promise<ISuccessfulOperationResponse>;
+  resendConfirmationCode(email: string): Promise<ISuccessfulOperationResponse>;
 }
