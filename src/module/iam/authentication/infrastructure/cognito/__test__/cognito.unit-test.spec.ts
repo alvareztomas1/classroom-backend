@@ -1,5 +1,6 @@
 import {
   CognitoIdentityProviderClient,
+  ConfirmForgotPasswordCommand,
   ConfirmSignUpCommand,
   ForgotPasswordCommand,
   InitiateAuthCommand,
@@ -48,6 +49,8 @@ jest.mock('@aws-sdk/client-cognito-identity-provider', () => ({
   },
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   ForgotPasswordCommand: jest.fn((input) => input),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  ConfirmForgotPasswordCommand: jest.fn((input) => input),
 }));
 
 describe('CognitoService', () => {
@@ -338,6 +341,108 @@ describe('CognitoService', () => {
       ).rejects.toThrow(
         new UnexpectedErrorCodeException({
           message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${error.name}`,
+        }),
+      );
+    });
+  });
+
+  describe('CognitoService resetPassword method', () => {
+    it('Should reset a password successfully', async () => {
+      const resetPasswordCommand = {
+        ClientId: 'mock-client-id',
+        ConfirmationCode: '123456',
+        Password: 'Password123!',
+        Username: 'test@example.com',
+      };
+
+      const response = await cognitoService.confirmPassword(
+        'test@example.com',
+        'Password123!',
+        '123456',
+      );
+
+      expect(clientMock.send).toHaveBeenCalledTimes(1);
+      expect(clientMock.send).toHaveBeenCalledWith(resetPasswordCommand);
+
+      expect(ConfirmForgotPasswordCommand).toHaveBeenCalledTimes(1);
+      expect(ConfirmForgotPasswordCommand).toHaveBeenCalledWith(
+        resetPasswordCommand,
+      );
+
+      expect(response).toEqual({
+        success: true,
+        message: 'Your password has been correctly updated',
+      });
+    });
+
+    it('Should throw a UnexpectedErrorCodeException if an unexpected error occurs', async () => {
+      const error = new Error('SomeOtherException');
+      error.name = 'SomeOtherException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.confirmPassword(
+          'test@example.com',
+          'Password123!',
+          '123456',
+        ),
+      ).rejects.toThrow(
+        new UnexpectedErrorCodeException({
+          message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${error.name}`,
+        }),
+      );
+    });
+
+    it('Should throw a ExpiredCodeException if code is expired', async () => {
+      const error = new Error('ExpiredCodeException');
+      error.name = 'ExpiredCodeException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.confirmPassword(
+          'test@example.com',
+          'Password123!',
+          '123456',
+        ),
+      ).rejects.toThrow(
+        new ExpiredCodeException({
+          message: EXPIRED_CODE_ERROR,
+        }),
+      );
+    });
+
+    it('Should throw a CodeMismatchException if code is invalid', async () => {
+      const error = new Error('CodeMismatchException');
+      error.name = 'CodeMismatchException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.confirmPassword(
+          'test@example.com',
+          'Password123!',
+          '123456',
+        ),
+      ).rejects.toThrow(
+        new CodeMismatchException({
+          message: CODE_MISMATCH_ERROR,
+        }),
+      );
+    });
+
+    it('Should throw a InvalidPasswordException if password is invalid', async () => {
+      const error = new Error('InvalidPasswordException');
+      error.name = 'InvalidPasswordException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.confirmPassword(
+          'test@example.com',
+          'Password123!',
+          '123456',
+        ),
+      ).rejects.toThrow(
+        new PasswordValidationException({
+          message: PASSWORD_VALIDATION_ERROR,
         }),
       );
     });

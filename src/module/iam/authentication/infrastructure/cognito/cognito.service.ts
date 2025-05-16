@@ -1,6 +1,7 @@
 import {
   AuthFlowType,
   CognitoIdentityProviderClient,
+  ConfirmForgotPasswordCommand,
   ConfirmSignUpCommand,
   ForgotPasswordCommand,
   InitiateAuthCommand,
@@ -168,6 +169,46 @@ export class CognitoService implements IIdentityProviderService {
       throw new UnexpectedErrorCodeException({
         message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${(error as Error).name}`,
       });
+    }
+  }
+
+  async confirmPassword(
+    email: string,
+    newPassword: string,
+    code: string,
+  ): Promise<ISuccessfulOperationResponse> {
+    try {
+      const command = new ConfirmForgotPasswordCommand({
+        ClientId: this.clientId,
+        Username: email,
+        Password: newPassword,
+        ConfirmationCode: code,
+      });
+
+      await this.client.send(command);
+      return {
+        success: true,
+        message: 'Your password has been correctly updated',
+      };
+    } catch (error) {
+      switch ((error as Error).name) {
+        case 'CodeMismatchException':
+          throw new CodeMismatchException({
+            message: CODE_MISMATCH_ERROR,
+          });
+        case 'ExpiredCodeException':
+          throw new ExpiredCodeException({
+            message: EXPIRED_CODE_ERROR,
+          });
+        case 'InvalidPasswordException':
+          throw new PasswordValidationException({
+            message: PASSWORD_VALIDATION_ERROR,
+          });
+        default:
+          throw new UnexpectedErrorCodeException({
+            message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${(error as Error).name}`,
+          });
+      }
     }
   }
 }

@@ -13,4 +13,9 @@ export interface IIdentityProviderService {
   ): Promise<ISuccessfulOperationResponse>;
   signIn(email: string, password: string): Promise<ISignInResponse>;
   forgotPassword(email: string): Promise<ISuccessfulOperationResponse>;
+  confirmPassword(
+    email: string,
+    newPassword: string,
+    code: string,
+  ): Promise<ISuccessfulOperationResponse>;
 }
