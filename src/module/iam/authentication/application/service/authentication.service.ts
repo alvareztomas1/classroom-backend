@@ -5,6 +5,8 @@ import { ISuccessfulOperationResponse } from '@common/base/application/dto/succe
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
+import { RefreshSessionResponseDto } from '@module/iam/authentication/application/dto/refresh-session-response.dto';
+import { RefreshSessionDto } from '@module/iam/authentication/application/dto/refresh-session.dto';
 import { ResendConfirmationCodeDto } from '@module/iam/authentication/application/dto/resend-confirmation-code.dto';
 import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
@@ -162,6 +164,22 @@ export class AuthenticationService {
       ...response,
       type: AUTHENTICATION_NAME,
     };
+  }
+
+  async handleRefreshSession(
+    refreshSessionDto: RefreshSessionDto,
+  ): Promise<RefreshSessionResponseDto> {
+    const { email, refreshToken } = refreshSessionDto;
+
+    await this.userRepository.getOneByEmailOrFail(email);
+
+    const response =
+      await this.identityProviderService.refreshSession(refreshToken);
+
+    return new RefreshSessionResponseDto(
+      response.accessToken,
+      AUTHENTICATION_NAME,
+    );
   }
 
   private async signUpAndSave(

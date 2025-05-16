@@ -7,6 +7,8 @@ import { Hypermedia } from '@common/base/infrastructure/decorator/hypermedia.dec
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
+import { RefreshSessionResponseDto } from '@module/iam/authentication/application/dto/refresh-session-response.dto';
+import { RefreshSessionDto } from '@module/iam/authentication/application/dto/refresh-session.dto';
 import { ResendConfirmationCodeDto } from '@module/iam/authentication/application/dto/resend-confirmation-code.dto';
 import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
@@ -106,5 +108,20 @@ export class AuthenticationController {
     return this.authenticationService.handleResendConfirmationCode(
       resendConfirmationCode,
     );
+  }
+
+  @Post('refresh')
+  @Hypermedia([
+    {
+      rel: 'sign-in',
+      endpoint: '/auth/sign-in',
+      method: HttpMethod.POST,
+    },
+  ])
+  @HttpCode(HttpStatus.OK)
+  async handleRefreshSession(
+    @Body() refreshSessionDto: RefreshSessionDto,
+  ): Promise<RefreshSessionResponseDto> {
+    return this.authenticationService.handleRefreshSession(refreshSessionDto);
   }
 }

@@ -14,6 +14,8 @@ import { datasourceOptions } from '@config/orm.config';
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
+import { IRefreshSessionResponse } from '@module/iam/authentication/application/dto/refresh-session-response.dto';
+import { RefreshSessionDto } from '@module/iam/authentication/application/dto/refresh-session.dto';
 import { ResendConfirmationCodeDto } from '@module/iam/authentication/application/dto/resend-confirmation-code.dto';
 import { ISignInResponse } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
@@ -25,6 +27,7 @@ import {
   CODE_MISMATCH_ERROR,
   EXPIRED_CODE_ERROR,
   INVALID_PASSWORD_ERROR,
+  INVALID_REFRESH_TOKEN_ERROR,
   NEW_PASSWORD_REQUIRED_ERROR,
   PASSWORD_VALIDATION_ERROR,
   UNEXPECTED_ERROR_CODE_ERROR,
@@ -33,6 +36,7 @@ import {
 import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
 import { ExpiredCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/expired-code.exception';
 import { InvalidPasswordException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-password.exception';
+import { InvalidRefreshTokenException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-refresh-token.exception';
 import { NewPasswordRequiredException } from '@module/iam/authentication/infrastructure/cognito/exception/new-password-required.exception';
 import { PasswordValidationException } from '@module/iam/authentication/infrastructure/cognito/exception/password-validation.exception';
 import { UnexpectedErrorCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/unexpected-code.exception';
@@ -1066,6 +1070,123 @@ describe('Authentication Module', () => {
                 status: HttpStatus.INTERNAL_SERVER_ERROR.toString(),
                 source: expect.objectContaining({
                   pointer: '/api/v1/auth/resend-confirmation-code',
+                }),
+                title: 'Unexpected error code',
+                detail: error.message,
+              }),
+            }),
+          );
+        });
+    });
+  });
+
+  describe('POST - /auth/refresh', () => {
+    const url = '/api/v1/auth/refresh';
+    it('Should refresh the session when provided a valid refresh token', async () => {
+      const successProviderResponse: IRefreshSessionResponse = {
+        accessToken: 'accessToken',
+      };
+      identityProviderServiceMock.refreshSession.mockResolvedValueOnce(
+        successProviderResponse,
+      );
+      const refreshTokenDto: RefreshSessionDto = {
+        refreshToken: 'refreshToken',
+        email: 'test_admin@email.co',
+      };
+
+      await request(app.getHttpServer())
+        .post(url)
+        .send(refreshTokenDto)
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              data: expect.objectContaining({
+                attributes: expect.objectContaining({
+                  accessToken: 'accessToken',
+                }),
+              }),
+            }),
+          );
+        });
+    });
+
+    it('Should respond with an InvalidRefreshTokenError when provided an invalid refresh token', async () => {
+      const error = new InvalidRefreshTokenException({
+        message: INVALID_REFRESH_TOKEN_ERROR,
+      });
+      identityProviderServiceMock.refreshSession.mockRejectedValueOnce(error);
+      const refreshTokenDto: RefreshSessionDto = {
+        refreshToken: 'fakeRefreshToken',
+        email: 'test_admin@email.co',
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(refreshTokenDto)
+        .expect(HttpStatus.UNAUTHORIZED)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.UNAUTHORIZED.toString(),
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/refresh',
+                }),
+                title: 'Invalid refresh token',
+                detail: error.message,
+              }),
+            }),
+          );
+        });
+    });
+
+    it("Should respond with an UserNotFoundException when the user doesn't exist", async () => {
+      const email = 'fake@email.co';
+
+      const refreshTokenDto: RefreshSessionDto = {
+        refreshToken: 'fakeRefreshToken',
+        email,
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(refreshTokenDto)
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.NOT_FOUND.toString(),
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/refresh',
+                }),
+                title: 'Email not found',
+                detail: `User with email ${email} was not found`,
+              }),
+            }),
+          );
+        });
+    });
+
+    it('Should respond with an UnexpectedCodeError over unexpected errors', async () => {
+      const error = new UnexpectedErrorCodeException({
+        message: UNEXPECTED_ERROR_CODE_ERROR,
+      });
+      identityProviderServiceMock.refreshSession.mockRejectedValueOnce(error);
+      const refreshSessionDto: RefreshSessionDto = {
+        email: 'test_admin@email.co',
+        refreshToken: 'refreshToken',
+      };
+      return request(app.getHttpServer())
+        .post(url)
+        .send(refreshSessionDto)
+        .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/refresh',
                 }),
                 title: 'Unexpected error code',
                 detail: error.message,
