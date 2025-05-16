@@ -8,6 +8,7 @@ export const identityProviderServiceMock = {
   confirmUser: jest.fn(),
   signIn: jest.fn(),
   forgotPassword: jest.fn(),
+  confirmPassword: jest.fn(),
 };
 
 export const testModuleBootstrapper = (): Promise<TestingModule> => {
