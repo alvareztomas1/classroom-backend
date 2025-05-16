@@ -7,6 +7,7 @@ import { Hypermedia } from '@common/base/infrastructure/decorator/hypermedia.dec
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
+import { ResendConfirmationCodeDto } from '@module/iam/authentication/application/dto/resend-confirmation-code.dto';
 import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
@@ -88,5 +89,22 @@ export class AuthenticationController {
     @Body() confirmPasswordDto: ConfirmPasswordDto,
   ): Promise<ISuccessfulOperationResponse> {
     return this.authenticationService.handleConfirmPassword(confirmPasswordDto);
+  }
+
+  @Post('resend-confirmation-code')
+  @Hypermedia([
+    {
+      rel: 'confirm-password',
+      endpoint: '/auth/confirm-password',
+      method: HttpMethod.POST,
+    },
+  ])
+  @HttpCode(HttpStatus.OK)
+  async handleResendConfirmationCode(
+    @Body() resendConfirmationCode: ResendConfirmationCodeDto,
+  ): Promise<ISuccessfulOperationResponse> {
+    return this.authenticationService.handleResendConfirmationCode(
+      resendConfirmationCode,
+    );
   }
 }

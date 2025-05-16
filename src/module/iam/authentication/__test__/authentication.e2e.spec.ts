@@ -14,6 +14,7 @@ import { datasourceOptions } from '@config/orm.config';
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
+import { ResendConfirmationCodeDto } from '@module/iam/authentication/application/dto/resend-confirmation-code.dto';
 import { ISignInResponse } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
@@ -685,7 +686,7 @@ describe('Authentication Module', () => {
   describe('POST - /auth/forgot-password', () => {
     const url = '/api/v1/auth/forgot-password';
 
-    it('Should respond with a success message when provided a username to forgot password', async () => {
+    it('Should respond with a success message when provided a email to forgot password', async () => {
       identityProviderServiceMock.forgotPassword.mockResolvedValueOnce({
         success: true,
         message: 'Password reset instructions have been sent',
@@ -969,6 +970,105 @@ describe('Authentication Module', () => {
                 }),
                 title: 'Expired code',
                 detail: EXPIRED_CODE_ERROR,
+              }),
+            }),
+          );
+        });
+    });
+  });
+
+  describe('POST - /auth/resend-confirmation-code', () => {
+    const url = '/api/v1/auth/resend-confirmation-code';
+    it('Should resend the confirmation code when requested', async () => {
+      const successResponse = {
+        success: true,
+        message: 'A new confirmation code has been sent',
+      };
+      identityProviderServiceMock.resendConfirmationCode.mockResolvedValueOnce(
+        successResponse,
+      );
+      const confirmPasswordDto: ResendConfirmationCodeDto = {
+        email: 'test_admin@email.co',
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(confirmPasswordDto)
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              data: expect.objectContaining({
+                type: AUTHENTICATION_NAME,
+                attributes: expect.objectContaining({
+                  ...successResponse,
+                }),
+              }),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(url),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining('/auth/confirm-password'),
+                  rel: 'confirm-password',
+                  method: HttpMethod.POST,
+                }),
+              ]),
+            }),
+          );
+        });
+    });
+
+    it("Should respond with an EmailNotFoundException when the user doesn't exist", async () => {
+      const email = 'fake@email.co';
+      const forgotPasswordDto: ResendConfirmationCodeDto = { email };
+
+      await request(app.getHttpServer())
+        .post(url)
+        .send(forgotPasswordDto)
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.NOT_FOUND.toString(),
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/resend-confirmation-code',
+                }),
+                title: 'Email not found',
+                detail: `User with email ${email} was not found`,
+              }),
+            }),
+          );
+        });
+    });
+
+    it('Should respond with an UnexpectedCodeError over unexpected errors', async () => {
+      const error = new UnexpectedErrorCodeException({
+        message: UNEXPECTED_ERROR_CODE_ERROR,
+      });
+      identityProviderServiceMock.resendConfirmationCode.mockRejectedValueOnce(
+        error,
+      );
+      const confirmPasswordDto: ResendConfirmationCodeDto = {
+        email: 'test_admin@email.co',
+      };
+
+      return await request(app.getHttpServer())
+        .post(url)
+        .send(confirmPasswordDto)
+        .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+        .then(({ body }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/resend-confirmation-code',
+                }),
+                title: 'Unexpected error code',
+                detail: error.message,
               }),
             }),
           );

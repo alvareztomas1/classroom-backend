@@ -6,6 +6,7 @@ import {
   ForgotPasswordCommand,
   InitiateAuthCommand,
   InitiateAuthCommandInput,
+  ResendConfirmationCodeCommand,
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { Injectable } from '@nestjs/common';
@@ -209,6 +210,27 @@ export class CognitoService implements IIdentityProviderService {
             message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${(error as Error).name}`,
           });
       }
+    }
+  }
+
+  async resendConfirmationCode(
+    email: string,
+  ): Promise<ISuccessfulOperationResponse> {
+    try {
+      const command = new ResendConfirmationCodeCommand({
+        ClientId: this.clientId,
+        Username: email,
+      });
+
+      await this.client.send(command);
+      return {
+        success: true,
+        message: 'A new confirmation code has been sent',
+      };
+    } catch (error) {
+      throw new UnexpectedErrorCodeException({
+        message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${(error as Error).name}`,
+      });
     }
   }
 }
