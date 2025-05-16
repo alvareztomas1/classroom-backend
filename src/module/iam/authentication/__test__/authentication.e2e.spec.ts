@@ -5,6 +5,7 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
+import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { IAppErrorResponse } from '@common/base/application/exception/app-error-response.interface';
 
@@ -12,6 +13,7 @@ import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
+import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
 import { ISignInResponse } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
@@ -676,6 +678,101 @@ describe('Authentication Module', () => {
               detail: error.message,
             }),
           });
+        });
+    });
+  });
+
+  describe('POST - /auth/forgot-password', () => {
+    const url = '/api/v1/auth/forgot-password';
+
+    it('Should respond with a success message when provided a username to forgot password', async () => {
+      identityProviderServiceMock.forgotPassword.mockResolvedValueOnce({
+        success: true,
+        message: 'Password reset instructions have been sent',
+      });
+      const forgotPasswordDto: ForgotPasswordDto = {
+        email: 'test_admin@email.co',
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(forgotPasswordDto)
+        .expect(HttpStatus.OK)
+        .then(({ body }: { body: ISuccessfulOperationResponse }) => {
+          expect(body).toEqual(
+            expect.objectContaining({
+              data: expect.objectContaining({
+                type: AUTHENTICATION_NAME,
+                attributes: expect.objectContaining({
+                  success: true,
+                  message: 'Password reset instructions have been sent',
+                }),
+              }),
+              links: expect.arrayContaining([
+                {
+                  href: expect.stringContaining(url),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                },
+                {
+                  href: expect.stringContaining('/auth/confirm-password'),
+                  rel: 'confirm-password',
+                  method: HttpMethod.POST,
+                },
+              ]),
+            }),
+          );
+        });
+    });
+
+    it("Should respond with an EmailNotFoundException when the user doesn't exist", async () => {
+      const email = 'fake@email.co';
+      const forgotPasswordDto: ForgotPasswordDto = { email };
+
+      await request(app.getHttpServer())
+        .post(url)
+        .send(forgotPasswordDto)
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }: { body: IAppErrorResponse }) => {
+          expect(body).toEqual({
+            error: expect.objectContaining({
+              status: HttpStatus.NOT_FOUND.toString(),
+              source: expect.objectContaining({
+                pointer: '/api/v1/auth/forgot-password',
+              }),
+              title: 'Email not found',
+              detail: `User with email ${email} was not found`,
+            }),
+          });
+        });
+    });
+
+    it('Should respond with an UnexpectedErrorCodeException when an unexpected error occurs', async () => {
+      const unexpectedError = new UnexpectedErrorCodeException({
+        message: 'Unexpected error',
+      });
+
+      identityProviderServiceMock.forgotPassword.mockRejectedValueOnce(
+        unexpectedError,
+      );
+      const forgotPasswordDto: ForgotPasswordDto = {
+        email: 'test_admin@email.co',
+      };
+      await request(app.getHttpServer())
+        .post(url)
+        .send(forgotPasswordDto)
+        .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+        .then(({ body }: { body: IAppErrorResponse }) => {
+          const expectedResponse: IAppErrorResponse = {
+            error: {
+              status: HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+              source: {
+                pointer: '/api/v1/auth/forgot-password',
+              },
+              title: 'Unexpected error code',
+              detail: 'Unexpected error',
+            },
+          };
+          expect(body).toEqual(expectedResponse);
         });
     });
   });
