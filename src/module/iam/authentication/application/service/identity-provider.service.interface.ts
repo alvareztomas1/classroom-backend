@@ -1,5 +1,6 @@
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
+import { IRefreshSessionResponse } from '@module/iam/authentication/application/dto/refresh-session-response.dto';
 import { ISignInResponse } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { ISignUpResponse } from '@module/iam/authentication/application/dto/sign-up-response.interface';
 
@@ -19,4 +20,5 @@ export interface IIdentityProviderService {
     code: string,
   ): Promise<ISuccessfulOperationResponse>;
   resendConfirmationCode(email: string): Promise<ISuccessfulOperationResponse>;
+  refreshSession(refreshToken: string): Promise<IRefreshSessionResponse>;
 }

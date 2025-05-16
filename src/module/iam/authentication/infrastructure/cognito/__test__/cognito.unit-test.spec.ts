@@ -22,6 +22,7 @@ import {
   CODE_MISMATCH_ERROR,
   EXPIRED_CODE_ERROR,
   INVALID_PASSWORD_ERROR,
+  INVALID_REFRESH_TOKEN_ERROR,
   NEW_PASSWORD_REQUIRED_ERROR,
   PASSWORD_VALIDATION_ERROR,
   UNEXPECTED_ERROR_CODE_ERROR,
@@ -30,6 +31,7 @@ import {
 import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
 import { ExpiredCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/expired-code.exception';
 import { InvalidPasswordException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-password.exception';
+import { InvalidRefreshTokenException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-refresh-token.exception';
 import { NewPasswordRequiredException } from '@module/iam/authentication/infrastructure/cognito/exception/new-password-required.exception';
 import { PasswordValidationException } from '@module/iam/authentication/infrastructure/cognito/exception/password-validation.exception';
 import { UnexpectedErrorCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/unexpected-code.exception';
@@ -47,6 +49,7 @@ jest.mock('@aws-sdk/client-cognito-identity-provider', () => ({
   InitiateAuthCommand: jest.fn((input) => input),
   AuthFlowType: {
     USER_PASSWORD_AUTH: 'test-user-password-auth',
+    REFRESH_TOKEN_AUTH: 'test-refresh-token-auth',
   },
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   ForgotPasswordCommand: jest.fn((input) => input),
@@ -484,6 +487,65 @@ describe('CognitoService', () => {
 
       await expect(
         cognitoService.resendConfirmationCode('test@example.com'),
+      ).rejects.toThrow(
+        new UnexpectedErrorCodeException({
+          message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${error.name}`,
+        }),
+      );
+    });
+  });
+
+  describe('CognitoService refreshSession method', () => {
+    it('Should refresh a session successfully', async () => {
+      const refreshSessionCommand = {
+        ClientId: 'mock-client-id',
+        AuthParameters: {
+          REFRESH_TOKEN: 'mock-refresh-token',
+        },
+        AuthFlow: 'test-refresh-token-auth',
+      };
+
+      jest.spyOn(clientMock, 'send').mockResolvedValueOnce({
+        AuthenticationResult: {
+          AccessToken: 'mock-access-token',
+        },
+      });
+
+      const response =
+        await cognitoService.refreshSession('mock-refresh-token');
+
+      expect(clientMock.send).toHaveBeenCalledTimes(1);
+      expect(clientMock.send).toHaveBeenCalledWith(refreshSessionCommand);
+
+      expect(InitiateAuthCommand).toHaveBeenCalledTimes(1);
+      expect(InitiateAuthCommand).toHaveBeenCalledWith(refreshSessionCommand);
+
+      expect(response).toEqual({
+        accessToken: 'mock-access-token',
+      });
+    });
+
+    it('Should throw a NotAuthorizedException when receiving a not authorized error', async () => {
+      const error = new Error('NotAuthorizedException');
+      error.name = 'NotAuthorizedException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.refreshSession('mock-refresh-token'),
+      ).rejects.toThrow(
+        new InvalidRefreshTokenException({
+          message: INVALID_REFRESH_TOKEN_ERROR,
+        }),
+      );
+    });
+
+    it('Should throw a UnexpectedErrorCodeException if an unexpected error occurs', async () => {
+      const error = new Error('SomeOtherException');
+      error.name = 'SomeOtherException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.refreshSession('mock-refresh-token'),
       ).rejects.toThrow(
         new UnexpectedErrorCodeException({
           message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${error.name}`,
