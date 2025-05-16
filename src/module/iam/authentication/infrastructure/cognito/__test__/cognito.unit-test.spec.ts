@@ -1,6 +1,7 @@
 import {
   CognitoIdentityProviderClient,
   ConfirmSignUpCommand,
+  ForgotPasswordCommand,
   InitiateAuthCommand,
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -45,6 +46,8 @@ jest.mock('@aws-sdk/client-cognito-identity-provider', () => ({
   AuthFlowType: {
     USER_PASSWORD_AUTH: 'test-user-password-auth',
   },
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  ForgotPasswordCommand: jest.fn((input) => input),
 }));
 
 describe('CognitoService', () => {
@@ -296,6 +299,42 @@ describe('CognitoService', () => {
 
       await expect(
         cognitoService.signIn('test@example.com', 'Password123!'),
+      ).rejects.toThrow(
+        new UnexpectedErrorCodeException({
+          message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${error.name}`,
+        }),
+      );
+    });
+  });
+
+  describe('CognitoService forgotPassword method', () => {
+    it('Should send a forgot password request successfully', async () => {
+      const forgotPasswordCommand = {
+        ClientId: 'mock-client-id',
+        Username: 'test@example.com',
+      };
+
+      const response = await cognitoService.forgotPassword('test@example.com');
+
+      expect(clientMock.send).toHaveBeenCalledTimes(1);
+      expect(clientMock.send).toHaveBeenCalledWith(forgotPasswordCommand);
+
+      expect(ForgotPasswordCommand).toHaveBeenCalledTimes(1);
+      expect(ForgotPasswordCommand).toHaveBeenCalledWith(forgotPasswordCommand);
+
+      expect(response).toEqual({
+        success: true,
+        message: 'Password reset instructions have been sent',
+      });
+    });
+
+    it('Should throw a UnexpectedErrorCodeException if an unexpected error occurs', async () => {
+      const error = new Error('SomeOtherException');
+      error.name = 'SomeOtherException';
+      clientMock.send.mockRejectedValueOnce(error);
+
+      await expect(
+        cognitoService.forgotPassword('test@example.com'),
       ).rejects.toThrow(
         new UnexpectedErrorCodeException({
           message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${error.name}`,
