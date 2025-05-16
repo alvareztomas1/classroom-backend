@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
+import { ILinkMetadata } from '@common/base/application/decorator/hypermedia.decorator';
 import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
 import {
   ICollectionLinks,
   ILink,
 } from '@common/base/application/dto/serialized-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
-import { ILinkMetadata } from '@common/base/infrastructure/decorator/hypermedia.decorator';
 
 import { ILinkBuilderService } from '@module/app/application/service/link-builder.service.interface';
 
