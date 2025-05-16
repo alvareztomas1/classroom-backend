@@ -1,8 +1,8 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
+import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
-import { Hypermedia } from '@common/base/infrastructure/decorator/hypermedia.decorator';
 
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';

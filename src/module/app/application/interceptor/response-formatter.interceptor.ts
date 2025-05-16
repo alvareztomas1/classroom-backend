@@ -10,16 +10,16 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { Observable, map } from 'rxjs';
 
+import {
+  HYPERMEDIA_KEY,
+  ILinkMetadata,
+} from '@common/base/application/decorator/hypermedia.decorator';
 import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { IResponseDto } from '@common/base/application/dto/dto.interface';
 import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
 import { ISerializedResponseData } from '@common/base/application/dto/serialized-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
-import {
-  HYPERMEDIA_KEY,
-  ILinkMetadata,
-} from '@common/base/infrastructure/decorator/hypermedia.decorator';
 
 import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
 
