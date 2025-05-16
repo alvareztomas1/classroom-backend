@@ -1,5 +1,9 @@
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
-import { IDto, IDtoMapper } from '@common/base/application/dto/dto.interface';
+import {
+  IDto,
+  IDtoMapper,
+  IResponseDto,
+} from '@common/base/application/dto/dto.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
 import { ICRUDService } from '@common/base/application/service/crud-service.interface';
 import IEntity from '@common/base/domain/entity.interface';
@@ -9,7 +13,7 @@ export class BaseCRUDService<
   Entity extends IEntity,
   CreateDto extends IDto,
   UpdateDto extends IDto,
-  ResponseDto extends IDto,
+  ResponseDto extends IResponseDto,
 > implements ICRUDService<Entity, ResponseDto, CreateDto, UpdateDto>
 {
   constructor(

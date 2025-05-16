@@ -1,11 +1,11 @@
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
-import { IDto } from '@common/base/application/dto/dto.interface';
+import { IDto, IResponseDto } from '@common/base/application/dto/dto.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
 import IEntity from '@common/base/domain/entity.interface';
 
 export interface ICRUDService<
   Entity extends IEntity,
-  ResponseDto extends IDto,
+  ResponseDto extends IResponseDto,
   CreateDto extends IDto,
   UpdateDto extends IDto,
 > {

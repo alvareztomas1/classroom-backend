@@ -1,7 +1,9 @@
 import { ICollection } from '@common/base/application/dto/collection.interface';
-import { IDto } from '@common/base/application/dto/dto.interface';
+import { IResponseDto } from '@common/base/application/dto/dto.interface';
 
-export class CollectionDto<Data extends IDto> implements ICollection<Data> {
+export class CollectionDto<Data extends IResponseDto>
+  implements ICollection<Data>
+{
   readonly data: Data[];
 
   readonly pageNumber: number;

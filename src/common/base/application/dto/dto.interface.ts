@@ -7,7 +7,7 @@ export interface IDtoMapper<
   Entity extends IEntity,
   CreateDto extends IDto,
   UpdateDto extends IDto,
-  ResponseDto extends IDto,
+  ResponseDto extends IResponseDto,
 > {
   fromEntityToResponseDto(entity: Entity): ResponseDto;
   fromCreateDtoToEntity(dto: CreateDto): Entity;
