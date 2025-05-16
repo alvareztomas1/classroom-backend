@@ -5,6 +5,7 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { Hypermedia } from '@common/base/infrastructure/decorator/hypermedia.decorator';
 
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
+import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
 import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
@@ -51,5 +52,20 @@ export class AuthenticationController {
     @Body() confirmUserDto: ConfirmUserDto,
   ): Promise<ISuccessfulOperationResponse> {
     return this.authenticationService.handleConfirmUser(confirmUserDto);
+  }
+
+  @Post('forgot-password')
+  @Hypermedia([
+    {
+      rel: 'confirm-password',
+      endpoint: '/auth/confirm-password',
+      method: HttpMethod.POST,
+    },
+  ])
+  @HttpCode(HttpStatus.OK)
+  async handleForgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<ISuccessfulOperationResponse> {
+    return this.authenticationService.handleForgotPassword(forgotPasswordDto);
   }
 }

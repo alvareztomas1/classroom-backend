@@ -2,6 +2,7 @@ import {
   AuthFlowType,
   CognitoIdentityProviderClient,
   ConfirmSignUpCommand,
+  ForgotPasswordCommand,
   InitiateAuthCommand,
   InitiateAuthCommandInput,
   SignUpCommand,
@@ -147,6 +148,26 @@ export class CognitoService implements IIdentityProviderService {
             message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${(error as Error).name}`,
           });
       }
+    }
+  }
+
+  async forgotPassword(email: string): Promise<ISuccessfulOperationResponse> {
+    try {
+      const command = new ForgotPasswordCommand({
+        ClientId: this.clientId,
+        Username: email,
+      });
+
+      await this.client.send(command);
+
+      return {
+        success: true,
+        message: 'Password reset instructions have been sent',
+      };
+    } catch (error) {
+      throw new UnexpectedErrorCodeException({
+        message: `${UNEXPECTED_ERROR_CODE_ERROR} - ${(error as Error).name}`,
+      });
     }
   }
 }
