@@ -57,8 +57,8 @@ fi
 
 update_env_var "COGNITO_USER_POOL_ID" "$user_pool_id"
 update_env_var "COGNITO_CLIENT_ID" "$user_pool_client_id"
-update_env_var "COGNITO_ENDPOINT" "http://localhost:${COGNITO_PORT}"
-update_env_var "COGNITO_ISSUER" "http://localhost:${COGNITO_PORT}/$user_pool_id"
+update_env_var "COGNITO_ENDPOINT" "http://0.0.0.0:${COGNITO_PORT}"
+update_env_var "COGNITO_ISSUER" "http://0.0.0.0:${COGNITO_PORT}/$user_pool_id"
 
 echo -e "${BLUE}You can configure your user pool and user pool client manually by going to ${NC}${GREEN}data/docker/volumes/cognito${NC}${BLUE}.${NC}"
 echo -e "${BLUE}Remember to restart the cognito-local server if doing so! :).${NC}"
