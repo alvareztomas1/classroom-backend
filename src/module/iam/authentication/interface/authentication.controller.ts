@@ -14,8 +14,11 @@ import { SignInResponseDto } from '@module/iam/authentication/application/dto/si
 import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
 import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import { AuthenticationService } from '@module/iam/authentication/application/service/authentication.service';
+import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
+import { Auth } from '@module/iam/authentication/infrastructure/decorator/auth.decorator';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
 
+@Auth(AuthType.None)
 @Controller('auth')
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
