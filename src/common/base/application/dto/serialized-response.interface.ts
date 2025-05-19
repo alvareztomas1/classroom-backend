@@ -10,13 +10,7 @@ export interface ILink {
 
 export type IResponseDtoLinks = ILink[];
 
-export interface ICollectionLinks {
-  self: ILink;
-  first?: ILink;
-  previous?: ILink;
-  next?: ILink;
-  last?: ILink;
-}
+export type ICollectionLinks = ILink[];
 
 export interface ISerializedCollection<Entity extends object> {
   data: Entity[];

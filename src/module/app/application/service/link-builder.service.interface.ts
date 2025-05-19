@@ -15,7 +15,8 @@ export interface ILinkBuilderService {
     id: string,
   ): ILink[];
   buildCollectionLinks(
-    entityName: string,
+    currentRequestUrl: string,
+    currentRequestMethod: HttpMethod,
     pagingData: IPagingCollectionData,
   ): ICollectionLinks;
 }
