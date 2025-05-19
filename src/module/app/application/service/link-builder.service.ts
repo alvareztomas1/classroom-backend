@@ -35,55 +35,77 @@ export class LinkBuilderService implements ILinkBuilderService {
   }
 
   buildCollectionLinks(
-    entityName: string,
+    currentRequestUrl: string,
+    currentRequestMethod: HttpMethod,
     pagingData: IPagingCollectionData,
   ): ICollectionLinks {
-    return this.fromPagingDataToCollectionLinks(entityName, pagingData);
+    const selfLink = this.buildSelfLink(
+      currentRequestUrl,
+      currentRequestMethod,
+    );
+
+    const pagingLinks = this.buildPagingLinks(currentRequestUrl, pagingData);
+    return [selfLink, ...pagingLinks];
   }
 
-  private fromPagingDataToCollectionLinks(
-    entityName: string,
-    {
-      pageCount,
-      pageNumber,
-      pageSize,
-    }: Omit<IPagingCollectionData, 'itemCount'>,
-  ): ICollectionLinks {
-    const links: ICollectionLinks = {
-      self: {
-        href: `/${entityName}?page[number]=${pageNumber}&page[size]=${pageSize}`,
-        rel: 'self',
-        method: HttpMethod.GET,
-      },
-      first: {
-        href: `/${entityName}?page[number]=1&page[size]=${pageSize}`,
-        rel: 'first',
-        method: HttpMethod.GET,
-      },
-      last: {
-        href: `/${entityName}?page[number]=${pageCount}&page[size]=${pageSize}`,
-        rel: 'last',
-        method: HttpMethod.GET,
-      },
-    };
+  private buildPagingLinks(
+    currentRequestUrl: string,
+    pagingData: IPagingCollectionData,
+  ): ILink[] {
+    const links: ILink[] = [];
+    const { pageSize, pageNumber, pageCount } = pagingData;
+
+    links.push(this.buildPagingLink(currentRequestUrl, pageSize, 1, 'first'));
+
+    links.push(
+      this.buildPagingLink(currentRequestUrl, pageSize, pageCount, 'last'),
+    );
 
     if (pageNumber > 1) {
-      links.previous = {
-        href: `/${entityName}?page[number]=${pageNumber - 1}&page[size]=${pageSize}`,
-        rel: 'previous',
-        method: HttpMethod.GET,
-      };
+      links.push(
+        this.buildPagingLink(
+          currentRequestUrl,
+          pageSize,
+          pageNumber - 1,
+          'prev',
+        ),
+      );
     }
 
     if (pageNumber < pageCount) {
-      links.next = {
-        href: `/${entityName}?page[number]=${pageNumber + 1}&page[size]=${pageSize}`,
-        rel: 'next',
-        method: HttpMethod.GET,
-      };
+      links.push(
+        this.buildPagingLink(
+          currentRequestUrl,
+          pageSize,
+          pageNumber + 1,
+          'next',
+        ),
+      );
     }
 
     return links;
+  }
+
+  private buildPagingLink(
+    currentRequestUrl: string,
+    pageSize: number,
+    pageNumber: number,
+    rel: string,
+  ): ILink {
+    const url = new URL(currentRequestUrl);
+    const params = url.searchParams;
+
+    params.set('page[number]', pageNumber.toString());
+    params.set('page[size]', pageSize.toString());
+    url.search = params.toString();
+
+    url.search = decodeURIComponent(params.toString());
+
+    return {
+      href: url.toString(),
+      rel,
+      method: HttpMethod.GET,
+    };
   }
 
   private buildSelfLink(
