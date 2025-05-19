@@ -1,21 +1,27 @@
 import { IDtoMapper } from '@common/base/application/dto/dto.interface';
 
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
-import { CreateUserDto } from '@module/iam/user/application/dto/create-user.dto';
 import { UpdateUserDto } from '@module/iam/user/application/dto/update-user.dto';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
+import { UserDto } from '@module/iam/user/application/dto/user.dto';
 import { User } from '@module/iam/user/domain/user.entity';
 
 export class UserMapper
-  implements IDtoMapper<User, CreateUserDto, UpdateUserDto, UserResponseDto>
+  implements IDtoMapper<User, UserDto, UpdateUserDto, UserResponseDto>
 {
-  fromCreateDtoToEntity(dto: CreateUserDto): User {
+  fromCreateDtoToEntity(dto: UserDto): User {
     return new User(
       dto.email,
       dto.firstName,
       dto.lastName,
       AppRole.Regular,
       dto.avatarUrl,
+      dto.externalId,
+      dto.id,
+      dto.createdAt,
+      dto.updatedAt,
+      dto.deletedAt,
+      dto.isVerified,
     );
   }
 
