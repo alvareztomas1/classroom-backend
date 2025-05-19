@@ -1,0 +1,35 @@
+import { Inject, Injectable } from '@nestjs/common';
+
+import { CollectionDto } from '@common/base/application/dto/collection.dto';
+import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
+
+import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
+import { UserDto } from '@module/iam/user/application/dto/user.dto';
+import { UserMapper } from '@module/iam/user/application/mapper/user.mapper';
+import {
+  IUserRepository,
+  USER_REPOSITORY_KEY,
+} from '@module/iam/user/application/repository/user.repository.interface';
+
+@Injectable()
+export class UserService {
+  constructor(
+    @Inject(USER_REPOSITORY_KEY)
+    private readonly repository: IUserRepository,
+    private readonly mapper: UserMapper,
+  ) {}
+
+  async getAll(
+    options: IGetAllOptions<UserDto>,
+  ): Promise<CollectionDto<UserResponseDto>> {
+    const collection = await this.repository.getAll(options);
+    const collectionDto = new CollectionDto({
+      ...collection,
+      data: collection.data.map((user) =>
+        this.mapper.fromEntityToResponseDto(user),
+      ),
+    });
+
+    return collectionDto;
+  }
+}

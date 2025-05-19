@@ -1,0 +1,16 @@
+entity: User
+items:
+  admin-user:
+    firstName: admin-name
+    lastName: admin-surname
+    email: 'test_admin@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000X'
+    role: admin
+  user{2..23}:
+    firstName: '{{person.firstName}}'
+    lastName: '{{person.lastName}}'
+    avatarUrl: '{{internet.url}}'
+    email: '{{internet.email}}'
+    externalId: '{{string.uuid}}'
+    role: regular
