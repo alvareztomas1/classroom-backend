@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsEmail,
   IsEnum,
@@ -34,9 +35,10 @@ export class UserDto implements IDto {
   @IsOptional()
   externalId?: string;
 
-  @IsEnum(AppRole)
+  @IsArray()
+  @IsEnum(AppRole, { each: true })
   @IsOptional()
-  role?: AppRole;
+  roles?: AppRole[];
 
   @IsString()
   @IsOptional()

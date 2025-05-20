@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsEmail,
-  IsEnum,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
 
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 
@@ -21,9 +15,9 @@ export class UserFilterQueryParamsDto {
   @IsOptional()
   lastName?: string;
 
-  @IsEnum(AppRole)
+  @IsString()
   @IsOptional()
-  role?: AppRole;
+  roles?: AppRole[];
 
   @IsString()
   @IsOptional()

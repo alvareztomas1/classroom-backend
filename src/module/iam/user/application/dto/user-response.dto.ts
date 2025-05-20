@@ -6,7 +6,7 @@ export class UserResponseDto extends BaseResponseDto {
   email: string;
   firstName: string;
   lastName: string;
-  role: AppRole;
+  roles: AppRole[];
   isVerified: boolean;
   externalId?: string;
   avatarUrl?: string;
@@ -17,7 +17,7 @@ export class UserResponseDto extends BaseResponseDto {
     email: string,
     firstName: string,
     lastName: string,
-    role: AppRole,
+    roles: AppRole[],
     isVerified: boolean,
     avatarUrl?: string,
     externalId?: string,
@@ -28,7 +28,7 @@ export class UserResponseDto extends BaseResponseDto {
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.role = role;
+    this.roles = roles;
     this.avatarUrl = avatarUrl;
     this.isVerified = isVerified;
   }
