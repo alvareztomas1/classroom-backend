@@ -186,4 +186,44 @@ describe('User Module', () => {
         );
     });
   });
+
+  describe('GET - /user/me', () => {
+    it('Should return current user', async () => {
+      await request(app.getHttpServer())
+        .get('/api/v1/user/me')
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.objectContaining({
+              attributes: expect.objectContaining({
+                firstName: expect.any(String),
+                lastName: expect.any(String),
+                email: expect.any(String),
+                avatarUrl: expect.any(String),
+                externalId: expect.any(String),
+                isVerified: expect.any(Boolean),
+                role: expect.any(String),
+              }),
+              id: expect.any(String),
+              type: 'user',
+            }),
+            links: expect.arrayContaining([
+              expect.objectContaining({
+                rel: 'self',
+                href: expect.any(String),
+                method: HttpMethod.GET,
+              }),
+            ]),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error if user is not authenticated', async () => {
+      await request(app.getHttpServer())
+        .get('/api/v1/user/me')
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
+  });
 });
