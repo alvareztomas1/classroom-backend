@@ -59,7 +59,7 @@ describe('User Module', () => {
                   lastName: expect.any(String),
                   avatarUrl: expect.any(String),
                   externalId: expect.any(String),
-                  role: expect.any(String),
+                  roles: expect.arrayContaining([expect.any(String)]),
                   isVerified: expect.any(Boolean),
                 }),
               }),
@@ -162,7 +162,7 @@ describe('User Module', () => {
       const attributes = [
         'firstName',
         'externalId',
-        'role',
+        'roles',
       ] as (keyof UserDto)[];
 
       await request(app.getHttpServer())
@@ -180,7 +180,7 @@ describe('User Module', () => {
             expect(resourceAttributes).toEqual({
               firstName: expect.any(String),
               externalId: expect.any(String),
-              role: expect.any(String),
+              roles: expect.arrayContaining([expect.any(String)]),
             });
           },
         );
@@ -203,7 +203,7 @@ describe('User Module', () => {
                 avatarUrl: expect.any(String),
                 externalId: expect.any(String),
                 isVerified: expect.any(Boolean),
-                role: expect.any(String),
+                roles: expect.arrayContaining([expect.any(String)]),
               }),
               id: expect.any(String),
               type: 'user',
