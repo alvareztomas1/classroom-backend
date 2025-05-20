@@ -6,7 +6,7 @@ items:
     email: 'test_admin@email.co'
     avatarUrl: '{{internet.url}}'
     externalId: '00000000-0000-0000-0000-00000000000X'
-    roles: regular
+    roles: regular,admin
   user{2..23}:
     firstName: '{{person.firstName}}'
     lastName: '{{person.lastName}}'
