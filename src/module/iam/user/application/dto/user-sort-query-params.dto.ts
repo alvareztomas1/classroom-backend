@@ -17,7 +17,7 @@ export class UserSortQueryParamsDto {
 
   @IsEnum(SortType)
   @IsOptional()
-  role?: SortType;
+  roles?: SortType;
 
   @IsEnum(SortType)
   @IsOptional()

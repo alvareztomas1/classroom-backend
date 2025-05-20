@@ -7,7 +7,7 @@ export class User extends Base {
   email: string;
   firstName: string;
   lastName: string;
-  role: AppRole;
+  roles: AppRole[];
   avatarUrl?: string;
   isVerified: boolean;
 
@@ -15,7 +15,7 @@ export class User extends Base {
     email: string,
     firstName: string,
     lastName: string,
-    role: AppRole,
+    roles: AppRole[],
     avatarUrl?: string,
     externalId?: string,
     id?: string,
@@ -27,7 +27,7 @@ export class User extends Base {
     super(id, createdAt, updatedAt, deletedAt);
     this.email = email;
     this.externalId = externalId;
-    this.role = role;
+    this.roles = roles;
     this.avatarUrl = avatarUrl;
     this.firstName = firstName;
     this.lastName = lastName;

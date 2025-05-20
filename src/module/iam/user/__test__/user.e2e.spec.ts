@@ -14,6 +14,7 @@ import { datasourceOptions } from '@config/orm.config';
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';
 
+import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
 import { UserDto } from '@module/iam/user/application/dto/user.dto';
 import { User } from '@module/iam/user/domain/user.entity';
@@ -59,7 +60,7 @@ describe('User Module', () => {
                   lastName: expect.any(String),
                   avatarUrl: expect.any(String),
                   externalId: expect.any(String),
-                  role: expect.any(String),
+                  roles: expect.arrayContaining([expect.any(String)]),
                   isVerified: expect.any(Boolean),
                 }),
               }),
@@ -162,7 +163,7 @@ describe('User Module', () => {
       const attributes = [
         'firstName',
         'externalId',
-        'role',
+        'roles',
       ] as (keyof UserDto)[];
 
       await request(app.getHttpServer())
@@ -180,7 +181,38 @@ describe('User Module', () => {
             expect(resourceAttributes).toEqual({
               firstName: expect.any(String),
               externalId: expect.any(String),
-              role: expect.any(String),
+              roles: expect.arrayContaining([expect.any(String)]),
+            });
+          },
+        );
+    });
+
+    it('Should allow filter by roles as string comma separated', async () => {
+      await request(app.getHttpServer())
+        .get('/api/v1/user?filter[roles]=regular,admin')
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({ body }: { body: SerializedResponseDtoCollection<UserDto> }) => {
+            expect(body.data).toHaveLength(1);
+            const resourceAttributes = body.data[0].attributes;
+            expect(resourceAttributes.roles).toEqual(
+              expect.arrayContaining([AppRole.Regular, AppRole.Admin]),
+            );
+          },
+        );
+
+      await request(app.getHttpServer())
+        .get('/api/v1/user?filter[roles]=regular')
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({ body }: { body: SerializedResponseDtoCollection<UserDto> }) => {
+            const { data } = body;
+            data.forEach((user) => {
+              expect(user.attributes.roles).toEqual(
+                expect.arrayContaining([AppRole.Regular]),
+              );
             });
           },
         );
@@ -203,7 +235,7 @@ describe('User Module', () => {
                 avatarUrl: expect.any(String),
                 externalId: expect.any(String),
                 isVerified: expect.any(Boolean),
-                role: expect.any(String),
+                roles: expect.arrayContaining([expect.any(String)]),
               }),
               id: expect.any(String),
               type: 'user',

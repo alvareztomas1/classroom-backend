@@ -17,7 +17,7 @@ export class UserFieldsQueryParamsDto {
       'externalId',
       'avatarUrl',
       'id',
-      'role',
+      'roles',
       'isVerified',
       'createdAt',
       'updatedAt',

@@ -12,5 +12,5 @@ items:
     firstName: test_confirm
     lastName: email
     externalId: '00000000-0000-0000-0000-00000000000Y'
-    role: admin
+    roles: admin
     isVerified: false

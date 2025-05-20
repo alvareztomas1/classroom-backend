@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { ICollection } from '@common/base/application/dto/collection.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
 
+import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 import { IUserRepository } from '@module/iam/user/application/repository/user.repository.interface';
 import { User } from '@module/iam/user/domain/user.entity';
 import { EmailNotFoundException } from '@module/iam/user/infrastructure/database/exception/email-not-found.exception';
@@ -22,7 +23,10 @@ export class UserPostgresRepository implements IUserRepository {
     const { filter, page, sort, fields } = options || {};
 
     const [items, itemCount] = await this.repository.findAndCount({
-      where: filter,
+      where: {
+        ...filter,
+        roles: filter.roles as unknown as AppRole,
+      },
       order: sort,
       select: fields,
       take: page.size,

@@ -1,8 +1,8 @@
 import { EntitySchema } from 'typeorm';
 
 import { withBaseSchemaColumns } from '@common/base/infrastructure/database/base.schema';
+import { ArrayTransformer } from '@common/transformers/array.transformer';
 
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 import { User } from '@module/iam/user/domain/user.entity';
 
 export const UserSchema = new EntitySchema<User>({
@@ -25,9 +25,9 @@ export const UserSchema = new EntitySchema<User>({
     lastName: {
       type: String,
     },
-    role: {
+    roles: {
       type: String,
-      default: AppRole.Regular,
+      transformer: new ArrayTransformer(),
     },
     isVerified: {
       type: Boolean,
