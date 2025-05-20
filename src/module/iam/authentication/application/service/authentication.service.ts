@@ -199,7 +199,7 @@ export class AuthenticationService {
     if (!userToSaveId) {
       userToSaveId = (
         await this.userRepository.saveOne(
-          new User(email, firstName, lastName, AppRole.Regular, avatarUrl),
+          new User(email, firstName, lastName, [AppRole.Regular], avatarUrl),
         )
       ).id;
     }
