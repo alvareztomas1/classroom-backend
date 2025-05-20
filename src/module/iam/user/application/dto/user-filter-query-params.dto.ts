@@ -1,5 +1,7 @@
 import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
 
+import { IsCommaSeparatedEnum } from '@common/base/application/validator/comma-separated-enum.validator';
+
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 
 export class UserFilterQueryParamsDto {
@@ -15,7 +17,7 @@ export class UserFilterQueryParamsDto {
   @IsOptional()
   lastName?: string;
 
-  @IsString()
+  @IsCommaSeparatedEnum(AppRole)
   @IsOptional()
   roles?: AppRole[];
 
