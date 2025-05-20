@@ -10,6 +10,7 @@ import {
   IUserRepository,
   USER_REPOSITORY_KEY,
 } from '@module/iam/user/application/repository/user.repository.interface';
+import { User } from '@module/iam/user/domain/user.entity';
 
 @Injectable()
 export class UserService {
@@ -31,5 +32,9 @@ export class UserService {
     });
 
     return collectionDto;
+  }
+
+  getMe(user: User): UserResponseDto {
+    return this.mapper.fromEntityToResponseDto(user);
   }
 }
