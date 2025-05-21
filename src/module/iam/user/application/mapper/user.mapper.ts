@@ -25,4 +25,20 @@ export class UserMapper
       entity.externalId,
     );
   }
+
+  fromUpdateDtoToEntity(dto: UpdateUserDto, currentUser: User): User {
+    return new User(
+      currentUser.email,
+      dto.firstName,
+      dto.lastName,
+      currentUser.roles,
+      dto.avatarUrl,
+      currentUser.externalId,
+      currentUser.id,
+      currentUser.createdAt,
+      currentUser.updatedAt,
+      currentUser.deletedAt,
+      currentUser.isVerified,
+    );
+  }
 }

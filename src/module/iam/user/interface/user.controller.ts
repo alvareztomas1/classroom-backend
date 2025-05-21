@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
 
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/page-query-params';
@@ -6,6 +6,7 @@ import { PageQueryParamsDto } from '@common/base/application/dto/page-query-para
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
 import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
+import { UpdateUserDto } from '@module/iam/user/application/dto/update-user.dto';
 import { UserFieldsQueryParamsDto } from '@module/iam/user/application/dto/user-fields-query-params.dto';
 import { UserFilterQueryParamsDto } from '@module/iam/user/application/dto/user-filter-query-params.dto';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
@@ -38,5 +39,13 @@ export class UserController {
   @Get('me')
   getMe(@CurrentUser() user: User): UserResponseDto {
     return this.userService.getMe(user);
+  }
+
+  @Patch('me')
+  async updateMe(
+    @CurrentUser() user: User,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UserResponseDto> {
+    return await this.userService.updateMe(user, updateUserDto);
   }
 }

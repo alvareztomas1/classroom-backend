@@ -282,4 +282,46 @@ describe('User Module', () => {
         .expect(HttpStatus.UNAUTHORIZED);
     });
   });
+
+  describe('PATCH - /user/me', () => {
+    it('Should update current user', async () => {
+      await request(app.getHttpServer())
+        .get('/api/v1/user/me')
+        .auth(superAdminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.objectContaining({
+              attributes: expect.objectContaining({
+                firstName: 'super-admin-name',
+              }),
+            }),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+
+      await request(app.getHttpServer())
+        .patch('/api/v1/user/me')
+        .auth(superAdminToken, { type: 'bearer' })
+        .send({ firstName: 'updated' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.objectContaining({
+              attributes: expect.objectContaining({
+                firstName: 'updated',
+              }),
+            }),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error if user is not authenticated', async () => {
+      await request(app.getHttpServer())
+        .patch('/api/v1/user/me')
+        .send({ firstName: 'updated' })
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
+  });
 });
