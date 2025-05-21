@@ -1,21 +1,26 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/page-query-params';
 
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
+import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
 import { UserFieldsQueryParamsDto } from '@module/iam/user/application/dto/user-fields-query-params.dto';
 import { UserFilterQueryParamsDto } from '@module/iam/user/application/dto/user-filter-query-params.dto';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
 import { UserSortQueryParamsDto } from '@module/iam/user/application/dto/user-sort-query-params.dto';
+import { ReadUserPolicyHandler } from '@module/iam/user/application/policy/read-user-policy.handler';
 import { UserService } from '@module/iam/user/application/service/user.service';
 import { User } from '@module/iam/user/domain/user.entity';
 
+@UseGuards(PoliciesGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @Policies(ReadUserPolicyHandler)
   async getAll(
     @Query('page') page: PageQueryParamsDto,
     @Query('filter') filter: UserFilterQueryParamsDto,
