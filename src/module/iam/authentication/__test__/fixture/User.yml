@@ -1,16 +1,23 @@
 entity: User
 items:
+  super-admin-user:
+    email: 'test_super_admin@email.co'
+    firstName: test_super_admin
+    lastName: test_super_admin
+    externalId: '00000000-0000-0000-0000-00000000000X'
+    roles: regular,admin,superAdmin
+    isVerified: true
   admin-user:
     email: 'test_admin@email.co'
     firstName: test_admin
     lastName: test_admin
-    externalId: '00000000-0000-0000-0000-00000000000X'
+    externalId: '00000000-0000-0000-0000-00000000000Y'
     roles: admin
     isVerified: true
   confirm-user:
     email: 'test_confirm@email.co'
     firstName: test_confirm
     lastName: email
-    externalId: '00000000-0000-0000-0000-00000000000Y'
+    externalId: '00000000-0000-0000-0000-00000000000Z'
     roles: admin
     isVerified: false
