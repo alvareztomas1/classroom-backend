@@ -22,8 +22,11 @@ import { User } from '@module/iam/user/domain/user.entity';
 describe('User Module', () => {
   let app: NestExpressApplication;
 
-  const adminToken = createAccessToken({
+  const superAdminToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000X',
+  });
+  const adminToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000Y',
   });
 
   beforeAll(async () => {
@@ -46,7 +49,7 @@ describe('User Module', () => {
     it('Should return paginated users', async () => {
       await request(app.getHttpServer())
         .get('/api/v1/user?page[size]=10')
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
@@ -99,11 +102,11 @@ describe('User Module', () => {
     });
 
     it('Should allow to filter by attributes', async () => {
-      const firstName = 'admin-name';
+      const firstName = 'super-admin-name';
 
       await request(app.getHttpServer())
         .get(`/api/v1/user?page[size]=10&filter[firstName]=${firstName}`)
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
@@ -126,7 +129,7 @@ describe('User Module', () => {
 
       await request(app.getHttpServer())
         .get('/api/v1/user?sort[firstName]=DESC&page[size]=10')
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(
           ({
@@ -143,7 +146,7 @@ describe('User Module', () => {
         .get(
           `/api/v1/user?page[size]=10&sort[firstName]=ASC&page[number]=${pageCount}`,
         )
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(
           ({
@@ -170,7 +173,7 @@ describe('User Module', () => {
         .get(
           `/api/v1/user?page[size]=10&fields[target]=${attributes.join(',')}`,
         )
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(
           ({ body }: { body: SerializedResponseDtoCollection<UserDto> }) => {
@@ -189,8 +192,8 @@ describe('User Module', () => {
 
     it('Should allow filter by roles as string comma separated', async () => {
       await request(app.getHttpServer())
-        .get('/api/v1/user?filter[roles]=regular,admin')
-        .auth(adminToken, { type: 'bearer' })
+        .get('/api/v1/user?filter[roles]=regular,admin,superAdmin')
+        .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(
           ({ body }: { body: SerializedResponseDtoCollection<UserDto> }) => {
@@ -204,7 +207,7 @@ describe('User Module', () => {
 
       await request(app.getHttpServer())
         .get('/api/v1/user?filter[roles]=regular')
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(
           ({ body }: { body: SerializedResponseDtoCollection<UserDto> }) => {
@@ -217,13 +220,34 @@ describe('User Module', () => {
           },
         );
     });
+
+    it('Should deny access to non-super-admin users', async () => {
+      await request(app.getHttpServer())
+        .get('/api/v1/user')
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedBody = expect.objectContaining({
+            error: expect.objectContaining({
+              status: HttpStatus.FORBIDDEN.toString(),
+              source: expect.objectContaining({
+                pointer: '/api/v1/user',
+              }),
+              title: 'Forbidden',
+              detail: 'You are not allowed to READ this resource',
+            }),
+          });
+
+          expect(body).toEqual(expectedBody);
+        });
+    });
   });
 
   describe('GET - /user/me', () => {
     it('Should return current user', async () => {
       await request(app.getHttpServer())
         .get('/api/v1/user/me')
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
