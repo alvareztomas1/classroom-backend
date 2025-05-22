@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.808.0",
+    "@aws-sdk/client-s3": "^3.812.0",
     "@casl/ability": "^6.7.3",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
@@ -49,7 +50,8 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.23",
-    "typeorm-naming-strategies": "^4.1.0"
+    "typeorm-naming-strategies": "^4.1.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -62,6 +64,7 @@
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
+    "@types/multer": "^1.4.12",
     "@types/node": "^22.15.14",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
