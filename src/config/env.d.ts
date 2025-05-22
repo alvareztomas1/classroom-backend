@@ -13,6 +13,15 @@ declare global {
       PORT: string;
       BASE_APP_URL: string;
       FRONTEND_URL: string;
+      AWS_ACCESS_KEY_ID: string;
+      AWS_SECRET_ACCESS_KEY: string;
+      AWS_REGION: string;
+      AWS_ENDPOINT: string;
+      COGNITO_USER_POOL_ID: string;
+      COGNITO_CLIENT_ID: string;
+      COGNITO_ENDPOINT: string;
+      COGNITO_ISSUER: string;
+      S3_BUCKET: string;
     }
   }
 }

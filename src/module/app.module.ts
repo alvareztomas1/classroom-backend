@@ -6,6 +6,7 @@ import { environmentConfig } from '@config/environment.config';
 import { datasourceOptions } from '@config/orm.config';
 
 import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
+import { CloudModule } from '@module/cloud/cloud.module';
 import { IamModule } from '@module/iam/iam.module';
 
 @Global()
@@ -21,6 +22,7 @@ import { IamModule } from '@module/iam/iam.module';
         autoLoadEntities: true,
       }),
     }),
+    CloudModule,
     IamModule,
   ],
   providers: [LinkBuilderService],
