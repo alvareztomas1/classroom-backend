@@ -15,3 +15,15 @@ services:
       - '${COGNITO_PORT:-9229}:9229'
     volumes:
       - './data/docker/volumes/cognito:/app/.cognito'
+  localstack:
+    image: localstack/localstack
+    environment:
+      S3_BUCKET: '${S3_BUCKET}'
+      AWS_REGION: '${AWS_REGION}'
+      DEBUG: 1
+      SERVICES: 's3'
+    ports:
+      - '4566:4566'
+    volumes:
+      - './data/docker/volumes/localstack/var/run/docker.sock:/var/run/docker.sock'
+      - './data/docker/scripts:/etc/localstack/init/ready.d'
