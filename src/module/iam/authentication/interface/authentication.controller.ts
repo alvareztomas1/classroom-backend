@@ -1,8 +1,18 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
+import { ImageOptionsFactory } from '@common/base/application/factory/image-options.factory';
 
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
@@ -24,6 +34,9 @@ export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Post('sign-up')
+  @UseInterceptors(
+    FileInterceptor('avatar', ImageOptionsFactory.create('avatar')),
+  )
   @Hypermedia([
     {
       rel: 'confirm-user',
@@ -36,8 +49,11 @@ export class AuthenticationController {
       method: HttpMethod.POST,
     },
   ])
-  async handleSignUp(@Body() signUpDto: SignUpDto): Promise<UserResponseDto> {
-    return this.authenticationService.handleSignUp(signUpDto);
+  async handleSignUp(
+    @Body() signUpDto: SignUpDto,
+    @UploadedFile() avatar?: Express.Multer.File,
+  ): Promise<UserResponseDto> {
+    return this.authenticationService.handleSignUp(signUpDto, avatar);
   }
 
   @Post('sign-in')
