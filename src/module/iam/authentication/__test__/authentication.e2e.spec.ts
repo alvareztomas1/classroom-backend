@@ -203,7 +203,11 @@ describe('Authentication Module', () => {
 
         await request(app.getHttpServer())
           .post('/api/v1/auth/sign-up')
-          .send(signUpDto)
+          .field('email', signUpDto.email)
+          .field('password', signUpDto.password)
+          .field('firstName', signUpDto.firstName)
+          .field('lastName', signUpDto.lastName)
+          .attach('avatar', imageMock)
           .expect(HttpStatus.INTERNAL_SERVER_ERROR);
 
         const externalId = '00000000-0000-0000-0000-000000000002';
