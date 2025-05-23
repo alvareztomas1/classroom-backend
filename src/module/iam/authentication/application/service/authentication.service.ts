@@ -49,11 +49,10 @@ export class AuthenticationService {
     signUpDto: SignUpDto,
     avatar?: Express.Multer.File,
   ): Promise<UserResponseDto> {
-    const avatarUrl = await this.imageStorageService.uploadImage(
-      avatar,
-      AVATARS_FOLDER,
-    );
-    const { email, password, firstName, lastName } = signUpDto;
+    signUpDto.avatarUrl = avatar
+      ? await this.imageStorageService.uploadImage(avatar, AVATARS_FOLDER)
+      : null;
+    const { email, password, firstName, lastName, avatarUrl } = signUpDto;
 
     const existingUser = await this.userRepository.getOneByEmail(email);
 
