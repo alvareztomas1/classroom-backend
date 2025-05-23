@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { HttpStatus } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import path from 'path';
 import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
@@ -57,6 +58,11 @@ import {
 
 describe('Authentication Module', () => {
   let app: NestExpressApplication;
+  const imageMock = path.resolve(
+    __dirname,
+    '../../../../test/__mocks__/avatar.jpg',
+  );
+  const txtMock = path.resolve(__dirname, '../../../../test/__mocks__/txt.txt');
 
   beforeAll(async () => {
     const moduleRef = await testModuleBootstrapper();
@@ -133,12 +139,15 @@ describe('Authentication Module', () => {
           password: '$Test123',
           firstName: 'John',
           lastName: 'Doe',
-          avatarUrl: 'https://gravatar.com/avatar/1234567890',
         };
 
         await request(app.getHttpServer())
           .post('/api/v1/auth/sign-up')
-          .send(signUpDto)
+          .field('email', signUpDto.email)
+          .field('password', signUpDto.password)
+          .field('firstName', signUpDto.firstName)
+          .field('lastName', signUpDto.lastName)
+          .attach('avatar', imageMock)
           .expect(HttpStatus.CREATED)
           .then(({ body }) => {
             expect(body).toEqual(
@@ -151,7 +160,7 @@ describe('Authentication Module', () => {
                     externalId,
                     firstName: signUpDto.firstName,
                     lastName: signUpDto.lastName,
-                    avatarUrl: signUpDto.avatarUrl,
+                    avatarUrl: 'test-url',
                     roles: expect.arrayContaining([AppRole.Regular]),
                     isVerified: false,
                   }),
@@ -190,7 +199,6 @@ describe('Authentication Module', () => {
           password: '$Test123',
           firstName: 'Jane',
           lastName: 'Doe',
-          avatarUrl: 'https://gravatar.com/avatar/1234567890',
         };
 
         await request(app.getHttpServer())
@@ -205,7 +213,11 @@ describe('Authentication Module', () => {
 
         await request(app.getHttpServer())
           .post('/api/v1/auth/sign-up')
-          .send(signUpDto)
+          .field('email', signUpDto.email)
+          .field('password', signUpDto.password)
+          .field('firstName', signUpDto.firstName)
+          .field('lastName', signUpDto.lastName)
+          .attach('avatar', imageMock)
           .expect(HttpStatus.CREATED)
           .then(({ body }) => {
             expect(body).toEqual(
@@ -218,7 +230,7 @@ describe('Authentication Module', () => {
                     externalId,
                     firstName: signUpDto.firstName,
                     lastName: signUpDto.lastName,
-                    avatarUrl: signUpDto.avatarUrl,
+                    avatarUrl: 'test-url',
                     roles: expect.arrayContaining([AppRole.Regular]),
                     isVerified: false,
                   }),
@@ -339,6 +351,35 @@ describe('Authentication Module', () => {
                 status: HttpStatus.BAD_REQUEST.toString(),
                 source: { pointer: '/api/v1/auth/sign-up' },
                 title: 'Password validation',
+              }),
+            });
+          });
+      });
+
+      it('Should throw an error when avatar file is invalid', async () => {
+        const signUpDto: SignUpDto = {
+          email: 'some@account.com',
+          password: '$Test123',
+          firstName: 'test',
+          lastName: 'test',
+        };
+
+        await request(app.getHttpServer())
+          .post('/api/v1/auth/sign-up')
+          .field('email', signUpDto.email)
+          .field('password', signUpDto.password)
+          .field('firstName', signUpDto.firstName)
+          .field('lastName', signUpDto.lastName)
+          .attach('avatar', txtMock)
+          .expect(HttpStatus.BAD_REQUEST)
+          .then(({ body }) => {
+            expect(body as IAppErrorResponse).toMatchObject({
+              error: expect.objectContaining({
+                detail:
+                  'Only .jpeg, .jpg, .png, .webp, .svg, .avif formats are allowed for avatar image',
+                status: HttpStatus.BAD_REQUEST.toString(),
+                source: { pointer: '/api/v1/auth/sign-up' },
+                title: 'Wrong format',
               }),
             });
           });

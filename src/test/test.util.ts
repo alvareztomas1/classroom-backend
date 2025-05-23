@@ -10,3 +10,16 @@ export const createAccessToken = (
 ): string => {
   return jwt.sign(payload, JWT_AUTOMATED_TESTS_SECRET, options);
 };
+
+export const mockJpgFile: Express.Multer.File = {
+  fieldname: 'avatar',
+  originalname: 'profile.jpg',
+  encoding: '7bit',
+  mimetype: 'image/jpeg',
+  size: 1024 * 150,
+  buffer: Buffer.from('fake-image-binary-data'),
+  destination: '/tmp/uploads',
+  filename: 'profile-123.jpg',
+  path: '/tmp/uploads/profile-123.jpg',
+  stream: null,
+};

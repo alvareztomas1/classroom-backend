@@ -4,13 +4,11 @@ import { IPermissionsDefinition } from '@module/iam/authorization/infrastructure
 import { User } from '@module/iam/user/domain/user.entity';
 
 export const userPermissions: IPermissionsDefinition = {
-  [AppRole.Regular](user, { can, cannot }) {
+  [AppRole.Regular](_, { cannot }) {
     cannot(AppAction.Manage, User);
-    can(AppAction.Update, User, { id: user.id });
   },
-  [AppRole.Admin](user, { can, cannot }) {
+  [AppRole.Admin](_, { cannot }) {
     cannot(AppAction.Manage, User);
-    can(AppAction.Update, User, { id: user.id });
   },
   [AppRole.SuperAdmin](_, { can }) {
     can(AppAction.Manage, User);
