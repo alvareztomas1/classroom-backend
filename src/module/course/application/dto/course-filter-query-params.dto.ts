@@ -15,6 +15,10 @@ export class CourseFilterQueryParamsDto {
   @IsOptional()
   price?: number;
 
+  @IsString()
+  @IsOptional()
+  slug: string;
+
   @IsEnum(PublishStatus)
   @IsOptional()
   status?: PublishStatus;

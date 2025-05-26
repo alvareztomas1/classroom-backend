@@ -7,6 +7,7 @@ export class Course extends Base {
   price: number;
   imageUrl: string;
   status: PublishStatus;
+  slug: string;
 
   constructor(
     id: string,
@@ -15,6 +16,7 @@ export class Course extends Base {
     price: number,
     imageUrl: string,
     status: PublishStatus,
+    slug: string,
   ) {
     super(id);
     this.title = title;
@@ -22,5 +24,6 @@ export class Course extends Base {
     this.price = price;
     this.imageUrl = imageUrl;
     this.status = status;
+    this.slug = slug;
   }
 }

@@ -30,5 +30,10 @@ export const CourseSchema = new EntitySchema<Course>({
       type: String,
       default: PublishStatus.drafted,
     },
+    slug: {
+      type: String,
+      nullable: true,
+      unique: true,
+    },
   }),
 });

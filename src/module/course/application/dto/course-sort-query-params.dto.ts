@@ -21,6 +21,14 @@ export class CourseSortQueryParamsDto {
 
   @IsEnum(SortType)
   @IsOptional()
+  price?: SortType;
+
+  @IsEnum(SortType)
+  @IsOptional()
+  slug?: SortType;
+
+  @IsEnum(SortType)
+  @IsOptional()
   createdAt?: SortType;
 
   @IsEnum(SortType)

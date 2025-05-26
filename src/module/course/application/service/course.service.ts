@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
+import { SlugService } from '@module/app/application/service/slug.service';
 import { COURSES_IMAGES_FOLDER } from '@module/cloud/application/constants/image-storage-folders.constants';
 import { ImageStorageService } from '@module/cloud/application/service/image-storage.service';
 import { CourseResponseDto } from '@module/course/application/dto/course-response.dto';
@@ -25,6 +26,7 @@ export class CourseService extends BaseCRUDService<
     @Inject(COURSE_REPOSITORY_KEY) repository: ICourseRepository,
     protected readonly mapper: CourseMapper,
     private readonly imageStorageService: ImageStorageService,
+    private readonly slugService: SlugService,
   ) {
     super(repository, mapper, Course.getEntityName());
   }
@@ -36,6 +38,20 @@ export class CourseService extends BaseCRUDService<
     createDto.imageUrl = image
       ? await this.imageStorageService.uploadImage(image, COURSES_IMAGES_FOLDER)
       : null;
+
+    const baseSlug = this.slugService.buildSlug(createDto.title);
+    let uniqueSlug = baseSlug;
+
+    const existingSlugs = await (
+      this.repository as ICourseRepository
+    ).getSlugsStartingWith(baseSlug);
+
+    if (existingSlugs.includes(baseSlug)) {
+      uniqueSlug = this.slugService.buildUniqueSlug(baseSlug, existingSlugs);
+    }
+
+    createDto.slug = uniqueSlug;
+
     return super.saveOne(createDto);
   }
 
