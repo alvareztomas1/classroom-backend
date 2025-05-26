@@ -11,6 +11,7 @@ import {
   SerializedResponseDtoCollection,
 } from '@common/base/application/dto/serialized-response.dto';
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
+import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 
@@ -74,6 +75,7 @@ describe('Course Module', () => {
                   imageUrl: expect.any(String),
                   status: expect.any(String),
                   slug: expect.any(String),
+                  difficulty: expect.any(String),
                 }),
               }),
             ]),
@@ -221,6 +223,7 @@ describe('Course Module', () => {
                 imageUrl: expect.stringContaining('intro-programming.jpg'),
                 status: 'published',
                 slug: 'introduction-to-programming',
+                difficulty: Difficulty.BEGINNER,
               }),
             }),
             links: expect.arrayContaining([
@@ -265,6 +268,7 @@ describe('Course Module', () => {
         description: 'Learn the basics of programming with JavaScript 2',
         price: 49.99,
         status: PublishStatus.drafted,
+        difficulty: Difficulty.BEGINNER,
       } as CreateCourseDto;
 
       await request(app.getHttpServer())
@@ -274,6 +278,7 @@ describe('Course Module', () => {
         .field('description', createCourseDto.description)
         .field('price', createCourseDto.price)
         .field('status', createCourseDto.status)
+        .field('difficulty', createCourseDto.difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(({ body }) => {
@@ -288,6 +293,7 @@ describe('Course Module', () => {
                 imageUrl: 'test-url',
                 status: createCourseDto.status,
                 slug: 'introduction-to-programming-2',
+                difficulty: Difficulty.BEGINNER,
               }),
             }),
             links: expect.arrayContaining([
@@ -308,12 +314,14 @@ describe('Course Module', () => {
         description: 'Learn the basics of fishing',
         price: 49.99,
         status: PublishStatus.drafted,
+        difficulty: Difficulty.BEGINNER,
       } as CreateCourseDto;
       const secondCreateCourseDto = {
         title: 'Introduction to Fishing',
         description: 'Learn the basics of fishing',
         price: 49.99,
         status: PublishStatus.drafted,
+        difficulty: Difficulty.INTERMEDIATE,
       } as CreateCourseDto;
 
       await request(app.getHttpServer())
@@ -323,6 +331,7 @@ describe('Course Module', () => {
         .field('description', firstCreateCourseDto.description)
         .field('price', firstCreateCourseDto.price)
         .field('status', firstCreateCourseDto.status)
+        .field('difficulty', firstCreateCourseDto.difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(({ body }) => {
@@ -337,6 +346,7 @@ describe('Course Module', () => {
                 imageUrl: 'test-url',
                 status: firstCreateCourseDto.status,
                 slug: 'introduction-to-fishing',
+                difficulty: Difficulty.BEGINNER,
               }),
             }),
             links: expect.arrayContaining([
@@ -357,6 +367,7 @@ describe('Course Module', () => {
         .field('description', secondCreateCourseDto.description)
         .field('price', secondCreateCourseDto.price)
         .field('status', secondCreateCourseDto.status)
+        .field('difficulty', secondCreateCourseDto.difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(({ body }) => {
@@ -371,6 +382,7 @@ describe('Course Module', () => {
                 imageUrl: 'test-url',
                 status: secondCreateCourseDto.status,
                 slug: 'introduction-to-fishing-2',
+                difficulty: Difficulty.INTERMEDIATE,
               }),
             }),
             links: expect.arrayContaining([
@@ -393,6 +405,7 @@ describe('Course Module', () => {
         description: 'Learn the basics of english',
         price: 49.99,
         status: PublishStatus.drafted,
+        difficulty: Difficulty.BEGINNER,
       } as CreateCourseDto;
 
       const updateCourseDto = {
@@ -400,6 +413,7 @@ describe('Course Module', () => {
         description: 'Learn the basics of English language',
         price: 49.99,
         status: PublishStatus.published,
+        difficulty: Difficulty.BEGINNER,
       } as UpdateCourseDto;
 
       let courseId: string;
@@ -411,6 +425,7 @@ describe('Course Module', () => {
         .field('description', createCourseDto.description)
         .field('price', createCourseDto.price)
         .field('status', createCourseDto.status)
+        .field('difficulty', createCourseDto.difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(
@@ -426,6 +441,7 @@ describe('Course Module', () => {
                   imageUrl: 'test-url',
                   status: createCourseDto.status,
                   slug: 'introduction-to-english',
+                  difficulty: Difficulty.BEGINNER,
                 }),
               }),
               links: expect.arrayContaining([
@@ -448,6 +464,7 @@ describe('Course Module', () => {
         .field('description', updateCourseDto.description)
         .field('price', updateCourseDto.price)
         .field('status', updateCourseDto.status)
+        .field('difficulty', updateCourseDto.difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.OK)
         .then(
@@ -462,6 +479,8 @@ describe('Course Module', () => {
                   price: updateCourseDto.price,
                   imageUrl: 'test-url',
                   status: updateCourseDto.status,
+                  slug: 'introduction-to-english',
+                  difficulty: Difficulty.BEGINNER,
                 }),
               }),
               links: expect.arrayContaining([
@@ -507,6 +526,7 @@ describe('Course Module', () => {
         description: 'Learn the basics of football',
         price: 49.99,
         status: PublishStatus.drafted,
+        difficulty: Difficulty.BEGINNER,
       } as CreateCourseDto;
 
       let courseId: string;
@@ -518,6 +538,7 @@ describe('Course Module', () => {
         .field('description', createCourseDto.description)
         .field('price', createCourseDto.price)
         .field('status', createCourseDto.status)
+        .field('difficulty', createCourseDto.difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(
@@ -533,6 +554,7 @@ describe('Course Module', () => {
                   imageUrl: 'test-url',
                   status: createCourseDto.status,
                   slug: 'introduction-to-football',
+                  difficulty: Difficulty.BEGINNER,
                 }),
               }),
               links: expect.arrayContaining([

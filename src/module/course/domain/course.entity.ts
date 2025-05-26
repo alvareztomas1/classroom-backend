@@ -1,3 +1,4 @@
+import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 import { Base } from '@common/base/domain/base.entity';
 
@@ -8,6 +9,7 @@ export class Course extends Base {
   imageUrl: string;
   status: PublishStatus;
   slug: string;
+  difficulty: Difficulty;
 
   constructor(
     id: string,
@@ -17,6 +19,7 @@ export class Course extends Base {
     imageUrl: string,
     status: PublishStatus,
     slug: string,
+    difficulty: Difficulty,
   ) {
     super(id);
     this.title = title;
@@ -25,5 +28,6 @@ export class Course extends Base {
     this.imageUrl = imageUrl;
     this.status = status;
     this.slug = slug;
+    this.difficulty = difficulty;
   }
 }
