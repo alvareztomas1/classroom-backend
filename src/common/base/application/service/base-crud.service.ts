@@ -5,6 +5,10 @@ import {
   IResponseDto,
 } from '@common/base/application/dto/dto.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
+import {
+  OPERATION_RESPONSE_TYPE,
+  SuccessOperationResponseDto,
+} from '@common/base/application/dto/success-operation-response.dto';
 import { ICRUDService } from '@common/base/application/service/crud-service.interface';
 import IEntity from '@common/base/domain/entity.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
@@ -67,7 +71,13 @@ export class BaseCRUDService<
     return responseDto;
   }
 
-  async deleteOneByIdOrFail(id: string): Promise<void> {
+  async deleteOneByIdOrFail(id: string): Promise<SuccessOperationResponseDto> {
     await this.repository.deleteOneByIdOrFail(id);
+
+    return new SuccessOperationResponseDto(
+      `The ${this.entityName} with id ${id} has been deleted successfully`,
+      true,
+      OPERATION_RESPONSE_TYPE,
+    );
   }
 }
