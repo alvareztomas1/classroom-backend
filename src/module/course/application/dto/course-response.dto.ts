@@ -7,6 +7,7 @@ export class CourseResponseDto extends BaseResponseDto {
   price: number;
   imageUrl: string;
   status: PublishStatus;
+  slug: string;
   constructor(
     type: string,
     title: string,
@@ -14,6 +15,7 @@ export class CourseResponseDto extends BaseResponseDto {
     price: number,
     imageUrl: string,
     status: PublishStatus,
+    slug: string,
     id?: string,
   ) {
     super(type, id);
@@ -23,5 +25,6 @@ export class CourseResponseDto extends BaseResponseDto {
     this.price = price;
     this.imageUrl = imageUrl;
     this.status = status;
+    this.slug = slug;
   }
 }

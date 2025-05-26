@@ -23,4 +23,8 @@ export class CourseDto extends BaseDto {
   @IsOptional()
   @IsEnum(PublishStatus)
   status: PublishStatus;
+
+  @IsOptional()
+  @IsString()
+  slug: string;
 }
