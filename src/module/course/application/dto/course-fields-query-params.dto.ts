@@ -18,6 +18,7 @@ export class CourseFieldsQueryParamsDto {
       'imageUrl',
       'status',
       'slug',
+      'difficulty',
       'createdAt',
       'updatedAt',
       'deletedAt',

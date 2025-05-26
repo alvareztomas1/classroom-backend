@@ -1,6 +1,7 @@
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 import { BaseDto } from '@common/base/application/dto/base.dto';
+import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 
 export class CourseDto extends BaseDto {
@@ -27,4 +28,8 @@ export class CourseDto extends BaseDto {
   @IsOptional()
   @IsString()
   slug: string;
+
+  @IsOptional()
+  @IsEnum(Difficulty)
+  difficulty: Difficulty;
 }

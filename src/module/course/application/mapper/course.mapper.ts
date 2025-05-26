@@ -18,6 +18,7 @@ export class CourseMapper
       dto.imageUrl,
       dto.status,
       dto.slug,
+      dto.difficulty,
     );
   }
 
@@ -30,6 +31,7 @@ export class CourseMapper
       dto.imageUrl,
       dto.status,
       dto.slug,
+      dto.difficulty,
     );
   }
 
@@ -42,6 +44,7 @@ export class CourseMapper
       entity.imageUrl,
       entity.status,
       entity.slug,
+      entity.difficulty,
       entity.id,
     );
   }
