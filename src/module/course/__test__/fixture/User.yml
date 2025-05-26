@@ -1,0 +1,23 @@
+entity: User
+items:
+  super-admin-user:
+    firstName: super-admin-name
+    lastName: super-admin-surname
+    email: 'test_super_admin@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000X'
+    roles: regular,admin,superAdmin
+  admin-user:
+    firstName: admin-name
+    lastName: admin-surname
+    email: 'test_admin@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000Y'
+    roles: regular,admin
+  user{2..23}:
+    firstName: '{{person.firstName}}'
+    lastName: '{{person.lastName}}'
+    avatarUrl: '{{internet.url}}'
+    email: '{{internet.email}}'
+    externalId: '{{string.uuid}}'
+    roles: regular
