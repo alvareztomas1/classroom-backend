@@ -35,5 +35,9 @@ export const CourseSchema = new EntitySchema<Course>({
       nullable: true,
       unique: true,
     },
+    difficulty: {
+      type: String,
+      nullable: true,
+    },
   }),
 });
