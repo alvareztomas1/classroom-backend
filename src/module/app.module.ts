@@ -6,6 +6,7 @@ import { environmentConfig } from '@config/environment.config';
 import { datasourceOptions } from '@config/orm.config';
 
 import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
+import { SlugService } from '@module/app/application/service/slug.service';
 import { CloudModule } from '@module/cloud/cloud.module';
 import { CourseModule } from '@module/course/course.module';
 import { IamModule } from '@module/iam/iam.module';
@@ -27,7 +28,7 @@ import { IamModule } from '@module/iam/iam.module';
     IamModule,
     CourseModule,
   ],
-  providers: [LinkBuilderService],
-  exports: [LinkBuilderService],
+  providers: [LinkBuilderService, SlugService],
+  exports: [LinkBuilderService, SlugService],
 })
 export class AppModule {}
