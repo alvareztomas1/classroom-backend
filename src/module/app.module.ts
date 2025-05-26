@@ -7,6 +7,7 @@ import { datasourceOptions } from '@config/orm.config';
 
 import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
 import { CloudModule } from '@module/cloud/cloud.module';
+import { CourseModule } from '@module/course/course.module';
 import { IamModule } from '@module/iam/iam.module';
 
 @Global()
@@ -24,6 +25,7 @@ import { IamModule } from '@module/iam/iam.module';
     }),
     CloudModule,
     IamModule,
+    CourseModule,
   ],
   providers: [LinkBuilderService],
   exports: [LinkBuilderService],
