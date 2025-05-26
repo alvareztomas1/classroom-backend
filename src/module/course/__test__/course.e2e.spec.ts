@@ -73,6 +73,7 @@ describe('Course Module', () => {
                   price: expect.any(Number),
                   imageUrl: expect.any(String),
                   status: expect.any(String),
+                  slug: expect.any(String),
                 }),
               }),
             ]),
@@ -219,6 +220,7 @@ describe('Course Module', () => {
                 price: 49.99,
                 imageUrl: expect.stringContaining('intro-programming.jpg'),
                 status: 'published',
+                slug: 'introduction-to-programming',
               }),
             }),
             links: expect.arrayContaining([
@@ -285,6 +287,90 @@ describe('Course Module', () => {
                 price: createCourseDto.price,
                 imageUrl: 'test-url',
                 status: createCourseDto.status,
+                slug: 'introduction-to-programming-2',
+              }),
+            }),
+            links: expect.arrayContaining([
+              expect.objectContaining({
+                href: expect.stringContaining(endpoint),
+                rel: 'self',
+                method: HttpMethod.POST,
+              }),
+            ]),
+          };
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should generate a different slug if the title already exists', async () => {
+      const firstCreateCourseDto = {
+        title: 'Introduction to Fishing',
+        description: 'Learn the basics of fishing',
+        price: 49.99,
+        status: PublishStatus.drafted,
+      } as CreateCourseDto;
+      const secondCreateCourseDto = {
+        title: 'Introduction to Fishing',
+        description: 'Learn the basics of fishing',
+        price: 49.99,
+        status: PublishStatus.drafted,
+      } as CreateCourseDto;
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(adminToken, { type: 'bearer' })
+        .field('title', firstCreateCourseDto.title)
+        .field('description', firstCreateCourseDto.description)
+        .field('price', firstCreateCourseDto.price)
+        .field('status', firstCreateCourseDto.status)
+        .attach('image', imageMock)
+        .expect(HttpStatus.CREATED)
+        .then(({ body }) => {
+          const expectedResponse = {
+            data: expect.objectContaining({
+              type: 'course',
+              id: expect.any(String),
+              attributes: expect.objectContaining({
+                title: firstCreateCourseDto.title,
+                description: firstCreateCourseDto.description,
+                price: firstCreateCourseDto.price,
+                imageUrl: 'test-url',
+                status: firstCreateCourseDto.status,
+                slug: 'introduction-to-fishing',
+              }),
+            }),
+            links: expect.arrayContaining([
+              expect.objectContaining({
+                href: expect.stringContaining(endpoint),
+                rel: 'self',
+                method: HttpMethod.POST,
+              }),
+            ]),
+          };
+          expect(body).toEqual(expectedResponse);
+        });
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(adminToken, { type: 'bearer' })
+        .field('title', secondCreateCourseDto.title)
+        .field('description', secondCreateCourseDto.description)
+        .field('price', secondCreateCourseDto.price)
+        .field('status', secondCreateCourseDto.status)
+        .attach('image', imageMock)
+        .expect(HttpStatus.CREATED)
+        .then(({ body }) => {
+          const expectedResponse = {
+            data: expect.objectContaining({
+              type: 'course',
+              id: expect.any(String),
+              attributes: expect.objectContaining({
+                title: secondCreateCourseDto.title,
+                description: secondCreateCourseDto.description,
+                price: secondCreateCourseDto.price,
+                imageUrl: 'test-url',
+                status: secondCreateCourseDto.status,
+                slug: 'introduction-to-fishing-2',
               }),
             }),
             links: expect.arrayContaining([
@@ -303,15 +389,15 @@ describe('Course Module', () => {
   describe('PATCH - /course/:id', () => {
     it('Should update an existing course', async () => {
       const createCourseDto = {
-        title: 'Introduction to Programming 2',
-        description: 'Learn the basics of programming with JavaScript 2',
+        title: 'Introduction to English',
+        description: 'Learn the basics of english',
         price: 49.99,
         status: PublishStatus.drafted,
       } as CreateCourseDto;
 
       const updateCourseDto = {
-        title: 'Introduction to Programming 3',
-        description: 'Learn the basics of programming with JavaScript 3',
+        title: 'Introduction to English Language',
+        description: 'Learn the basics of English language',
         price: 49.99,
         status: PublishStatus.published,
       } as UpdateCourseDto;
@@ -339,6 +425,7 @@ describe('Course Module', () => {
                   price: createCourseDto.price,
                   imageUrl: 'test-url',
                   status: createCourseDto.status,
+                  slug: 'introduction-to-english',
                 }),
               }),
               links: expect.arrayContaining([
@@ -416,8 +503,8 @@ describe('Course Module', () => {
   describe('DELETE - /course/:id', () => {
     it('Should delete an existing course', async () => {
       const createCourseDto = {
-        title: 'Introduction to Programming 2',
-        description: 'Learn the basics of programming with JavaScript 2',
+        title: 'Introduction to football',
+        description: 'Learn the basics of football',
         price: 49.99,
         status: PublishStatus.drafted,
       } as CreateCourseDto;
@@ -445,6 +532,7 @@ describe('Course Module', () => {
                   price: createCourseDto.price,
                   imageUrl: 'test-url',
                   status: createCourseDto.status,
+                  slug: 'introduction-to-football',
                 }),
               }),
               links: expect.arrayContaining([
