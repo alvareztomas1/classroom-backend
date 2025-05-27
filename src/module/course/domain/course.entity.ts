@@ -2,6 +2,8 @@ import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 import { Base } from '@common/base/domain/base.entity';
 
+import { User } from '@module/iam/user/domain/user.entity';
+
 export class Course extends Base {
   title: string;
   description: string;
@@ -10,6 +12,7 @@ export class Course extends Base {
   status: PublishStatus;
   slug: string;
   difficulty: Difficulty;
+  instructor?: User;
 
   constructor(
     id: string,
@@ -20,6 +23,7 @@ export class Course extends Base {
     status: PublishStatus,
     slug: string,
     difficulty: Difficulty,
+    instructor?: User,
   ) {
     super(id);
     this.title = title;
@@ -29,5 +33,6 @@ export class Course extends Base {
     this.status = status;
     this.slug = slug;
     this.difficulty = difficulty;
+    this.instructor = instructor;
   }
 }
