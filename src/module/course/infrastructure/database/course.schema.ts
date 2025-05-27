@@ -40,4 +40,13 @@ export const CourseSchema = new EntitySchema<Course>({
       nullable: true,
     },
   }),
+  relations: {
+    instructor: {
+      type: 'many-to-one',
+      target: 'User',
+      joinColumn: {
+        name: 'instructor_id',
+      },
+    },
+  },
 });

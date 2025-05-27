@@ -4,32 +4,36 @@ import { BaseDto } from '@common/base/application/dto/base.dto';
 import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 
+import { User } from '@module/iam/user/domain/user.entity';
+
 export class CourseDto extends BaseDto {
   @IsOptional()
   @IsString()
-  title: string;
+  title?: string;
 
   @IsOptional()
   @IsString()
-  description: string;
+  description?: string;
 
   @IsOptional()
   @IsNumber()
-  price: number;
+  price?: number;
 
   @IsOptional()
   @IsString()
-  imageUrl: string;
+  imageUrl?: string;
 
   @IsOptional()
   @IsEnum(PublishStatus)
-  status: PublishStatus;
+  status?: PublishStatus;
 
   @IsOptional()
   @IsString()
-  slug: string;
+  slug?: string;
 
   @IsOptional()
   @IsEnum(Difficulty)
-  difficulty: Difficulty;
+  difficulty?: Difficulty;
+
+  instructor?: User;
 }

@@ -20,11 +20,14 @@ import { ImageOptionsFactory } from '@common/base/application/factory/image-opti
 
 import { CourseFieldsQueryParamsDto } from '@module/course/application/dto/course-fields-query-params.dto';
 import { CourseFilterQueryParamsDto } from '@module/course/application/dto/course-filter-query-params.dto';
+import { CourseIncludeQueryDto } from '@module/course/application/dto/course-include.dto';
 import { CourseResponseDto } from '@module/course/application/dto/course-response.dto';
 import { CourseSortQueryParamsDto } from '@module/course/application/dto/course-sort-query-params.dto';
 import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
 import { UpdateCourseDto } from '@module/course/application/dto/update-course.dto';
 import { CourseService } from '@module/course/application/service/course.service';
+import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
+import { User } from '@module/iam/user/domain/user.entity';
 
 @UseInterceptors(FileInterceptor('image', ImageOptionsFactory.create('image')))
 @Controller('course')
@@ -37,28 +40,35 @@ export class CourseController {
     @Query('filter') filter: CourseFilterQueryParamsDto,
     @Query('fields') fields: CourseFieldsQueryParamsDto,
     @Query('sort') sort: CourseSortQueryParamsDto,
+    @Query('include') include: CourseIncludeQueryDto,
   ): Promise<CollectionDto<CourseResponseDto>> {
     return await this.courseService.getAll({
       page,
       filter,
       fields: fields.target,
       sort,
+      include: include.target,
     });
   }
 
   @Get(':id')
   async getOne(
     @Param('id', ParseUUIDPipe) id: string,
+    @Query('include') include: CourseIncludeQueryDto,
   ): Promise<CourseResponseDto> {
-    return await this.courseService.getOneByIdOrFail(id);
+    return await this.courseService.getOneByIdOrFail(id, include.target);
   }
 
   @Post()
   async saveOne(
     @Body() createDto: CreateCourseDto,
+    @CurrentUser() user: User,
     @UploadedFile() image?: Express.Multer.File,
   ): Promise<CourseResponseDto> {
-    return await this.courseService.saveOne(createDto, image);
+    return await this.courseService.saveOne(
+      { ...createDto, instructor: user },
+      image,
+    );
   }
 
   @Patch(':id')
