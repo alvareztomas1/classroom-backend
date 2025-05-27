@@ -48,8 +48,8 @@ export class BaseCRUDService<
     return collection;
   }
 
-  async getOneByIdOrFail(id: string): Promise<ResponseDto> {
-    const entity = await this.repository.getOneByIdOrFail(id);
+  async getOneByIdOrFail(id: string, include?: string[]): Promise<ResponseDto> {
+    const entity = await this.repository.getOneByIdOrFail(id, include);
     const responseDto = this.mapper.fromEntityToResponseDto(entity);
 
     return responseDto;

@@ -21,14 +21,14 @@ abstract class BaseRepository<T extends IEntity> implements IRepository<T> {
   }
 
   async getAll(options: IGetAllOptions<T>): Promise<ICollection<T>> {
-    const { filter, page, sort, fields } = options || {};
-
+    const { filter, page, sort, fields, include } = options || {};
     const [items, itemCount] = await this.repository.findAndCount({
       where: filter as FindOptionsWhere<T>,
       order: sort as FindOptionsOrder<T>,
       select: fields,
       take: page.size,
       skip: page.offset,
+      relations: include,
     } as FindManyOptions<T>);
 
     return {
@@ -40,14 +40,15 @@ abstract class BaseRepository<T extends IEntity> implements IRepository<T> {
     };
   }
 
-  async getOneById(id: string): Promise<T> {
+  async getOneById(id: string, include?: string[]): Promise<T> {
     return this.repository.findOne({
       where: { id },
+      relations: include,
     } as FindOneOptions<T>);
   }
 
-  async getOneByIdOrFail(id: string): Promise<T> {
-    const entity = await this.getOneById(id);
+  async getOneByIdOrFail(id: string, include?: string[]): Promise<T> {
+    const entity = await this.getOneById(id, include);
 
     if (!entity) {
       throw new EntityNotFoundException(id);
