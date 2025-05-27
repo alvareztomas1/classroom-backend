@@ -202,6 +202,29 @@ describe('Course Module', () => {
           },
         );
     });
+
+    it('Should allow to include related resources', async () => {
+      await request(app.getHttpServer())
+        .get(`${endpoint}?include[target]=instructor`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.arrayContaining([
+              expect.objectContaining({
+                attributes: expect.objectContaining({
+                  instructor: expect.objectContaining({
+                    firstName: 'admin-name',
+                    lastName: 'admin-surname',
+                    avatarUrl: expect.any(String),
+                  }),
+                }),
+              }),
+            ]),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 
   describe('GET - /course/:id', () => {
@@ -259,10 +282,33 @@ describe('Course Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should allow to include related resources', async () => {
+      const courseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+      await request(app.getHttpServer())
+        .get(`${endpoint}/${courseId}?include[target]=instructor`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.objectContaining({
+              attributes: expect.objectContaining({
+                instructor: expect.objectContaining({
+                  firstName: 'admin-name',
+                  lastName: 'admin-surname',
+                  avatarUrl: expect.any(String),
+                }),
+              }),
+            }),
+          });
+
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 
   describe('POST - /course', () => {
-    it('Should create a new customer', async () => {
+    it('Should create a new course', async () => {
       const createCourseDto = {
         title: 'Introduction to Programming 2',
         description: 'Learn the basics of programming with JavaScript 2',
@@ -294,6 +340,11 @@ describe('Course Module', () => {
                 status: createCourseDto.status,
                 slug: 'introduction-to-programming-2',
                 difficulty: Difficulty.BEGINNER,
+                instructor: expect.objectContaining({
+                  firstName: 'admin-name',
+                  lastName: 'admin-surname',
+                  avatarUrl: expect.any(String),
+                }),
               }),
             }),
             links: expect.arrayContaining([
@@ -497,18 +548,18 @@ describe('Course Module', () => {
     });
 
     it('Should throw an error if course to update is not found', async () => {
-      const nonExistingCustomerId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
+      const nonExistingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
 
       await request(app.getHttpServer())
-        .patch(`${endpoint}/${nonExistingCustomerId}`)
+        .patch(`${endpoint}/${nonExistingCourseId}`)
         .auth(adminToken, { type: 'bearer' })
         .expect(HttpStatus.NOT_FOUND)
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCustomerId} not found`,
+              detail: `Entity with id ${nonExistingCourseId} not found`,
               source: {
-                pointer: `${endpoint}/${nonExistingCustomerId}`,
+                pointer: `${endpoint}/${nonExistingCourseId}`,
               },
               status: '404',
               title: 'Entity not found',
