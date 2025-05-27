@@ -8,9 +8,14 @@ export type SimpleProps<T> = {
   [K in keyof T]: T[K] extends Base | Base[] | Function ? never : K;
 }[keyof T];
 
+type ComplexProps<T> = {
+  [K in keyof T]: T[K] extends object | object[] ? K : never;
+}[keyof T];
+
 export type Filter<T> = Partial<Pick<T, SimpleProps<T>>>;
 export type Sort<T> = Partial<Record<SimpleProps<T>, SortType>>;
 export type Fields<T> = SimpleProps<T>[];
+export type Relations<T> = ComplexProps<T>[];
 
 export type Page = {
   number?: number;
@@ -18,10 +23,10 @@ export type Page = {
   offset?: number;
 };
 
-export interface IGetAllOptions<T extends IDto | IEntity, Include = []> {
+export interface IGetAllOptions<T extends IDto | IEntity> {
   page?: Page;
   filter?: Filter<T>;
   sort?: Sort<T>;
   fields?: Fields<T>;
-  include?: Include;
+  include?: Relations<T>;
 }
