@@ -14,6 +14,10 @@ export class Course extends Base {
   difficulty: Difficulty;
   instructor?: User;
 
+  get instructorId(): string | null {
+    return this.instructor?.id || null;
+  }
+
   constructor(
     id: string,
     title: string,

@@ -37,6 +37,11 @@ describe('Course Module', () => {
   const adminToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000Y',
   });
+
+  const secondAdminToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000W',
+  });
+
   const regularToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000Z',
   });
@@ -586,6 +591,32 @@ describe('Course Module', () => {
           });
           expect(body).toEqual(expectedResponse);
         });
+    });
+
+    it('Should deny access to regular users', async () => {
+      const existingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+      const updateCourseDto = {
+        title: 'Introduction to Programming 2',
+      } as UpdateCourseDto;
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${existingCourseId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .send(updateCourseDto)
+        .expect(HttpStatus.FORBIDDEN);
+    });
+
+    it('Should deny access to non instructors admins', async () => {
+      const existingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+      const updateCourseDto = {
+        title: 'Introduction to Programming 2',
+      } as UpdateCourseDto;
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${existingCourseId}`)
+        .auth(secondAdminToken, { type: 'bearer' })
+        .send(updateCourseDto)
+        .expect(HttpStatus.FORBIDDEN);
     });
   });
 
