@@ -37,6 +37,9 @@ describe('Course Module', () => {
   const adminToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000Y',
   });
+  const regularToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000Z',
+  });
 
   beforeAll(async () => {
     await loadFixtures(`${__dirname}/fixture`, datasourceOptions);
@@ -446,6 +449,22 @@ describe('Course Module', () => {
           };
           expect(body).toEqual(expectedResponse);
         });
+    });
+
+    it('Should deny access to regular users', async () => {
+      const createCourseDto = {
+        title: 'Introduction to Programming 2',
+        description: 'Learn the basics of programming with JavaScript 2',
+        price: 49.99,
+        status: PublishStatus.drafted,
+        difficulty: Difficulty.BEGINNER,
+      } as CreateCourseDto;
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(regularToken, { type: 'bearer' })
+        .send(createCourseDto)
+        .expect(HttpStatus.FORBIDDEN);
     });
   });
 
