@@ -2,6 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  HttpException,
   Injectable,
   Type,
 } from '@nestjs/common';
@@ -29,6 +30,9 @@ export class PoliciesGuard implements CanActivate {
           return handler.handle(this.getContextRequest(context));
         }),
       ).catch((error) => {
+        if (error instanceof HttpException) {
+          throw error;
+        }
         throw new ForbiddenException((error as Error).message);
       });
     }

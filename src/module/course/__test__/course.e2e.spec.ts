@@ -38,6 +38,14 @@ describe('Course Module', () => {
     sub: '00000000-0000-0000-0000-00000000000Y',
   });
 
+  const secondAdminToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000W',
+  });
+
+  const regularToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000Z',
+  });
+
   beforeAll(async () => {
     await loadFixtures(`${__dirname}/fixture`, datasourceOptions);
     const moduleRef = await testModuleBootstrapper();
@@ -447,6 +455,22 @@ describe('Course Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should deny access to regular users', async () => {
+      const createCourseDto = {
+        title: 'Introduction to Programming 2',
+        description: 'Learn the basics of programming with JavaScript 2',
+        price: 49.99,
+        status: PublishStatus.drafted,
+        difficulty: Difficulty.BEGINNER,
+      } as CreateCourseDto;
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(regularToken, { type: 'bearer' })
+        .send(createCourseDto)
+        .expect(HttpStatus.FORBIDDEN);
+    });
   });
 
   describe('PATCH - /course/:id', () => {
@@ -568,6 +592,32 @@ describe('Course Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should deny access to regular users', async () => {
+      const existingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+      const updateCourseDto = {
+        title: 'Introduction to Programming 2',
+      } as UpdateCourseDto;
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${existingCourseId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .send(updateCourseDto)
+        .expect(HttpStatus.FORBIDDEN);
+    });
+
+    it('Should deny access to non instructors admins', async () => {
+      const existingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+      const updateCourseDto = {
+        title: 'Introduction to Programming 2',
+      } as UpdateCourseDto;
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${existingCourseId}`)
+        .auth(secondAdminToken, { type: 'bearer' })
+        .send(updateCourseDto)
+        .expect(HttpStatus.FORBIDDEN);
+    });
   });
 
   describe('DELETE - /course/:id', () => {
@@ -650,6 +700,46 @@ describe('Course Module', () => {
             expect(body).toEqual(expectedResponse);
           },
         );
+    });
+
+    it('Should throw an error if course to delete is not found', async () => {
+      const nonExistingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
+
+      await request(app.getHttpServer())
+        .delete(`${endpoint}/${nonExistingCourseId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `Entity with id ${nonExistingCourseId} not found`,
+              source: {
+                pointer: `${endpoint}/${nonExistingCourseId}`,
+              },
+              status: '404',
+              title: 'Entity not found',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny access to regular users', async () => {
+      const existingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+
+      await request(app.getHttpServer())
+        .delete(`${endpoint}/${existingCourseId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN);
+    });
+
+    it('Should deny access to non instructors admins', async () => {
+      const existingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+
+      await request(app.getHttpServer())
+        .del(`${endpoint}/${existingCourseId}`)
+        .auth(secondAdminToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN);
     });
   });
 });

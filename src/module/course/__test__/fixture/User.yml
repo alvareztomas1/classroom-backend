@@ -15,6 +15,21 @@ items:
     avatarUrl: '{{internet.url}}'
     externalId: '00000000-0000-0000-0000-00000000000Y'
     roles: regular,admin
+  admin-user-2:
+    id: 8aba0c66-c142-469b-928a-f347752fd665
+    firstName: admin-2-name
+    lastName: admin-2-surname
+    email: 'test_admin_2@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000W'
+    roles: regular,admin
+  regular-user:
+    firstName: regular-name
+    lastName: regular-surname
+    email: 'test_regular@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000Z'
+    roles: regular
   user{2..23}:
     firstName: '{{person.firstName}}'
     lastName: '{{person.lastName}}'
