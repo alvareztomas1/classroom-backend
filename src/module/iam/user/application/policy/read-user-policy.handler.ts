@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 
-import { REQUEST_USER_KEY } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
+import { BasePolicyHandler } from '@module/iam/authorization/application/policy/base-policy.handler';
 import { AuthorizationService } from '@module/iam/authorization/application/service/authorization.service';
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { IPolicyHandler } from '@module/iam/authorization/infrastructure/policy/handler/policy-handler.interface';
@@ -9,19 +9,22 @@ import { PolicyHandlerStorage } from '@module/iam/authorization/infrastructure/p
 import { User } from '@module/iam/user/domain/user.entity';
 
 @Injectable()
-export class ReadUserPolicyHandler implements IPolicyHandler {
+export class ReadUserPolicyHandler
+  extends BasePolicyHandler
+  implements IPolicyHandler
+{
   private readonly action = AppAction.Read;
 
   constructor(
     private readonly policyHandlerStorage: PolicyHandlerStorage,
     private readonly authorizationService: AuthorizationService,
   ) {
+    super();
     this.policyHandlerStorage.add(ReadUserPolicyHandler, this);
   }
 
   handle(request: Request): void {
     const currentUser = this.getCurrentUser(request);
-
     const isAllowed = this.authorizationService.isAllowed(
       currentUser,
       this.action,
@@ -33,9 +36,5 @@ export class ReadUserPolicyHandler implements IPolicyHandler {
         `You are not allowed to ${this.action.toUpperCase()} this resource`,
       );
     }
-  }
-
-  private getCurrentUser(request: Request): User {
-    return request[REQUEST_USER_KEY] as User;
   }
 }
