@@ -27,6 +27,7 @@ import { CourseSortQueryParamsDto } from '@module/course/application/dto/course-
 import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
 import { UpdateCourseDto } from '@module/course/application/dto/update-course.dto';
 import { CreateCoursePolicyHandler } from '@module/course/application/policy/create-course-policy-handler';
+import { DeleteCoursePolicyHandler } from '@module/course/application/policy/delete-course-policy-handler';
 import { UpdateCoursePolicyHandler } from '@module/course/application/policy/update-course-policy.handler';
 import { CourseService } from '@module/course/application/service/course.service';
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
@@ -89,6 +90,7 @@ export class CourseController {
   }
 
   @Delete(':id')
+  @Policies(DeleteCoursePolicyHandler)
   async deleteOneByIdOrFail(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<SuccessOperationResponseDto> {

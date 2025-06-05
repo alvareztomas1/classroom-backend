@@ -701,5 +701,45 @@ describe('Course Module', () => {
           },
         );
     });
+
+    it('Should throw an error if course to delete is not found', async () => {
+      const nonExistingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
+
+      await request(app.getHttpServer())
+        .delete(`${endpoint}/${nonExistingCourseId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `Entity with id ${nonExistingCourseId} not found`,
+              source: {
+                pointer: `${endpoint}/${nonExistingCourseId}`,
+              },
+              status: '404',
+              title: 'Entity not found',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny access to regular users', async () => {
+      const existingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+
+      await request(app.getHttpServer())
+        .delete(`${endpoint}/${existingCourseId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN);
+    });
+
+    it('Should deny access to non instructors admins', async () => {
+      const existingCourseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+
+      await request(app.getHttpServer())
+        .del(`${endpoint}/${existingCourseId}`)
+        .auth(secondAdminToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN);
+    });
   });
 });
