@@ -18,12 +18,12 @@ export class CoursePostgresRepository
   }
 
   async getSlugsStartingWith(slug: string): Promise<string[]> {
-    const results: { course_slug: string }[] = await this.repository
+    const results: { slug: string }[] = await this.repository
       .createQueryBuilder('course')
-      .select('course.slug')
+      .select('course.slug', 'slug')
       .where('course.slug LIKE :slug', { slug: `${slug}%` })
       .getRawMany();
 
-    return results.map((r) => r.course_slug);
+    return results.map((r) => r.slug);
   }
 }
