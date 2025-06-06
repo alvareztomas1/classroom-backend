@@ -1,4 +1,4 @@
-import { Module, Provider } from '@nestjs/common';
+import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CourseMapper } from '@module/course/application/mapper/course.mapper';
@@ -7,11 +7,13 @@ import { DeleteCoursePolicyHandler } from '@module/course/application/policy/del
 import { UpdateCoursePolicyHandler } from '@module/course/application/policy/update-course-policy.handler';
 import { COURSE_REPOSITORY_KEY } from '@module/course/application/repository/repository.interface';
 import { CourseService } from '@module/course/application/service/course.service';
+import { Course } from '@module/course/domain/course.entity';
 import { coursePermissions } from '@module/course/domain/course.permissions';
 import { CoursePostgresRepository } from '@module/course/infrastructure/database/course.postrges.repository';
 import { CourseSchema } from '@module/course/infrastructure/database/course.schema';
 import { CourseController } from '@module/course/interface/course.controller';
 import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
+import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 
 const courseRepositoryProvider: Provider = {
   provide: COURSE_REPOSITORY_KEY,
@@ -27,7 +29,7 @@ const policyHandlersProviders = [
 @Module({
   imports: [
     TypeOrmModule.forFeature([CourseSchema]),
-    AuthorizationModule.forFeature({ permissions: coursePermissions }),
+    AuthorizationModule.forFeature(),
   ],
   providers: [
     CourseService,
@@ -37,4 +39,10 @@ const policyHandlersProviders = [
   ],
   controllers: [CourseController],
 })
-export class CourseModule {}
+export class CourseModule implements OnModuleInit {
+  constructor(private readonly registry: AppSubjectPermissionStorage) {}
+
+  onModuleInit(): void {
+    this.registry.set(Course, coursePermissions);
+  }
+}
