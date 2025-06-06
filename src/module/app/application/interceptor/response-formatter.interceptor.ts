@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   CallHandler,
   ExecutionContext,
@@ -26,6 +25,10 @@ import { ISerializedResponseData } from '@common/base/application/dto/serialized
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
+import { AuthorizationService } from '@module/iam/authorization/application/service/authorization.service';
+import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
+import { AppSubjects } from '@module/iam/authorization/infrastructure/casl/type/app-subjects.type';
+import { User } from '@module/iam/user/domain/user.entity';
 
 @Injectable()
 export class ResponseFormatterInterceptor implements NestInterceptor {
@@ -33,21 +36,26 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     private readonly reflector: Reflector,
     private readonly linkBuilderService: LinkBuilderService,
     private readonly configService: ConfigService,
+    private readonly authorizationService: AuthorizationService,
   ) {}
 
   intercept(
     context: ExecutionContext,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     next: CallHandler<any>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Observable<any> | Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest<Request>();
     const currentRequestUrl = this.getCurrentRequestUrl(request);
     const currentRequestMethod = request.method;
-    const linksMetadata = this.reflector.get<ILinkMetadata[]>(
-      HYPERMEDIA_KEY,
-      context.getHandler(),
-    );
+    const linksMetadata =
+      this.reflector.get<ILinkMetadata[]>(
+        HYPERMEDIA_KEY,
+        context.getHandler(),
+      ) ?? [];
     const baseAppUrl = this.configService.get<string>('server.baseUrl');
-
+    const user = request.user as User;
+    const links = this.filterLinksByAuthorization(linksMetadata, user);
     return next.handle().pipe(
       map((responseData: BaseResponseDto | CollectionDto<IResponseDto>) => {
         if (responseData instanceof CollectionDto) {
@@ -63,7 +71,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
           currentRequestUrl,
           currentRequestMethod as HttpMethod,
           baseAppUrl,
-          linksMetadata ?? [],
+          links,
         );
       }),
     );
@@ -137,5 +145,24 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     const host = request.headers.host;
     const endpointUrl = `${request.protocol}://${host}${request.url}`;
     return endpointUrl;
+  }
+
+  private filterLinksByAuthorization(
+    links: ILinkMetadata[],
+    user: User,
+  ): ILinkMetadata[] {
+    return links.filter((link) =>
+      link.action && link.subject
+        ? this.isAuthorized(user, link.action, link.subject)
+        : true,
+    );
+  }
+
+  private isAuthorized(
+    user: User,
+    action: AppAction,
+    subject: AppSubjects,
+  ): boolean {
+    return this.authorizationService.isAllowed(user, action, subject);
   }
 }

@@ -18,7 +18,7 @@ export class AuthorizationService {
       return false;
     }
 
-    const userAbility = this.abilityFactory.createForUser(user);
+    const userAbility = this.abilityFactory.createForUser(user, subject);
     return userAbility.can(action, subject);
   }
 }

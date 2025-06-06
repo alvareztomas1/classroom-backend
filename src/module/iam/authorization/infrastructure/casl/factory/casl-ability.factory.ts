@@ -3,9 +3,9 @@ import {
   ExtractSubjectType,
   createMongoAbility,
 } from '@casl/ability';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { PERMISSIONS_FOR_FEATURE_KEY } from '@module/iam/authorization/authorization.constants';
+import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 import { AppAbility } from '@module/iam/authorization/infrastructure/casl/type/app-ability.type';
 import { AppSubjects } from '@module/iam/authorization/infrastructure/casl/type/app-subjects.type';
 import { IPermissionsDefinition } from '@module/iam/authorization/infrastructure/policy/type/permissions-definition.interface';
@@ -14,20 +14,45 @@ import { User } from '@module/iam/user/domain/user.entity';
 @Injectable()
 export class CaslAbilityFactory {
   constructor(
-    @Inject(PERMISSIONS_FOR_FEATURE_KEY)
-    private readonly permissions: IPermissionsDefinition,
+    private readonly permissionStorage: AppSubjectPermissionStorage,
   ) {}
 
-  createForUser(user: User): AppAbility {
+  createForUser(user: User, subject: AppSubjects): AppAbility {
+    const subjectType = this.resolveSubjectType(subject);
+    const permissions = this.permissionStorage.getPermissions(subjectType);
+
     const builder = new AbilityBuilder<AppAbility>(createMongoAbility);
 
-    user.roles.forEach((role) => {
-      this.permissions[role](user, builder);
-    });
+    this.applyPermissions(user, permissions, builder);
 
     return builder.build({
-      detectSubjectType: (item) =>
-        item.constructor as ExtractSubjectType<AppSubjects>,
+      detectSubjectType: (item) => this.getSubjectConstructor(item),
     });
+  }
+
+  private resolveSubjectType(
+    subject: AppSubjects,
+  ): ExtractSubjectType<AppSubjects> {
+    if (typeof subject === 'function') {
+      return subject;
+    }
+
+    return subject.constructor as ExtractSubjectType<AppSubjects>;
+  }
+
+  private applyPermissions(
+    user: User,
+    permissions: IPermissionsDefinition,
+    builder: AbilityBuilder<AppAbility>,
+  ): void {
+    for (const role of user.roles) {
+      permissions[role]?.(user, builder);
+    }
+  }
+
+  private getSubjectConstructor(
+    subject: unknown,
+  ): ExtractSubjectType<AppSubjects> {
+    return (subject as object).constructor as ExtractSubjectType<AppSubjects>;
   }
 }

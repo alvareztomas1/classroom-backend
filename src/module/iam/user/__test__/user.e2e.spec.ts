@@ -5,7 +5,10 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
-import { SerializedResponseDtoCollection } from '@common/base/application/dto/serialized-response.dto';
+import {
+  SerializedResponseDto,
+  SerializedResponseDtoCollection,
+} from '@common/base/application/dto/serialized-response.dto';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { setupApp } from '@config/app.config';
@@ -267,7 +270,17 @@ describe('User Module', () => {
             links: expect.arrayContaining([
               expect.objectContaining({
                 rel: 'self',
-                href: expect.any(String),
+                href: expect.stringContaining('user/me'),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'update-me',
+                href: expect.stringContaining('user/me'),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'get-all',
+                href: expect.stringContaining('user'),
                 method: HttpMethod.GET,
               }),
             ]),
@@ -280,6 +293,30 @@ describe('User Module', () => {
       await request(app.getHttpServer())
         .get('/api/v1/user/me')
         .expect(HttpStatus.UNAUTHORIZED);
+    });
+
+    it('Should filter get all method from non-super-admin users', async () => {
+      await request(app.getHttpServer())
+        .get('/api/v1/user/me')
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }: { body: SerializedResponseDto<UserResponseDto> }) => {
+          const { links } = body;
+          const expectedLinks = [
+            expect.objectContaining({
+              rel: 'self',
+              href: expect.stringContaining('user/me'),
+              method: HttpMethod.GET,
+            }),
+            expect.objectContaining({
+              rel: 'update-me',
+              href: expect.stringContaining('user/me'),
+              method: HttpMethod.PATCH,
+            }),
+          ];
+
+          expect(links).toEqual(expectedLinks);
+        });
     });
   });
 
