@@ -10,6 +10,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      PORT: 5000
+      DB_HOST: localhost
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: 123456
+      DB_NAME: db_test
+      BASE_APP_URL: http://localhost:5000/api/v1
+
     strategy:
       matrix:
         node-version: [20.x]

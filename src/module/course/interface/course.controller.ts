@@ -14,9 +14,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/page-query-params';
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
+import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { ImageOptionsFactory } from '@common/base/application/factory/image-options.factory';
 
 import { CourseFieldsQueryParamsDto } from '@module/course/application/dto/course-fields-query-params.dto';
@@ -30,14 +32,16 @@ import { CreateCoursePolicyHandler } from '@module/course/application/policy/cre
 import { DeleteCoursePolicyHandler } from '@module/course/application/policy/delete-course-policy-handler';
 import { UpdateCoursePolicyHandler } from '@module/course/application/policy/update-course-policy.handler';
 import { CourseService } from '@module/course/application/service/course.service';
+import { Course } from '@module/course/domain/course.entity';
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
+import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
 import { User } from '@module/iam/user/domain/user.entity';
 
+@Controller('course')
 @UseInterceptors(FileInterceptor('image', ImageOptionsFactory.create('image')))
 @UseGuards(PoliciesGuard)
-@Controller('course')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
@@ -59,6 +63,36 @@ export class CourseController {
   }
 
   @Get(':id')
+  @Hypermedia([
+    {
+      rel: 'get-all',
+      endpoint: '/course',
+      method: HttpMethod.GET,
+      action: AppAction.Read,
+      subject: Course,
+    },
+    {
+      rel: 'create',
+      endpoint: '/course',
+      method: HttpMethod.POST,
+      action: AppAction.Create,
+      subject: Course,
+    },
+    {
+      rel: 'update',
+      endpoint: '/course/:id',
+      method: HttpMethod.PATCH,
+      action: AppAction.Update,
+      subject: Course,
+    },
+    {
+      rel: 'delete',
+      endpoint: '/course/:id',
+      method: HttpMethod.DELETE,
+      action: AppAction.Delete,
+      subject: Course,
+    },
+  ])
   async getOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('include') include: CourseIncludeQueryDto,
@@ -67,6 +101,23 @@ export class CourseController {
   }
 
   @Post()
+  @Hypermedia([
+    {
+      rel: 'get',
+      endpoint: '/course/:id',
+      method: HttpMethod.GET,
+    },
+    {
+      rel: 'update',
+      endpoint: '/course/:id',
+      method: HttpMethod.PATCH,
+    },
+    {
+      rel: 'delete',
+      endpoint: '/course/:id',
+      method: HttpMethod.DELETE,
+    },
+  ])
   @Policies(CreateCoursePolicyHandler)
   async saveOne(
     @Body() createDto: CreateCourseDto,
@@ -80,6 +131,18 @@ export class CourseController {
   }
 
   @Patch(':id')
+  @Hypermedia([
+    {
+      rel: 'get',
+      endpoint: '/course/:id',
+      method: HttpMethod.GET,
+    },
+    {
+      rel: 'delete',
+      endpoint: '/course/:id',
+      method: HttpMethod.DELETE,
+    },
+  ])
   @Policies(UpdateCoursePolicyHandler)
   async updateOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -90,6 +153,18 @@ export class CourseController {
   }
 
   @Delete(':id')
+  @Hypermedia([
+    {
+      rel: 'get-all',
+      endpoint: '/course',
+      method: HttpMethod.GET,
+    },
+    {
+      rel: 'create',
+      endpoint: '/course',
+      method: HttpMethod.POST,
+    },
+  ])
   @Policies(DeleteCoursePolicyHandler)
   async deleteOneByIdOrFail(
     @Param('id', ParseUUIDPipe) id: string,
