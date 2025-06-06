@@ -263,6 +263,26 @@ describe('Course Module', () => {
                 href: expect.stringContaining(`${endpoint}/${courseId}`),
                 method: HttpMethod.GET,
               }),
+              expect.objectContaining({
+                rel: 'get-all',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'create',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                rel: 'update',
+                href: expect.stringContaining(`${endpoint}/${courseId}`),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'delete',
+                href: expect.stringContaining(`${endpoint}/${courseId}`),
+                method: HttpMethod.DELETE,
+              }),
             ]),
           });
 
@@ -313,6 +333,33 @@ describe('Course Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should filter links to regular users', async () => {
+      const courseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+      await request(app.getHttpServer())
+        .get(`${endpoint}/${courseId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({ body }: { body: SerializedResponseDto<CourseResponseDto> }) => {
+            const { links } = body;
+            const expectedLinks = expect.arrayContaining([
+              expect.objectContaining({
+                rel: 'self',
+                href: expect.stringContaining(`${endpoint}/${courseId}`),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'get-all',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.GET,
+              }),
+            ]);
+
+            expect(links).toEqual(expectedLinks);
+          },
+        );
+    });
   });
 
   describe('POST - /course', () => {
@@ -335,36 +382,55 @@ describe('Course Module', () => {
         .field('difficulty', createCourseDto.difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
-        .then(({ body }) => {
-          const expectedResponse = {
-            data: expect.objectContaining({
-              type: 'course',
-              id: expect.any(String),
-              attributes: expect.objectContaining({
-                title: createCourseDto.title,
-                description: createCourseDto.description,
-                price: createCourseDto.price,
-                imageUrl: 'test-url',
-                status: createCourseDto.status,
-                slug: 'introduction-to-programming-2',
-                difficulty: Difficulty.BEGINNER,
-                instructor: expect.objectContaining({
-                  firstName: 'admin-name',
-                  lastName: 'admin-surname',
-                  avatarUrl: expect.any(String),
+        .then(
+          ({ body }: { body: SerializedResponseDto<CourseResponseDto> }) => {
+            const { id } = body.data;
+
+            const expectedResponse = {
+              data: expect.objectContaining({
+                type: 'course',
+                id: expect.any(String),
+                attributes: expect.objectContaining({
+                  title: createCourseDto.title,
+                  description: createCourseDto.description,
+                  price: createCourseDto.price,
+                  imageUrl: 'test-url',
+                  status: createCourseDto.status,
+                  slug: 'introduction-to-programming-2',
+                  difficulty: Difficulty.BEGINNER,
+                  instructor: expect.objectContaining({
+                    firstName: 'admin-name',
+                    lastName: 'admin-surname',
+                    avatarUrl: expect.any(String),
+                  }),
                 }),
               }),
-            }),
-            links: expect.arrayContaining([
-              expect.objectContaining({
-                href: expect.stringContaining(endpoint),
-                rel: 'self',
-                method: HttpMethod.POST,
-              }),
-            ]),
-          };
-          expect(body).toEqual(expectedResponse);
-        });
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(endpoint),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'get',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'update',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  rel: 'delete',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.DELETE,
+                }),
+              ]),
+            };
+            expect(body).toEqual(expectedResponse);
+          },
+        );
     });
 
     it('Should generate a different slug if the title already exists', async () => {
@@ -393,31 +459,49 @@ describe('Course Module', () => {
         .field('difficulty', firstCreateCourseDto.difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
-        .then(({ body }) => {
-          const expectedResponse = {
-            data: expect.objectContaining({
-              type: 'course',
-              id: expect.any(String),
-              attributes: expect.objectContaining({
-                title: firstCreateCourseDto.title,
-                description: firstCreateCourseDto.description,
-                price: firstCreateCourseDto.price,
-                imageUrl: 'test-url',
-                status: firstCreateCourseDto.status,
-                slug: 'introduction-to-fishing',
-                difficulty: Difficulty.BEGINNER,
+        .then(
+          ({ body }: { body: SerializedResponseDto<CourseResponseDto> }) => {
+            const { id } = body.data;
+            const expectedResponse = {
+              data: expect.objectContaining({
+                type: 'course',
+                id: expect.any(String),
+                attributes: expect.objectContaining({
+                  title: firstCreateCourseDto.title,
+                  description: firstCreateCourseDto.description,
+                  price: firstCreateCourseDto.price,
+                  imageUrl: 'test-url',
+                  status: firstCreateCourseDto.status,
+                  slug: 'introduction-to-fishing',
+                  difficulty: Difficulty.BEGINNER,
+                }),
               }),
-            }),
-            links: expect.arrayContaining([
-              expect.objectContaining({
-                href: expect.stringContaining(endpoint),
-                rel: 'self',
-                method: HttpMethod.POST,
-              }),
-            ]),
-          };
-          expect(body).toEqual(expectedResponse);
-        });
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(endpoint),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'get',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'update',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  rel: 'delete',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.DELETE,
+                }),
+              ]),
+            };
+            expect(body).toEqual(expectedResponse);
+          },
+        );
 
       await request(app.getHttpServer())
         .post(endpoint)
@@ -505,6 +589,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<CourseResponseDto> }) => {
+            const { id } = body.data;
             const expectedResponse = {
               data: expect.objectContaining({
                 type: 'course',
@@ -524,6 +609,21 @@ describe('Course Module', () => {
                   href: expect.stringContaining(endpoint),
                   rel: 'self',
                   method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'get',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'update',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  rel: 'delete',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.DELETE,
                 }),
               ]),
             };
@@ -563,6 +663,16 @@ describe('Course Module', () => {
                   href: expect.stringContaining(endpoint),
                   rel: 'self',
                   method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining(`${endpoint}/${courseId}`),
+                  rel: 'get',
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining(`${endpoint}/${courseId}`),
+                  rel: 'delete',
+                  method: HttpMethod.DELETE,
                 }),
               ]),
             };
@@ -644,6 +754,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<CourseResponseDto> }) => {
+            const { id } = body.data;
             const expectedResponse = {
               data: expect.objectContaining({
                 type: 'course',
@@ -663,6 +774,21 @@ describe('Course Module', () => {
                   href: expect.stringContaining(endpoint),
                   rel: 'self',
                   method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'get',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'update',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  rel: 'delete',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.DELETE,
                 }),
               ]),
             };
@@ -694,6 +820,16 @@ describe('Course Module', () => {
                   href: expect.stringContaining(endpoint),
                   rel: 'self',
                   method: HttpMethod.DELETE,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining(endpoint),
+                  rel: 'get-all',
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining(endpoint),
+                  rel: 'create',
+                  method: HttpMethod.POST,
                 }),
               ]),
             });
