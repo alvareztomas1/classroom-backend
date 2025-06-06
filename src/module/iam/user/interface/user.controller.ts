@@ -1,9 +1,12 @@
 import { Body, Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
 
+import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/page-query-params';
+import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
+import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
 import { UpdateUserDto } from '@module/iam/user/application/dto/update-user.dto';
@@ -15,8 +18,8 @@ import { ReadUserPolicyHandler } from '@module/iam/user/application/policy/read-
 import { UserService } from '@module/iam/user/application/service/user.service';
 import { User } from '@module/iam/user/domain/user.entity';
 
-@UseGuards(PoliciesGuard)
 @Controller('user')
+@UseGuards(PoliciesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -37,11 +40,32 @@ export class UserController {
   }
 
   @Get('me')
+  @Hypermedia([
+    {
+      endpoint: '/user/me',
+      method: HttpMethod.PATCH,
+      rel: 'update-me',
+    },
+    {
+      endpoint: '/user',
+      method: HttpMethod.GET,
+      rel: 'get-all',
+      action: AppAction.Read,
+      subject: User,
+    },
+  ])
   getMe(@CurrentUser() user: User): UserResponseDto {
     return this.userService.getMe(user);
   }
 
   @Patch('me')
+  @Hypermedia([
+    {
+      endpoint: '/user/me',
+      method: HttpMethod.GET,
+      rel: 'get-me',
+    },
+  ])
   async updateMe(
     @CurrentUser() user: User,
     @Body() updateUserDto: UpdateUserDto,
