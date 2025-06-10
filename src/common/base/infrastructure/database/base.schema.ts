@@ -10,7 +10,7 @@ export function withBaseSchemaColumns<Entity extends object>(
   >,
 ): EntitySchemaColumns<Entity> {
   return {
-    id: { type: 'uuid', primary: true, generated: 'uuid', unique: true },
+    id: { type: 'uuid', primary: true, generated: 'uuid' },
     ...columns,
     createdAt: { type: Date, createDate: true },
     updatedAt: { type: Date, updateDate: true },
