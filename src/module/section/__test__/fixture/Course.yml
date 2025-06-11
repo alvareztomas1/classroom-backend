@@ -1,0 +1,12 @@
+entity: Course
+items:
+  course1:
+    id: 'c62801a2-0d74-4dd7-a20c-11c25be00a2a'
+    title: 'Introduction to Programming'
+    description: 'Learn the basics of programming with JavaScript'
+    price: 49.99
+    imageUrl: '{{internet.url}}/intro-programming.jpg'
+    status: published
+    slug: 'introduction-to-programming'
+    difficulty: beginner
+    instructor: '@admin-user'
