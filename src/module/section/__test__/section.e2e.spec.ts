@@ -56,7 +56,6 @@ describe('Course Module', () => {
         .expect(HttpStatus.OK)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            const courseId = body.data.attributes.courseId;
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
                 attributes: expect.objectContaining({
@@ -68,11 +67,6 @@ describe('Course Module', () => {
                   href: expect.stringContaining(endpoint),
                   rel: 'self',
                   method: HttpMethod.PATCH,
-                }),
-                expect.objectContaining({
-                  rel: 'create-section',
-                  href: expect.stringContaining(`/course/${courseId}`),
-                  method: HttpMethod.POST,
                 }),
                 expect.objectContaining({
                   rel: 'delete-section',

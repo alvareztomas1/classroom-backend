@@ -22,11 +22,6 @@ export class SectionController {
   @Patch(':id')
   @Hypermedia([
     {
-      endpoint: '/course/:courseId/section',
-      method: HttpMethod.POST,
-      rel: 'create-section',
-    },
-    {
       endpoint: '/section/:id',
       method: HttpMethod.DELETE,
       rel: 'delete-section',
