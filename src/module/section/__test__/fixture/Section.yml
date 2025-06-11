@@ -6,11 +6,11 @@ items:
     title: 'First Section'
     description: 'First Section Description'
     position: 0
-    # course: '@course1'
+    course: '@course1'
   section2:
     id: 'aa259cd5-8a46-40aa-8b33-59834def3b3e'
     courseId: 'c62801a2-0d74-4dd7-a20c-11c25be00a2a'
     title: 'Second Section'
     description: 'Second Section Description'
     position: 1
-    # course: '@course1'
+    course: '@course1'
