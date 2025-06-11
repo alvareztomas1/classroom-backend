@@ -118,7 +118,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
       currentRequestMethod,
       baseAppUrl,
       linksMetadata,
-      responseDto.id,
+      responseDto,
     );
     const serializedResponseData =
       this.buildSerializedResponseData(responseDto);

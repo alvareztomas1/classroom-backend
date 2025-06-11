@@ -1,4 +1,5 @@
 import { ILinkMetadata } from '@common/base/application/decorator/hypermedia.decorator';
+import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
 import {
   ICollectionLinks,
@@ -12,7 +13,7 @@ export interface ILinkBuilderService {
     currentRequestMethod: HttpMethod,
     baseAppUrl: string,
     linksMetadata: ILinkMetadata[],
-    id: string,
+    responseDto: BaseResponseDto,
   ): ILink[];
   buildCollectionLinks(
     currentRequestUrl: string,
