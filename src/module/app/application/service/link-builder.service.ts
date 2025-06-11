@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { ILinkMetadata } from '@common/base/application/decorator/hypermedia.decorator';
+import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
 import {
   ICollectionLinks,
@@ -14,24 +15,26 @@ import { ILinkBuilderService } from '@module/app/application/service/link-builde
 export class LinkBuilderService implements ILinkBuilderService {
   constructor() {}
 
+  private readonly pathParamRegex = /:([a-zA-Z0-9_]+)/g;
+
   buildSingleEntityLinks(
     currentRequestUrl: string,
     currentRequestMethod: HttpMethod,
     baseAppUrl: string,
     linksMetadata: ILinkMetadata[],
-    id: string,
+    responseDto: BaseResponseDto,
   ): ILink[] {
     const selfLink = this.buildSelfLink(
       currentRequestUrl,
       currentRequestMethod,
     );
-    const links = linksMetadata.map((linkMetadata) => ({
-      href: `${baseAppUrl}${linkMetadata.endpoint.replace(':id', id)}`,
-      rel: linkMetadata.rel,
-      method: linkMetadata.method,
-    }));
+    const relatedLinks = this.buildRelatedLinks(
+      linksMetadata,
+      baseAppUrl,
+      responseDto,
+    );
 
-    return [selfLink, ...links];
+    return [selfLink, ...relatedLinks];
   }
 
   buildCollectionLinks(
@@ -117,5 +120,24 @@ export class LinkBuilderService implements ILinkBuilderService {
       rel: 'self',
       method: currentRequestMethod,
     };
+  }
+
+  private buildRelatedLinks(
+    linksMetadata: ILinkMetadata[],
+    baseAppUrl: string,
+    dto: BaseResponseDto,
+  ): ILink[] {
+    return linksMetadata.map((link) => ({
+      href: `${baseAppUrl}${this.replacePathParams(link.endpoint, dto)}`,
+      rel: link.rel,
+      method: link.method,
+    }));
+  }
+
+  private replacePathParams(endpoint: string, dto: BaseResponseDto): string {
+    return endpoint.replace(
+      this.pathParamRegex,
+      (_, param) => dto[param as keyof BaseResponseDto] ?? `:${param}`,
+    );
   }
 }
