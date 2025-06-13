@@ -17,6 +17,8 @@ import { createAccessToken } from '@test/test.util';
 import { SectionResponseDto } from '@module/section/application/dto/section.response.dto';
 import { UpdateSectionDto } from '@module/section/application/dto/update.section.dto';
 
+import { CreateSectionDto } from '../application/dto/create.section.dto';
+
 describe('Course Module', () => {
   let app: NestExpressApplication;
 
@@ -40,7 +42,63 @@ describe('Course Module', () => {
     await app.close();
   });
 
-  const endpoint = '/api/v1/section';
+  const endpoint = '/api/v1/course';
+  const existingCourseId = 'c62801a2-0d74-4dd7-a20c-11c25be00a2a';
+
+  describe('POST - /section', () => {
+    it('Should create a section', async () => {
+      const createSectionDto = {
+        title: 'Section 1',
+        description: 'Description 1',
+        position: 0,
+      } as CreateSectionDto;
+
+      await request(app.getHttpServer())
+        .post(`${endpoint}/${existingCourseId}/section`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(createSectionDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
+            const sectionId = body.data.id;
+            const expectedResponse = expect.objectContaining({
+              data: expect.objectContaining({
+                attributes: expect.objectContaining({
+                  title: createSectionDto.title,
+                  description: createSectionDto.description,
+                  position: createSectionDto.position,
+                  courseId: existingCourseId,
+                }),
+              }),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section`,
+                  ),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'update-section',
+                  method: HttpMethod.PATCH,
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section/${sectionId}`,
+                  ),
+                }),
+                expect.objectContaining({
+                  rel: 'delete-section',
+                  method: HttpMethod.DELETE,
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section/${sectionId}`,
+                  ),
+                }),
+              ]),
+            });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+    });
+  });
 
   describe('PATCH - /section/:id', () => {
     it('Should update section', async () => {
