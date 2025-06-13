@@ -17,6 +17,8 @@ import { createAccessToken } from '@test/test.util';
 import { SectionResponseDto } from '@module/section/application/dto/section.response.dto';
 import { UpdateSectionDto } from '@module/section/application/dto/update.section.dto';
 
+import { CreateSectionDto } from '../application/dto/create.section.dto';
+
 describe('Course Module', () => {
   let app: NestExpressApplication;
 
@@ -40,17 +42,124 @@ describe('Course Module', () => {
     await app.close();
   });
 
-  const endpoint = '/api/v1/section';
+  const endpoint = '/api/v1/course';
+  const existingCourseId = 'c62801a2-0d74-4dd7-a20c-11c25be00a2a';
+
+  describe('POST - /section', () => {
+    it('Should create a section', async () => {
+      const createSectionDto = {
+        title: 'Section 1',
+        description: 'Description 1',
+        position: 0,
+      } as CreateSectionDto;
+
+      await request(app.getHttpServer())
+        .post(`${endpoint}/${existingCourseId}/section`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(createSectionDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
+            const sectionId = body.data.id;
+            const expectedResponse = expect.objectContaining({
+              data: expect.objectContaining({
+                attributes: expect.objectContaining({
+                  title: createSectionDto.title,
+                  description: createSectionDto.description,
+                  position: createSectionDto.position,
+                  courseId: existingCourseId,
+                }),
+              }),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section`,
+                  ),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'update-section',
+                  method: HttpMethod.PATCH,
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section/${sectionId}`,
+                  ),
+                }),
+                expect.objectContaining({
+                  rel: 'delete-section',
+                  method: HttpMethod.DELETE,
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section/${sectionId}`,
+                  ),
+                }),
+              ]),
+            });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+    });
+  });
 
   describe('PATCH - /section/:id', () => {
     it('Should update section', async () => {
-      const sectionId = 'ebe088b2-4d9c-4b06-9215-abb777f77115';
       const updateSectionDto = {
         title: 'Updated',
       } as UpdateSectionDto;
+      const createSectionDto = {
+        title: 'Section 1',
+        description: 'Description 1',
+        position: 0,
+      } as CreateSectionDto;
+      let sectionId: string;
 
       await request(app.getHttpServer())
-        .patch(`${endpoint}/${sectionId}`)
+        .post(`${endpoint}/${existingCourseId}/section`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(createSectionDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
+            sectionId = body.data.id;
+
+            const expectedResponse = expect.objectContaining({
+              data: expect.objectContaining({
+                attributes: expect.objectContaining({
+                  title: createSectionDto.title,
+                  description: createSectionDto.description,
+                  position: createSectionDto.position,
+                  courseId: existingCourseId,
+                }),
+              }),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section`,
+                  ),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'update-section',
+                  method: HttpMethod.PATCH,
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section/${sectionId}`,
+                  ),
+                }),
+                expect.objectContaining({
+                  rel: 'delete-section',
+                  method: HttpMethod.DELETE,
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section/${sectionId}`,
+                  ),
+                }),
+              ]),
+            });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${existingCourseId}/section/${sectionId}`)
         .auth(adminToken, { type: 'bearer' })
         .send(updateSectionDto)
         .expect(HttpStatus.OK)
@@ -64,14 +173,11 @@ describe('Course Module', () => {
               }),
               links: expect.arrayContaining([
                 expect.objectContaining({
-                  href: expect.stringContaining(endpoint),
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section/${sectionId}`,
+                  ),
                   rel: 'self',
                   method: HttpMethod.PATCH,
-                }),
-                expect.objectContaining({
-                  rel: 'delete-section',
-                  href: expect.stringContaining(`${endpoint}/${sectionId}`),
-                  method: HttpMethod.DELETE,
                 }),
               ]),
             });
@@ -81,13 +187,17 @@ describe('Course Module', () => {
     });
 
     it('Should throw an error if section does not exist', async () => {
+      const existingCourseId = 'c62801a2-0d74-4dd7-a20c-11c25be00a2a';
+
       const nonExistingSectionId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
       const updateSectionDto = {
         title: 'Updated',
       } as UpdateSectionDto;
 
       await request(app.getHttpServer())
-        .patch(`${endpoint}/${nonExistingSectionId}`)
+        .patch(
+          `${endpoint}/${existingCourseId}/section/${nonExistingSectionId}`,
+        )
         .auth(adminToken, { type: 'bearer' })
         .send(updateSectionDto)
         .expect(HttpStatus.NOT_FOUND)
@@ -96,7 +206,7 @@ describe('Course Module', () => {
             error: {
               detail: `Entity with id ${nonExistingSectionId} not found`,
               source: {
-                pointer: `${endpoint}/${nonExistingSectionId}`,
+                pointer: `${endpoint}/${existingCourseId}/section/${nonExistingSectionId}`,
               },
               status: '404',
               title: 'Entity not found',
@@ -109,12 +219,66 @@ describe('Course Module', () => {
 
   describe('DELETE - /section/:id', () => {
     it('Should delete section', async () => {
-      const sectionId = 'ebe088b2-4d9c-4b06-9215-abb777f77115';
+      const createSectionDto = {
+        title: 'Section 1',
+        description: 'Description 1',
+        position: 0,
+      } as CreateSectionDto;
+
       const updateSectionDto = {
         title: 'Updated',
       } as UpdateSectionDto;
+
+      let sectionId: string;
+
       await request(app.getHttpServer())
-        .delete(`${endpoint}/${sectionId}`)
+        .post(`${endpoint}/${existingCourseId}/section`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(createSectionDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
+            sectionId = body.data.id;
+
+            const expectedResponse = expect.objectContaining({
+              data: expect.objectContaining({
+                attributes: expect.objectContaining({
+                  title: createSectionDto.title,
+                  description: createSectionDto.description,
+                  position: createSectionDto.position,
+                  courseId: existingCourseId,
+                }),
+              }),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section`,
+                  ),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'update-section',
+                  method: HttpMethod.PATCH,
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section/${sectionId}`,
+                  ),
+                }),
+                expect.objectContaining({
+                  rel: 'delete-section',
+                  method: HttpMethod.DELETE,
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section/${sectionId}`,
+                  ),
+                }),
+              ]),
+            });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+
+      await request(app.getHttpServer())
+        .delete(`${endpoint}/${existingCourseId}/section/${sectionId}`)
         .auth(adminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(
@@ -129,7 +293,9 @@ describe('Course Module', () => {
               }),
               links: expect.arrayContaining([
                 expect.objectContaining({
-                  href: expect.stringContaining(endpoint),
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingCourseId}/section/${sectionId}`,
+                  ),
                   rel: 'self',
                   method: HttpMethod.DELETE,
                 }),
@@ -141,7 +307,7 @@ describe('Course Module', () => {
         );
 
       await request(app.getHttpServer())
-        .patch(`${endpoint}/${sectionId}`)
+        .patch(`${endpoint}/${existingCourseId}/section/${sectionId}`)
         .auth(adminToken, { type: 'bearer' })
         .send(updateSectionDto)
         .expect(HttpStatus.NOT_FOUND)
@@ -150,7 +316,7 @@ describe('Course Module', () => {
             error: {
               detail: `Entity with id ${sectionId} not found`,
               source: {
-                pointer: `${endpoint}/${sectionId}`,
+                pointer: `${endpoint}/${existingCourseId}/section/${sectionId}`,
               },
               status: '404',
               title: 'Entity not found',
@@ -164,7 +330,9 @@ describe('Course Module', () => {
       const nonExistingSectionId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
 
       await request(app.getHttpServer())
-        .delete(`${endpoint}/${nonExistingSectionId}`)
+        .delete(
+          `${endpoint}/${existingCourseId}/section/${nonExistingSectionId}`,
+        )
         .auth(adminToken, { type: 'bearer' })
         .expect(HttpStatus.NOT_FOUND)
         .then(({ body }) => {
@@ -172,7 +340,7 @@ describe('Course Module', () => {
             error: {
               detail: `Entity with id ${nonExistingSectionId} not found`,
               source: {
-                pointer: `${endpoint}/${nonExistingSectionId}`,
+                pointer: `${endpoint}/${existingCourseId}/section/${nonExistingSectionId}`,
               },
               status: '404',
               title: 'Entity not found',

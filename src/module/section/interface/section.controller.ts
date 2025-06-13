@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Post,
 } from '@nestjs/common';
 
 import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
@@ -15,14 +16,41 @@ import { SectionResponseDto } from '@module/section/application/dto/section.resp
 import { UpdateSectionDto } from '@module/section/application/dto/update.section.dto';
 import { SectionService } from '@module/section/application/service/section.service';
 
-@Controller('section')
+import { CreateSectionDto } from '../application/dto/create.section.dto';
+
+@Controller('course/:courseId/section')
 export class SectionController {
   constructor(private readonly sectionService: SectionService) {}
+
+  @Post()
+  @Hypermedia([
+    {
+      endpoint: '/course/:courseId/section/:id',
+      method: HttpMethod.PATCH,
+      rel: 'update-section',
+    },
+    {
+      endpoint: '/course/:courseId/section/:id',
+      method: HttpMethod.DELETE,
+      rel: 'delete-section',
+    },
+  ])
+  saveOneSection(
+    @Body() createSectionDto: Omit<CreateSectionDto, 'courseId'>,
+    @Param('courseId', ParseUUIDPipe) courseId: string,
+  ): Promise<SectionResponseDto> {
+    return this.sectionService.saveOne({ ...createSectionDto, courseId });
+  }
 
   @Patch(':id')
   @Hypermedia([
     {
-      endpoint: '/section/:id',
+      method: HttpMethod.POST,
+      rel: 'create-section',
+      endpoint: '/course/:courseId/section',
+    },
+    {
+      endpoint: '/course/:courseId/section/:id',
       method: HttpMethod.DELETE,
       rel: 'delete-section',
     },
