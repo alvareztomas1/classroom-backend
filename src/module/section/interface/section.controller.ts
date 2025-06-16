@@ -16,7 +16,7 @@ import { SectionResponseDto } from '@module/section/application/dto/section.resp
 import { UpdateSectionDto } from '@module/section/application/dto/update.section.dto';
 import { SectionService } from '@module/section/application/service/section.service';
 
-import { CreateSectionDto } from '../application/dto/create.section.dto';
+import { CreateSectionDtoQuery } from '../application/dto/create.section.dto';
 
 @Controller('course/:courseId/section')
 export class SectionController {
@@ -35,8 +35,8 @@ export class SectionController {
       rel: 'delete-section',
     },
   ])
-  saveOneSection(
-    @Body() createSectionDto: Omit<CreateSectionDto, 'courseId'>,
+  saveOne(
+    @Body() createSectionDto: CreateSectionDtoQuery,
     @Param('courseId', ParseUUIDPipe) courseId: string,
   ): Promise<SectionResponseDto> {
     return this.sectionService.saveOne({ ...createSectionDto, courseId });
