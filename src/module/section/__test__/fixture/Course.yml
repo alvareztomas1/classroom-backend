@@ -10,3 +10,13 @@ items:
     slug: 'introduction-to-programming'
     difficulty: beginner
     instructor: '@admin-user'
+  course2:
+    id: 'b894ad66-ea0a-4ed3-822b-fea66d3a9e49'
+    title: 'Introduction to Ruby'
+    description: 'Learn the basics of programming with Ruby'
+    price: 49.99
+    imageUrl: '{{internet.url}}/intro-programming.jpg'
+    status: published
+    slug: 'introduction-to-ruby'
+    difficulty: beginner
+    instructor: '@admin-user-2'

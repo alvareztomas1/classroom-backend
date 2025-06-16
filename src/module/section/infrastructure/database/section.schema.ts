@@ -26,7 +26,7 @@ export const SectionSchema = new EntitySchema<Section>({
     },
   }),
   relations: {
-    courseId: {
+    course: {
       type: 'many-to-one',
       target: 'Course',
       joinColumn: {
