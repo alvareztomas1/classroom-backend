@@ -6,6 +6,7 @@ import { AuthorizationModule } from '@module/iam/authorization/authorization.mod
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 import { SectionMapper } from '@module/section/application/mapper/section.mapper';
 import { CreateSectionPolicyHandler } from '@module/section/application/policy/create-section-policy.handler';
+import { DeleteSectionPolicyHandler } from '@module/section/application/policy/delete-section-policy.handler';
 import { UpdateSectionPolicyHandler } from '@module/section/application/policy/update-section-policy.handler';
 import { SECTION_REPOSITORY_KEY } from '@module/section/application/repository/section.repository.interface';
 import { SectionService } from '@module/section/application/service/section.service';
@@ -23,6 +24,7 @@ export const sectionRepositoryProvider: Provider = {
 const policyHandlersProviders = [
   CreateSectionPolicyHandler,
   UpdateSectionPolicyHandler,
+  DeleteSectionPolicyHandler,
 ];
 
 @Module({
