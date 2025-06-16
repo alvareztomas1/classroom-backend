@@ -15,6 +15,14 @@ items:
     avatarUrl: '{{internet.url}}'
     externalId: '00000000-0000-0000-0000-00000000000Y'
     roles: regular,admin
+  admin-user-2:
+    id: 9f5e3ef6-b0f5-4795-ab7b-7cf35f9c41e8
+    firstName: second-admin-name
+    lastName: second-admin-surname
+    email: 'second_test_admin@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000W'
+    roles: regular,admin
   regular-user:
     firstName: regular-name
     lastName: regular-surname
