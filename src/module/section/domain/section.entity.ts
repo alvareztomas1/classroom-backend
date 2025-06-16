@@ -9,6 +9,10 @@ export class Section extends Base {
   position: number;
   course?: Course;
 
+  get instructorId(): string | undefined {
+    return this.course?.instructorId;
+  }
+
   constructor(
     id: string,
     courseId: string,
