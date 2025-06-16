@@ -1,4 +1,11 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 import { BaseDto } from '@common/base/application/dto/base.dto';
 import { Difficulty } from '@common/base/application/enum/difficulty.enum';
@@ -7,6 +14,10 @@ import { PublishStatus } from '@common/base/application/enum/publish-status.enum
 import { User } from '@module/iam/user/domain/user.entity';
 
 export class CourseDto extends BaseDto {
+  @IsNotEmpty()
+  @IsUUID('4')
+  instructorId: string;
+
   @IsOptional()
   @IsString()
   title?: string;

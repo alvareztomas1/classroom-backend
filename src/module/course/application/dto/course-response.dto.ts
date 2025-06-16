@@ -10,6 +10,7 @@ export type CourseResponseInstructor = Pick<
 >;
 
 export class CourseResponseDto extends BaseResponseDto {
+  instructorId: string;
   title: string;
   description: string;
   price: number;
@@ -20,6 +21,7 @@ export class CourseResponseDto extends BaseResponseDto {
   instructor?: CourseResponseInstructor;
   constructor(
     type: string,
+    instructorId: string,
     title: string,
     description: string,
     price: number,
@@ -32,6 +34,7 @@ export class CourseResponseDto extends BaseResponseDto {
   ) {
     super(type, id);
 
+    this.instructorId = instructorId;
     this.title = title;
     this.description = description;
     this.price = price;
