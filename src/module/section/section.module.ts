@@ -6,6 +6,7 @@ import { AuthorizationModule } from '@module/iam/authorization/authorization.mod
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 import { SectionMapper } from '@module/section/application/mapper/section.mapper';
 import { CreateSectionPolicyHandler } from '@module/section/application/policy/create-section-policy.handler';
+import { UpdateSectionPolicyHandler } from '@module/section/application/policy/update-section-policy.handler';
 import { SECTION_REPOSITORY_KEY } from '@module/section/application/repository/section.repository.interface';
 import { SectionService } from '@module/section/application/service/section.service';
 import { Section } from '@module/section/domain/section.entity';
@@ -19,7 +20,10 @@ export const sectionRepositoryProvider: Provider = {
   useClass: SectionPostgresRepository,
 };
 
-const policyHandlersProviders = [CreateSectionPolicyHandler];
+const policyHandlersProviders = [
+  CreateSectionPolicyHandler,
+  UpdateSectionPolicyHandler,
+];
 
 @Module({
   imports: [
