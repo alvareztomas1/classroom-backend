@@ -31,6 +31,7 @@ const policyHandlersProviders = [
   imports: [
     TypeOrmModule.forFeature([SectionSchema]),
     AuthorizationModule.forFeature(),
+    CourseModule,
   ],
   providers: [
     CourseModule,
