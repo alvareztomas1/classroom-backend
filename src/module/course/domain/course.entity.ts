@@ -12,11 +12,8 @@ export class Course extends Base {
   status: PublishStatus;
   slug: string;
   difficulty: Difficulty;
+  instructorId: string;
   instructor?: User;
-
-  get instructorId(): string | null {
-    return this.instructor?.id || null;
-  }
 
   constructor(
     id: string,
@@ -27,6 +24,7 @@ export class Course extends Base {
     status: PublishStatus,
     slug: string,
     difficulty: Difficulty,
+    instructorId: string,
     instructor?: User,
   ) {
     super(id);
@@ -37,6 +35,7 @@ export class Course extends Base {
     this.status = status;
     this.slug = slug;
     this.difficulty = difficulty;
+    this.instructorId = instructorId;
     this.instructor = instructor;
   }
 }
