@@ -26,7 +26,7 @@ import { CourseFilterQueryParamsDto } from '@module/course/application/dto/cours
 import { CourseIncludeQueryDto } from '@module/course/application/dto/course-include.dto';
 import { CourseResponseDto } from '@module/course/application/dto/course-response.dto';
 import { CourseSortQueryParamsDto } from '@module/course/application/dto/course-sort-query-params.dto';
-import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
+import { CreateCourseRequestDto } from '@module/course/application/dto/create-course.dto';
 import { UpdateCourseDto } from '@module/course/application/dto/update-course.dto';
 import { CreateCoursePolicyHandler } from '@module/course/application/policy/create-course-policy-handler';
 import { DeleteCoursePolicyHandler } from '@module/course/application/policy/delete-course-policy-handler';
@@ -120,12 +120,12 @@ export class CourseController {
   ])
   @Policies(CreateCoursePolicyHandler)
   async saveOne(
-    @Body() createDto: CreateCourseDto,
+    @Body() createDto: CreateCourseRequestDto,
     @CurrentUser() user: User,
     @UploadedFile() image?: Express.Multer.File,
   ): Promise<CourseResponseDto> {
     return await this.courseService.saveOne(
-      { ...createDto, instructor: user },
+      { ...createDto, instructorId: user.id },
       image,
     );
   }
