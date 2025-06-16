@@ -1,8 +1,11 @@
 import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CourseModule } from '@module/course/course.module';
+import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 import { SectionMapper } from '@module/section/application/mapper/section.mapper';
+import { CreateSectionPolicyHandler } from '@module/section/application/policy/create-section-policy.handler';
 import { SECTION_REPOSITORY_KEY } from '@module/section/application/repository/section.repository.interface';
 import { SectionService } from '@module/section/application/service/section.service';
 import { Section } from '@module/section/domain/section.entity';
@@ -15,9 +18,21 @@ export const sectionRepositoryProvider: Provider = {
   provide: SECTION_REPOSITORY_KEY,
   useClass: SectionPostgresRepository,
 };
+
+const policyHandlersProviders = [CreateSectionPolicyHandler];
+
 @Module({
-  imports: [TypeOrmModule.forFeature([SectionSchema])],
-  providers: [SectionService, sectionRepositoryProvider, SectionMapper],
+  imports: [
+    TypeOrmModule.forFeature([SectionSchema]),
+    AuthorizationModule.forFeature(),
+  ],
+  providers: [
+    CourseModule,
+    SectionService,
+    sectionRepositoryProvider,
+    SectionMapper,
+    ...policyHandlersProviders,
+  ],
   controllers: [SectionController],
   exports: [SectionService, sectionRepositoryProvider],
 })

@@ -38,6 +38,7 @@ const policyHandlersProviders = [
     ...policyHandlersProviders,
   ],
   controllers: [CourseController],
+  exports: [courseRepositoryProvider],
 })
 export class CourseModule implements OnModuleInit {
   constructor(private readonly registry: AppSubjectPermissionStorage) {}
