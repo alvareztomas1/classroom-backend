@@ -31,9 +31,7 @@ export class UpdateCoursePolicyHandler
   async handle(request: Request): Promise<void> {
     const user = this.getCurrentUser(request);
     const { id } = request.params;
-    const course = await this.courseRepository.getOneByIdOrFail(id, [
-      'instructor',
-    ]);
+    const course = await this.courseRepository.getOneByIdOrFail(id);
 
     const isAllowed = this.authorizationService.isAllowed(
       user,

@@ -39,6 +39,9 @@ export const CourseSchema = new EntitySchema<Course>({
       type: String,
       nullable: true,
     },
+    instructorId: {
+      type: 'uuid',
+    },
   }),
   relations: {
     instructor: {

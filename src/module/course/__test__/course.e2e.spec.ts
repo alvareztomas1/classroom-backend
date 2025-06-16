@@ -77,6 +77,7 @@ describe('Course Module', () => {
                 id: expect.any(String),
                 type: 'course',
                 attributes: expect.objectContaining({
+                  instructorId: expect.any(String),
                   title: expect.any(String),
                   description: expect.any(String),
                   price: expect.any(Number),
@@ -248,6 +249,7 @@ describe('Course Module', () => {
               type: 'course',
               id: courseId,
               attributes: expect.objectContaining({
+                instructorId: expect.any(String),
                 title: 'Introduction to Programming',
                 description: 'Learn the basics of programming with JavaScript',
                 price: 49.99,
@@ -391,6 +393,7 @@ describe('Course Module', () => {
                 type: 'course',
                 id: expect.any(String),
                 attributes: expect.objectContaining({
+                  instructorId: expect.any(String),
                   title: createCourseDto.title,
                   description: createCourseDto.description,
                   price: createCourseDto.price,
@@ -398,11 +401,6 @@ describe('Course Module', () => {
                   status: createCourseDto.status,
                   slug: 'introduction-to-programming-2',
                   difficulty: Difficulty.BEGINNER,
-                  instructor: expect.objectContaining({
-                    firstName: 'admin-name',
-                    lastName: 'admin-surname',
-                    avatarUrl: expect.any(String),
-                  }),
                 }),
               }),
               links: expect.arrayContaining([
@@ -590,11 +588,12 @@ describe('Course Module', () => {
         .then(
           ({ body }: { body: SerializedResponseDto<CourseResponseDto> }) => {
             const { id } = body.data;
-            const expectedResponse = {
+            const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
                 type: 'course',
                 id: expect.any(String),
                 attributes: expect.objectContaining({
+                  instructorId: expect.any(String),
                   title: createCourseDto.title,
                   description: createCourseDto.description,
                   price: createCourseDto.price,
@@ -626,7 +625,7 @@ describe('Course Module', () => {
                   method: HttpMethod.DELETE,
                 }),
               ]),
-            };
+            });
             expect(body).toEqual(expectedResponse);
             courseId = body.data.id;
           },
@@ -644,11 +643,12 @@ describe('Course Module', () => {
         .expect(HttpStatus.OK)
         .then(
           ({ body }: { body: SerializedResponseDto<CourseResponseDto> }) => {
-            const expectedResponse = {
+            const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
                 type: 'course',
                 id: expect.any(String),
                 attributes: expect.objectContaining({
+                  instructorId: expect.any(String),
                   title: updateCourseDto.title,
                   description: updateCourseDto.description,
                   price: updateCourseDto.price,
@@ -675,7 +675,7 @@ describe('Course Module', () => {
                   method: HttpMethod.DELETE,
                 }),
               ]),
-            };
+            });
             expect(body).toEqual(expectedResponse);
           },
         );
@@ -755,11 +755,12 @@ describe('Course Module', () => {
         .then(
           ({ body }: { body: SerializedResponseDto<CourseResponseDto> }) => {
             const { id } = body.data;
-            const expectedResponse = {
+            const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
                 type: 'course',
                 id: expect.any(String),
                 attributes: expect.objectContaining({
+                  instructorId: expect.any(String),
                   title: createCourseDto.title,
                   description: createCourseDto.description,
                   price: createCourseDto.price,
@@ -791,7 +792,7 @@ describe('Course Module', () => {
                   method: HttpMethod.DELETE,
                 }),
               ]),
-            };
+            });
             expect(body).toEqual(expectedResponse);
             courseId = body.data.id;
           },

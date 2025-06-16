@@ -23,6 +23,7 @@ export class CourseMapper
       dto.status,
       dto.slug,
       dto.difficulty,
+      dto.instructorId,
       dto.instructor,
     );
   }
@@ -37,6 +38,7 @@ export class CourseMapper
       dto.status,
       dto.slug,
       dto.difficulty,
+      dto.instructorId,
     );
   }
 
@@ -46,6 +48,7 @@ export class CourseMapper
       : null;
     return new CourseResponseDto(
       Course.getEntityName(),
+      entity.instructorId,
       entity.title,
       entity.description,
       entity.price,
