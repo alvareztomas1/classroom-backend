@@ -22,7 +22,7 @@ import { RefreshSessionDto } from '@module/iam/authentication/application/dto/re
 import { ResendConfirmationCodeDto } from '@module/iam/authentication/application/dto/resend-confirmation-code.dto';
 import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
 import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
-import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
+import { SignUpQueryDto } from '@module/iam/authentication/application/dto/sign-up.dto';
 import { AuthenticationService } from '@module/iam/authentication/application/service/authentication.service';
 import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
 import { Auth } from '@module/iam/authentication/infrastructure/decorator/auth.decorator';
@@ -50,7 +50,7 @@ export class AuthenticationController {
     },
   ])
   async handleSignUp(
-    @Body() signUpDto: SignUpDto,
+    @Body() signUpDto: SignUpQueryDto,
     @UploadedFile() avatar?: Express.Multer.File,
   ): Promise<UserResponseDto> {
     return this.authenticationService.handleSignUp(signUpDto, avatar);
