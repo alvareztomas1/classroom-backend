@@ -1,9 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
 import { SlugService } from '@module/app/application/service/slug.service';
-import { COURSES_IMAGES_FOLDER } from '@module/cloud/application/constants/image-storage-folders.constants';
+import {
+  COURSES_FOLDER,
+  IMAGES_FOLDER,
+} from '@module/cloud/application/constants/image-storage-folders.constants';
 import { ImageStorageService } from '@module/cloud/application/service/image-storage.service';
 import { CourseResponseDto } from '@module/course/application/dto/course-response.dto';
 import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
@@ -31,12 +35,20 @@ export class CourseService extends BaseCRUDService<
     super(repository, mapper, Course.getEntityName());
   }
 
+  private STORAGE_COURSE_FOLDER = COURSES_FOLDER;
+  private STORAGE_IMAGE_FOLDER = IMAGES_FOLDER;
+
   async saveOne(
     createDto: CreateCourseDto,
     image?: Express.Multer.File,
   ): Promise<CourseResponseDto> {
+    const courseId = uuidv4();
+    createDto.id = courseId;
     createDto.imageUrl = image
-      ? await this.imageStorageService.uploadImage(image, COURSES_IMAGES_FOLDER)
+      ? await this.imageStorageService.uploadImage(
+          image,
+          this.buildFileFolder(createDto.id),
+        )
       : null;
 
     const baseSlug = this.slugService.buildSlug(createDto.title);
@@ -60,9 +72,17 @@ export class CourseService extends BaseCRUDService<
     updateDto: UpdateCourseDto,
     image?: Express.Multer.File,
   ): Promise<CourseResponseDto> {
-    updateDto.imageUrl = image
-      ? await this.imageStorageService.uploadImage(image, COURSES_IMAGES_FOLDER)
-      : null;
+    if (image) {
+      updateDto.imageUrl = await this.imageStorageService.uploadImage(
+        image,
+        this.buildFileFolder(id),
+      );
+    }
+
     return super.updateOne(id, updateDto);
+  }
+
+  private buildFileFolder(courseId: string): string {
+    return `${this.STORAGE_COURSE_FOLDER}/${courseId}/${this.STORAGE_IMAGE_FOLDER}`;
   }
 }
