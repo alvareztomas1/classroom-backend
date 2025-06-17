@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Body,
   Controller,
@@ -27,6 +28,8 @@ export class LessonController {
   @Get(':id')
   async getOne(
     @Param('id', ParseUUIDPipe) id: string,
+    @Param('courseId', ParseUUIDPipe) _courseId: string,
+    @Param('sectionId', ParseUUIDPipe) _sectionId: string,
   ): Promise<LessonResponseDto> {
     return await this.lessonService.getOneByIdOrFail(id);
   }
@@ -62,6 +65,8 @@ export class LessonController {
   @Delete(':id')
   async deleteOne(
     @Param('id', ParseUUIDPipe) id: string,
+    @Param('courseId', ParseUUIDPipe) _courseId: string,
+    @Param('sectionId', ParseUUIDPipe) _sectionId: string,
   ): Promise<SuccessOperationResponseDto> {
     return await this.lessonService.deleteOneByIdOrFail(id);
   }
