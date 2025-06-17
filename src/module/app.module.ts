@@ -10,6 +10,7 @@ import { SlugService } from '@module/app/application/service/slug.service';
 import { CloudModule } from '@module/cloud/cloud.module';
 import { CourseModule } from '@module/course/course.module';
 import { IamModule } from '@module/iam/iam.module';
+import { LessonModule } from '@module/lesson/lesson.module';
 import { SectionModule } from '@module/section/section.module';
 
 @Global()
@@ -29,6 +30,7 @@ import { SectionModule } from '@module/section/section.module';
     IamModule,
     CourseModule,
     SectionModule,
+    LessonModule,
   ],
   providers: [LinkBuilderService, SlugService],
   exports: [LinkBuilderService, SlugService],
