@@ -1,0 +1,20 @@
+entity: Section
+items:
+  section1:
+    id: '31487427-8f89-4e65-bd09-fb84ab56775b'
+    title: 'Section 1'
+    description: 'Description 1'
+    position: 0
+    course: '@course1'
+  section2:
+    id: 'e231901b-57a6-47c0-b84d-d58ce150a315'
+    title: 'Section 2'
+    description: 'Description 2'
+    position: 1
+    course: '@course1'
+  section3:
+    id: '10950e31-025b-4328-b0c1-e3d7062e5fae'
+    title: 'Section 3'
+    description: 'Description 3'
+    position: 0
+    course: '@course2'

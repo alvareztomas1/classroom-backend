@@ -1,0 +1,32 @@
+entity: User
+items:
+  super-admin-user:
+    firstName: super-admin-name
+    lastName: super-admin-surname
+    email: 'test_super_admin@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000X'
+    roles: regular,admin,superAdmin
+  admin-user:
+    id: a90108bf-42c6-481f-a63f-4b51fed1300c
+    firstName: admin-name
+    lastName: admin-surname
+    email: 'test_admin@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000Y'
+    roles: regular,admin
+  admin-user-2:
+    id: 9f5e3ef6-b0f5-4795-ab7b-7cf35f9c41e8
+    firstName: second-admin-name
+    lastName: second-admin-surname
+    email: 'second_test_admin@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000W'
+    roles: regular,admin
+  regular-user:
+    firstName: regular-name
+    lastName: regular-surname
+    email: 'test_regular@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000Z'
+    roles: regular
