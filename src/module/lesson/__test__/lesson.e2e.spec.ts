@@ -269,7 +269,8 @@ describe('Lesson Module', () => {
         .patch(
           `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
         )
-        .send(updateLessonDto)
+        .field('title', updateLessonDto.title)
+        .attach('file', fileMock)
         .auth(adminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(({ body }) => {

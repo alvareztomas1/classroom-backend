@@ -58,6 +58,10 @@ export class LessonService extends BaseCRUDService<
     const { courseId, sectionId } = UpdateLessonDto;
 
     if (lessonFile) {
+      const lesson = await (
+        this.repository as ILessonRepository
+      ).getOneByIdOrFail(id);
+      await this.fileStorageService.deleteFile(lesson.url);
       UpdateLessonDto.url = await this.fileStorageService.uploadFile(
         lessonFile,
         this.buildFileFolder(courseId, sectionId),

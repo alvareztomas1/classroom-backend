@@ -16,6 +16,7 @@ export const identityProviderServiceMock = {
 
 export const fileStorageProviderServiceMock = {
   uploadFile: jest.fn(() => Promise.resolve('test-url')),
+  deleteFile: jest.fn(() => Promise.resolve()),
 };
 
 export const testModuleBootstrapper = (): Promise<TestingModule> => {

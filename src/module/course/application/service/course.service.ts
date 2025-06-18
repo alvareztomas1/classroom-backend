@@ -73,6 +73,11 @@ export class CourseService extends BaseCRUDService<
     image?: Express.Multer.File,
   ): Promise<CourseResponseDto> {
     if (image) {
+      const course = await (
+        this.repository as ICourseRepository
+      ).getOneByIdOrFail(id);
+
+      await this.fileStorageService.deleteFile(course.imageUrl);
       updateDto.imageUrl = await this.fileStorageService.uploadFile(
         image,
         this.buildFileFolder(id),
