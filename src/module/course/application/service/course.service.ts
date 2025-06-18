@@ -7,8 +7,8 @@ import { SlugService } from '@module/app/application/service/slug.service';
 import {
   COURSES_FOLDER,
   IMAGES_FOLDER,
-} from '@module/cloud/application/constants/image-storage-folders.constants';
-import { ImageStorageService } from '@module/cloud/application/service/image-storage.service';
+} from '@module/cloud/application/constants/file-storage-folders.constants';
+import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 import { CourseResponseDto } from '@module/course/application/dto/course-response.dto';
 import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
 import { UpdateCourseDto } from '@module/course/application/dto/update-course.dto';
@@ -29,7 +29,7 @@ export class CourseService extends BaseCRUDService<
   constructor(
     @Inject(COURSE_REPOSITORY_KEY) repository: ICourseRepository,
     protected readonly mapper: CourseMapper,
-    private readonly imageStorageService: ImageStorageService,
+    private readonly fileStorageService: FileStorageService,
     private readonly slugService: SlugService,
   ) {
     super(repository, mapper, Course.getEntityName());
@@ -45,7 +45,7 @@ export class CourseService extends BaseCRUDService<
     const courseId = uuidv4();
     createDto.id = courseId;
     createDto.imageUrl = image
-      ? await this.imageStorageService.uploadImage(
+      ? await this.fileStorageService.uploadFile(
           image,
           this.buildFileFolder(createDto.id),
         )
@@ -73,7 +73,7 @@ export class CourseService extends BaseCRUDService<
     image?: Express.Multer.File,
   ): Promise<CourseResponseDto> {
     if (image) {
-      updateDto.imageUrl = await this.imageStorageService.uploadImage(
+      updateDto.imageUrl = await this.fileStorageService.uploadFile(
         image,
         this.buildFileFolder(id),
       );

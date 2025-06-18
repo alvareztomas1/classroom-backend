@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { setupApp } from '@config/app.config';
 
 import { AppModule } from '@module/app.module';
-import { IMAGE_STORAGE_PROVIDER_SERVICE_KEY } from '@module/cloud/application/interface/image-storage-provider.interface';
+import { FILE_STORAGE_PROVIDER_SERVICE_KEY } from '@module/cloud/application/interface/file-storage-provider.interface';
 import { AmazonS3Service } from '@module/cloud/infrastructure/aws/s3/s3.service';
 
 const sendMock = jest.fn();
@@ -55,7 +55,7 @@ describe('AmazonS3Service', () => {
     setupApp(app);
 
     amazonS3Service = moduleRef.get<AmazonS3Service>(
-      IMAGE_STORAGE_PROVIDER_SERVICE_KEY,
+      FILE_STORAGE_PROVIDER_SERVICE_KEY,
     );
   });
 
