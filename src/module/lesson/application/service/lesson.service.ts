@@ -5,8 +5,8 @@ import { BaseCRUDService } from '@common/base/application/service/base-crud.serv
 import {
   COURSES_FOLDER,
   SECTION_FOLDER,
-} from '@module/cloud/application/constants/image-storage-folders.constants';
-import { ImageStorageService } from '@module/cloud/application/service/image-storage.service';
+} from '@module/cloud/application/constants/file-storage-folders.constants';
+import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
 import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
@@ -27,7 +27,7 @@ export class LessonService extends BaseCRUDService<
   constructor(
     @Inject(LESSON_REPOSITORY_KEY) lessonRepository: ILessonRepository,
     private readonly lessonMapper: LessonMapper,
-    private readonly imageStorageService: ImageStorageService,
+    private readonly fileStorageService: FileStorageService,
   ) {
     super(lessonRepository, lessonMapper, Lesson.getEntityName());
   }
@@ -41,7 +41,7 @@ export class LessonService extends BaseCRUDService<
   ): Promise<LessonResponseDto> {
     const { sectionId, courseId } = createLessonDto;
     createLessonDto.url = lessonFile
-      ? await this.imageStorageService.uploadImage(
+      ? await this.fileStorageService.uploadFile(
           lessonFile,
           this.buildFileFolder(courseId, sectionId),
         )
@@ -58,7 +58,7 @@ export class LessonService extends BaseCRUDService<
     const { courseId, sectionId } = UpdateLessonDto;
 
     if (lessonFile) {
-      UpdateLessonDto.url = await this.imageStorageService.uploadImage(
+      UpdateLessonDto.url = await this.fileStorageService.uploadFile(
         lessonFile,
         this.buildFileFolder(courseId, sectionId),
       );

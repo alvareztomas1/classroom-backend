@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 
-import { IImageStorageProvider } from '@module/cloud/application/interface/image-storage-provider.interface';
+import { IFileStorageProvider } from '@module/cloud/application/interface/file-storage-provider.interface';
 
 @Injectable()
-export class AmazonS3Service implements IImageStorageProvider {
+export class AmazonS3Service implements IFileStorageProvider {
   s3: S3Client;
 
   constructor(private readonly configService: ConfigService) {

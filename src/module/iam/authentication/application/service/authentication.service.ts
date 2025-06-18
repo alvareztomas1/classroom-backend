@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 
-import { AVATARS_FOLDER } from '@module/cloud/application/constants/image-storage-folders.constants';
-import { ImageStorageService } from '@module/cloud/application/service/image-storage.service';
+import { AVATARS_FOLDER } from '@module/cloud/application/constants/file-storage-folders.constants';
+import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
 import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
@@ -42,7 +42,7 @@ export class AuthenticationService {
     @Inject(USER_REPOSITORY_KEY)
     private readonly userRepository: IUserRepository,
     private readonly userMapper: UserMapper,
-    private readonly imageStorageService: ImageStorageService,
+    private readonly fileSTorageService: FileStorageService,
   ) {}
 
   async handleSignUp(
@@ -50,7 +50,7 @@ export class AuthenticationService {
     avatar?: Express.Multer.File,
   ): Promise<UserResponseDto> {
     signUpDto.avatarUrl = avatar
-      ? await this.imageStorageService.uploadImage(avatar, AVATARS_FOLDER)
+      ? await this.fileSTorageService.uploadFile(avatar, AVATARS_FOLDER)
       : null;
     const { email, password, firstName, lastName, avatarUrl } = signUpDto;
 
