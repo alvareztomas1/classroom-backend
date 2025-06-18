@@ -29,10 +29,10 @@ export class UserMapper
   fromUpdateDtoToEntity(dto: UpdateUserDto, currentUser: User): User {
     return new User(
       currentUser.email,
-      dto.firstName,
-      dto.lastName,
+      dto.firstName ?? currentUser.firstName,
+      dto.lastName ?? currentUser.lastName,
       currentUser.roles,
-      dto.avatarUrl,
+      dto.avatarUrl ?? currentUser.avatarUrl,
       currentUser.id,
       currentUser.externalId,
       currentUser.createdAt,
