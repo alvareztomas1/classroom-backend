@@ -2,10 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
-import {
-  COURSES_FOLDER,
-  SECTION_FOLDER,
-} from '@module/cloud/application/constants/file-storage-folders.constants';
 import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
@@ -31,9 +27,6 @@ export class LessonService extends BaseCRUDService<
   ) {
     super(lessonRepository, lessonMapper, Lesson.getEntityName());
   }
-
-  private COURSE_STORAGE_FOLDER = COURSES_FOLDER;
-  private SECTION_STORAGE_FOLDER = SECTION_FOLDER;
 
   async saveOne(
     createLessonDto: CreateLessonDto,
@@ -61,7 +54,11 @@ export class LessonService extends BaseCRUDService<
       const lesson = await (
         this.repository as ILessonRepository
       ).getOneByIdOrFail(id);
-      await this.fileStorageService.deleteFile(lesson.url);
+
+      if (lesson.url) {
+        await this.fileStorageService.deleteFile(lesson.url);
+      }
+
       UpdateLessonDto.url = await this.fileStorageService.uploadFile(
         lessonFile,
         this.buildFileFolder(courseId, sectionId),
@@ -72,6 +69,6 @@ export class LessonService extends BaseCRUDService<
   }
 
   private buildFileFolder(courseId: string, sectionId: string): string {
-    return `${this.COURSE_STORAGE_FOLDER}/${courseId}/${this.SECTION_STORAGE_FOLDER}/${sectionId}`;
+    return `${this.fileStorageService.COURSES_FOLDER}/${courseId}/${this.fileStorageService.SECTION_FOLDER}/${sectionId}`;
   }
 }

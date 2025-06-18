@@ -12,6 +12,12 @@ export class FileStorageService {
     private readonly fileStorageProvider: IFileStorageProvider,
   ) {}
 
+  public USERS_FOLDER = 'users';
+  public AVATARS_FOLDER = 'avatars';
+  public COURSES_FOLDER = 'courses';
+  public SECTION_FOLDER = 'sections';
+  public IMAGES_FOLDER = 'images';
+
   uploadFile(file: Express.Multer.File, folder: string): Promise<string> {
     return this.fileStorageProvider.uploadFile(file, folder);
   }
