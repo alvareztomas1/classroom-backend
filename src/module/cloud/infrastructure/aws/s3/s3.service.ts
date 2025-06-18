@@ -1,5 +1,9 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { Injectable } from '@nestjs/common';
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -38,5 +42,27 @@ export class AmazonS3Service implements IFileStorageProvider {
     await this.s3.send(command);
 
     return `${this.configService.get('aws.endpoint')}/${this.configService.get('S3_BUCKET')}/${folder}/${key}`;
+  }
+
+  async deleteFile(fileUrl: string): Promise<void> {
+    const key = this.extractKeyFromUrl(fileUrl);
+    const command = new DeleteObjectCommand({
+      Bucket: this.configService.get('s3.bucket'),
+      Key: key,
+    });
+
+    await this.s3.send(command);
+  }
+
+  private extractKeyFromUrl(url: string): string {
+    const endpoint = this.configService.get<string>('aws.endpoint');
+    const bucket = this.configService.get<string>('s3.bucket');
+    const prefix = `${endpoint}/${bucket}/`;
+
+    if (!url.startsWith(prefix)) {
+      throw new InternalServerErrorException('Invalid S3 URL format');
+    }
+
+    return url.slice(prefix.length);
   }
 }
