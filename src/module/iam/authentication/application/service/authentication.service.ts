@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 
-import { AVATARS_FOLDER } from '@module/cloud/application/constants/file-storage-folders.constants';
 import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
@@ -50,7 +49,10 @@ export class AuthenticationService {
     avatar?: Express.Multer.File,
   ): Promise<UserResponseDto> {
     signUpDto.avatarUrl = avatar
-      ? await this.fileSTorageService.uploadFile(avatar, AVATARS_FOLDER)
+      ? await this.fileSTorageService.uploadFile(
+          avatar,
+          this.fileSTorageService.AVATARS_FOLDER,
+        )
       : null;
     const { email, password, firstName, lastName, avatarUrl } = signUpDto;
 

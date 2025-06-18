@@ -4,10 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
 import { SlugService } from '@module/app/application/service/slug.service';
-import {
-  COURSES_FOLDER,
-  IMAGES_FOLDER,
-} from '@module/cloud/application/constants/file-storage-folders.constants';
 import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 import { CourseResponseDto } from '@module/course/application/dto/course-response.dto';
 import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
@@ -34,9 +30,6 @@ export class CourseService extends BaseCRUDService<
   ) {
     super(repository, mapper, Course.getEntityName());
   }
-
-  private STORAGE_COURSE_FOLDER = COURSES_FOLDER;
-  private STORAGE_IMAGE_FOLDER = IMAGES_FOLDER;
 
   async saveOne(
     createDto: CreateCourseDto,
@@ -77,7 +70,10 @@ export class CourseService extends BaseCRUDService<
         this.repository as ICourseRepository
       ).getOneByIdOrFail(id);
 
-      await this.fileStorageService.deleteFile(course.imageUrl);
+      if (course.imageUrl) {
+        await this.fileStorageService.deleteFile(course.imageUrl);
+      }
+
       updateDto.imageUrl = await this.fileStorageService.uploadFile(
         image,
         this.buildFileFolder(id),
@@ -88,6 +84,6 @@ export class CourseService extends BaseCRUDService<
   }
 
   private buildFileFolder(courseId: string): string {
-    return `${this.STORAGE_COURSE_FOLDER}/${courseId}/${this.STORAGE_IMAGE_FOLDER}`;
+    return `${this.fileStorageService.COURSES_FOLDER}/${courseId}/${this.fileStorageService.IMAGES_FOLDER}`;
   }
 }
