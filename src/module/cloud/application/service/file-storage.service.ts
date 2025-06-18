@@ -15,4 +15,8 @@ export class FileStorageService {
   uploadFile(file: Express.Multer.File, folder: string): Promise<string> {
     return this.fileStorageProvider.uploadFile(file, folder);
   }
+
+  deleteFile(fileUrl: string): Promise<void> {
+    return this.fileStorageProvider.deleteFile(fileUrl);
+  }
 }

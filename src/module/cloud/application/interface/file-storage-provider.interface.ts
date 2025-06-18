@@ -3,4 +3,5 @@ export const FILE_STORAGE_PROVIDER_SERVICE_KEY =
 
 export interface IFileStorageProvider {
   uploadFile(file: Express.Multer.File, folder: string): Promise<string>;
+  deleteFile(fileUrl: string): Promise<void>;
 }

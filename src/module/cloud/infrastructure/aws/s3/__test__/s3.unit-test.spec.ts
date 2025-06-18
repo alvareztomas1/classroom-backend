@@ -1,4 +1,9 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
+import { InternalServerErrorException } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -13,6 +18,8 @@ const sendMock = jest.fn();
 jest.mock('@aws-sdk/client-s3', () => ({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   PutObjectCommand: jest.fn((input) => input),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  DeleteObjectCommand: jest.fn((input) => input),
   S3Client: jest.fn().mockImplementation(() => ({
     send: sendMock,
   })),
@@ -59,6 +66,14 @@ describe('AmazonS3Service', () => {
     );
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
   it('Should define the AmazonS3Service with the correct configuration', () => {
     expect(amazonS3Service).toBeDefined();
     expect(S3Client).toHaveBeenCalledTimes(1);
@@ -73,20 +88,48 @@ describe('AmazonS3Service', () => {
     });
   });
 
-  it('Should upload a file to S3', async () => {
-    const url = await amazonS3Service.uploadFile(mockFile, 'folder');
-    const command = {
-      Bucket: 'mock-bucket',
-      Key: 'folder/mock-uuid.mp4',
-      Body: mockFile.buffer,
-      ACL: 'public-read',
-      ContentType: 'video/mp4',
-    };
-    expect(PutObjectCommand).toHaveBeenCalledTimes(1);
-    expect(PutObjectCommand).toHaveBeenCalledWith(command);
+  describe('uploadFile', () => {
+    it('Should upload a file to S3', async () => {
+      const url = await amazonS3Service.uploadFile(mockFile, 'folder');
+      const command = {
+        Bucket: 'mock-bucket',
+        Key: 'folder/mock-uuid.mp4',
+        Body: mockFile.buffer,
+        ACL: 'public-read',
+        ContentType: 'video/mp4',
+      };
+      expect(PutObjectCommand).toHaveBeenCalledTimes(1);
+      expect(PutObjectCommand).toHaveBeenCalledWith(command);
 
-    expect(sendMock).toHaveBeenCalledTimes(1);
-    expect(sendMock).toHaveBeenCalledWith(command);
-    expect(url).toBe('mock-endpoint/mock-bucket/folder/mock-uuid.mp4');
+      expect(sendMock).toHaveBeenCalledTimes(1);
+      expect(sendMock).toHaveBeenCalledWith(command);
+      expect(url).toBe('mock-endpoint/mock-bucket/folder/mock-uuid.mp4');
+    });
+  });
+
+  describe('deleteFile', () => {
+    it('Should delete a file from S3', async () => {
+      const command = {
+        Bucket: 'mock-bucket',
+        Key: 'folder/test-video.mp4',
+      };
+
+      await amazonS3Service.deleteFile(
+        'mock-endpoint/mock-bucket/folder/test-video.mp4',
+      );
+
+      expect(DeleteObjectCommand).toHaveBeenCalledTimes(1);
+      expect(DeleteObjectCommand).toHaveBeenCalledWith(command);
+      expect(sendMock).toHaveBeenCalledTimes(1);
+      expect(sendMock).toHaveBeenCalledWith(command);
+    });
+
+    it('Should throw an InternalServerErrorException when receiving an invalid S3 URL', async () => {
+      const invalidUrl = 'invalid-url';
+
+      await expect(amazonS3Service.deleteFile(invalidUrl)).rejects.toThrow(
+        new InternalServerErrorException('Invalid S3 URL format'),
+      );
+    });
   });
 });
