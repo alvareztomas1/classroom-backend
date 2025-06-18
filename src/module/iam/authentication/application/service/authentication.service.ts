@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 
@@ -48,41 +49,36 @@ export class AuthenticationService {
     signUpDto: SignUpDto,
     avatar?: Express.Multer.File,
   ): Promise<UserResponseDto> {
-    signUpDto.avatarUrl = avatar
-      ? await this.fileSTorageService.uploadFile(
-          avatar,
-          this.fileSTorageService.AVATARS_FOLDER,
-        )
-      : null;
-    const { email, password, firstName, lastName, avatarUrl } = signUpDto;
+    const { email, password, firstName, lastName } = signUpDto;
 
     const existingUser = await this.userRepository.getOneByEmail(email);
 
-    if (!existingUser) {
-      return this.signUpAndSave(
-        email,
-        password,
-        firstName,
-        lastName,
-        avatarUrl,
-      );
+    if (existingUser && existingUser.externalId) {
+      throw new UserAlreadySignedUp({
+        message: USER_ALREADY_SIGNED_UP_ERROR,
+        title: SIGNUP_CONFLICT_TITLE,
+      });
     }
 
-    if (!existingUser.externalId) {
-      return this.signUpAndSave(
-        email,
-        password,
-        firstName,
-        lastName,
-        avatarUrl,
-        existingUser.id,
-      );
-    }
+    const isNewUser = !existingUser;
+    const userId = isNewUser ? uuidv4() : existingUser.id;
 
-    throw new UserAlreadySignedUp({
-      message: USER_ALREADY_SIGNED_UP_ERROR,
-      title: SIGNUP_CONFLICT_TITLE,
-    });
+    signUpDto.avatarUrl = avatar
+      ? await this.fileSTorageService.uploadFile(
+          avatar,
+          this.buildFileFolder(userId),
+        )
+      : null;
+
+    return this.signUpAndSave(
+      email,
+      password,
+      firstName,
+      lastName,
+      signUpDto.avatarUrl,
+      userId,
+      isNewUser,
+    );
   }
 
   async handleSignIn(signInDto: SignInDto): Promise<SignInResponseDto> {
@@ -204,15 +200,19 @@ export class AuthenticationService {
     lastName: string,
     avatarUrl?: string,
     userId?: string,
+    isNewUser = true,
   ): Promise<UserResponseDto> {
-    let userToSaveId = userId;
-
-    if (!userToSaveId) {
-      userToSaveId = (
-        await this.userRepository.saveOne(
-          new User(email, firstName, lastName, [AppRole.Regular], avatarUrl),
-        )
-      ).id;
+    if (isNewUser && userId) {
+      await this.userRepository.saveOne(
+        new User(
+          email,
+          firstName,
+          lastName,
+          [AppRole.Regular],
+          avatarUrl,
+          userId,
+        ),
+      );
     }
 
     const { externalId } = await this.identityProviderService.signUp(
@@ -220,10 +220,14 @@ export class AuthenticationService {
       password,
     );
 
-    const user = await this.userRepository.updateOneOrFail(userToSaveId, {
+    const user = await this.userRepository.updateOneOrFail(userId, {
       externalId,
     });
 
     return this.userMapper.fromEntityToResponseDto(user);
+  }
+
+  private buildFileFolder(userId: string): string {
+    return `${this.fileSTorageService.USERS_FOLDER}/${userId}/${this.fileSTorageService.AVATARS_FOLDER}`;
   }
 }
