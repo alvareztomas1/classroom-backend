@@ -1,15 +1,26 @@
-import { Body, Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Query,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/page-query-params';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
+import { ImageOptionsFactory } from '@common/base/application/factory/image-options.factory';
 
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
-import { UpdateUserDto } from '@module/iam/user/application/dto/update-user.dto';
+import { UpdateUserDtoQuery } from '@module/iam/user/application/dto/update-user.dto';
 import { UserFieldsQueryParamsDto } from '@module/iam/user/application/dto/user-fields-query-params.dto';
 import { UserFilterQueryParamsDto } from '@module/iam/user/application/dto/user-filter-query-params.dto';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
@@ -19,6 +30,9 @@ import { UserService } from '@module/iam/user/application/service/user.service';
 import { User } from '@module/iam/user/domain/user.entity';
 
 @Controller('user')
+@UseInterceptors(
+  FileInterceptor('avatar', ImageOptionsFactory.create('avatar')),
+)
 @UseGuards(PoliciesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -68,8 +82,9 @@ export class UserController {
   ])
   async updateMe(
     @CurrentUser() user: User,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateUserDtoQuery,
+    @UploadedFile() avatar?: Express.Multer.File,
   ): Promise<UserResponseDto> {
-    return await this.userService.updateMe(user, updateUserDto);
+    return await this.userService.updateMe(user, updateUserDto, avatar);
   }
 }

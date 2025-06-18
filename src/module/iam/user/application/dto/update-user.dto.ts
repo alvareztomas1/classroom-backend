@@ -1,3 +1,4 @@
+import { OmitType } from '@nestjs/mapped-types';
 import { IsOptional, IsString } from 'class-validator';
 
 import { UserDto } from '@module/iam/user/application/dto/user.dto';
@@ -22,4 +23,8 @@ export class UpdateUserDto
     this.lastName = lastName;
     this.avatarUrl = avatarUrl;
   }
+}
+
+export class UpdateUserDtoQuery extends OmitType(UpdateUserDto, ['avatarUrl']) {
+  avatarUrl?: string;
 }
