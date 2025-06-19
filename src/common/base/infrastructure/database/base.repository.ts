@@ -1,5 +1,4 @@
 import {
-  DeepPartial,
   FindManyOptions,
   FindOneOptions,
   FindOptionsOrder,
@@ -71,22 +70,6 @@ abstract class BaseRepository<T extends IEntity> implements IRepository<T> {
     }
 
     await this.repository.softDelete({ id } as FindOptionsWhere<T>);
-  }
-
-  async updateOneByIdOrFail(
-    id: string,
-    updates: Partial<Omit<T, 'id'>>,
-  ): Promise<T> {
-    const entityToUpdate = await this.repository.preload({
-      ...updates,
-      id,
-    } as DeepPartial<T>);
-
-    if (!entityToUpdate) {
-      throw new EntityNotFoundException(id);
-    }
-
-    return this.repository.save(entityToUpdate);
   }
 }
 

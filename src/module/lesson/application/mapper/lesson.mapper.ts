@@ -21,15 +21,15 @@ export class LessonMapper
     );
   }
 
-  fromUpdateDtoToEntity(dto: UpdateLessonDto): Lesson {
+  fromUpdateDtoToEntity(entity: Lesson, dto: UpdateLessonDto): Lesson {
     return new Lesson(
-      dto.id,
-      dto.courseId,
-      dto.sectionId,
-      dto.title,
-      dto.description,
-      dto.url,
-      dto.lessonType,
+      dto.id ?? entity.id,
+      dto.courseId ?? entity.courseId,
+      dto.sectionId ?? entity.sectionId,
+      dto.title ?? entity.title,
+      dto.description ?? entity.description,
+      dto.url ?? entity.url,
+      dto.lessonType ?? entity.lessonType,
     );
   }
 

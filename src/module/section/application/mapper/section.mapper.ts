@@ -19,13 +19,13 @@ export class SectionMapper
     );
   }
 
-  fromUpdateDtoToEntity(dto: UpdateSectionDto): Section {
+  fromUpdateDtoToEntity(entity: Section, dto: UpdateSectionDto): Section {
     return new Section(
-      dto.id,
-      dto.courseId,
-      dto.title,
-      dto.description,
-      dto.position,
+      dto.id ?? entity.id,
+      dto.courseId ?? entity.courseId,
+      dto.title ?? entity.title,
+      dto.description ?? entity.description,
+      dto.position ?? entity.position,
     );
   }
 

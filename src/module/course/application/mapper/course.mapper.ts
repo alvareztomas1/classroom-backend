@@ -28,17 +28,17 @@ export class CourseMapper
     );
   }
 
-  fromUpdateDtoToEntity(dto: UpdateCourseDto): Course {
+  fromUpdateDtoToEntity(entity: Course, dto: UpdateCourseDto): Course {
     return new Course(
-      dto.id,
-      dto.title,
-      dto.description,
-      dto.price,
-      dto.imageUrl,
-      dto.status,
-      dto.slug,
-      dto.difficulty,
-      dto.instructorId,
+      dto.id ?? entity.id,
+      dto.title ?? entity.title,
+      dto.description ?? entity.description,
+      dto.price ?? entity.price,
+      dto.imageUrl ?? entity.imageUrl,
+      dto.status ?? entity.status,
+      dto.slug ?? entity.slug,
+      dto.difficulty ?? entity.difficulty,
+      dto.instructorId ?? entity.instructorId,
     );
   }
 

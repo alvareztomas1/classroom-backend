@@ -8,5 +8,4 @@ export interface IRepository<T extends IEntity> {
   getOneById(id: string): Promise<T>;
   getOneByIdOrFail(id: string): Promise<T>;
   deleteOneByIdOrFail(id: string): Promise<void>;
-  updateOneByIdOrFail(id: string, updates: Partial<Omit<T, 'id'>>): Promise<T>;
 }
