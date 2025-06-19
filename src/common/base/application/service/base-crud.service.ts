@@ -4,7 +4,10 @@ import {
   IDtoMapper,
   IResponseDto,
 } from '@common/base/application/dto/dto.interface';
-import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
+import {
+  EntityRelations,
+  IGetAllOptions,
+} from '@common/base/application/dto/get-all-options.interface';
 import {
   OPERATION_RESPONSE_TYPE,
   SuccessOperationResponseDto,
@@ -32,7 +35,7 @@ export class BaseCRUDService<
   ) {}
 
   async getAll(
-    options?: IGetAllOptions<Entity>,
+    options: Partial<IGetAllOptions<Entity>>,
   ): Promise<CollectionDto<ResponseDto>> {
     const entities = await this.repository.getAll(options);
     const collection = new CollectionDto<ResponseDto>({
@@ -48,7 +51,10 @@ export class BaseCRUDService<
     return collection;
   }
 
-  async getOneByIdOrFail(id: string, include?: string[]): Promise<ResponseDto> {
+  async getOneByIdOrFail(
+    id: string,
+    include?: EntityRelations<Entity>,
+  ): Promise<ResponseDto> {
     const entity = await this.repository.getOneByIdOrFail(id, include);
     const responseDto = this.mapper.fromEntityToResponseDto(entity);
 

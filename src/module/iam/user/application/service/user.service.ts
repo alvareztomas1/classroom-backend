@@ -53,13 +53,13 @@ export class UserService {
 
       updateUserDto.avatarUrl = await this.fileStorageService.uploadFile(
         avatar,
-        this.buildFileFolder(user.id),
+        this.buildFileFolder(user.id as string),
       );
     }
 
     const userToUpdate = this.mapper.fromUpdateDtoToEntity(updateUserDto, user);
     const updatedUser = await this.repository.updateOneOrFail(
-      user.id,
+      user.id as string,
       userToUpdate,
     );
 

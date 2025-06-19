@@ -15,13 +15,15 @@ export class AmazonS3Service implements IFileStorageProvider {
 
   constructor(private readonly configService: ConfigService) {
     this.s3 = new S3Client({
-      region: this.configService.get('aws.region'),
-      endpoint: this.configService.get('aws.endpoint'),
+      region: this.configService.get<string>('aws.region'),
+      endpoint: this.configService.get<string>('aws.endpoint'),
       credentials: {
-        accessKeyId: this.configService.get('aws.credentials.accessKeyId'),
-        secretAccessKey: this.configService.get(
+        accessKeyId: this.configService.get<string>(
+          'aws.credentials.accessKeyId',
+        ) as string,
+        secretAccessKey: this.configService.get<string>(
           'aws.credentials.secretAccessKey',
-        ),
+        ) as string,
       },
       forcePathStyle: true,
     });

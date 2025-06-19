@@ -30,3 +30,5 @@ export interface IGetAllOptions<T extends IDto | IEntity> {
   fields?: Fields<T>;
   include?: Relations<T>;
 }
+
+export type EntityRelations<T extends IEntity> = IGetAllOptions<T>['include'];
