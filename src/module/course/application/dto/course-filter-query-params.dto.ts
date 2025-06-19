@@ -18,7 +18,7 @@ export class CourseFilterQueryParamsDto {
 
   @IsString()
   @IsOptional()
-  slug: string;
+  slug!: string;
 
   @IsEnum(Difficulty)
   @IsOptional()

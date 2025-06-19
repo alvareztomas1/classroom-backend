@@ -16,7 +16,7 @@ import { User } from '@module/iam/user/domain/user.entity';
 export class CourseDto extends BaseDto {
   @IsNotEmpty()
   @IsUUID('4')
-  instructorId: string;
+  instructorId!: string;
 
   @IsOptional()
   @IsString()

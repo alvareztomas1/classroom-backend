@@ -5,5 +5,5 @@ import { CreateCourseDto } from '@module/course/application/dto/create-course.dt
 export class UpdateCourseDto extends PartialType(
   OmitType(CreateCourseDto, ['instructorId']),
 ) {
-  instructorId: string;
+  instructorId!: string;
 }
