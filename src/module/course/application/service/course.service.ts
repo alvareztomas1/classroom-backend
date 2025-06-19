@@ -42,20 +42,11 @@ export class CourseService extends BaseCRUDService<
           image,
           this.buildFileFolder(createDto.id),
         )
-      : null;
+      : undefined;
 
-    const baseSlug = this.slugService.buildSlug(createDto.title);
-    let uniqueSlug = baseSlug;
-
-    const existingSlugs = await (
-      this.repository as ICourseRepository
-    ).getSlugsStartingWith(baseSlug);
-
-    if (existingSlugs.includes(baseSlug)) {
-      uniqueSlug = this.slugService.buildUniqueSlug(baseSlug, existingSlugs);
-    }
-
-    createDto.slug = uniqueSlug;
+    createDto.slug = createDto.title
+      ? await this.buildUniqueSlug(createDto.title)
+      : undefined;
 
     return super.saveOne(createDto);
   }
@@ -81,6 +72,21 @@ export class CourseService extends BaseCRUDService<
     }
 
     return super.updateOne(id, updateDto);
+  }
+
+  private async buildUniqueSlug(title: string): Promise<string> {
+    const baseSlug = this.slugService.buildSlug(title);
+    let uniqueSlug = baseSlug;
+
+    const existingSlugs = await (
+      this.repository as ICourseRepository
+    ).getSlugsStartingWith(baseSlug);
+
+    if (existingSlugs.includes(baseSlug)) {
+      uniqueSlug = this.slugService.buildUniqueSlug(baseSlug, existingSlugs);
+    }
+
+    return uniqueSlug;
   }
 
   private buildFileFolder(courseId: string): string {
