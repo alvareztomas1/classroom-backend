@@ -217,7 +217,7 @@ describe('Course Module', () => {
         description: 'Description 1',
         position: 0,
       } as CreateSectionDto;
-      let sectionId: string;
+      let sectionId: string = '';
 
       await request(app.getHttpServer())
         .post(`${endpoint}/${existingCourseId}/section`)
@@ -226,7 +226,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            sectionId = body.data.id;
+            sectionId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -332,7 +332,7 @@ describe('Course Module', () => {
         description: 'Description 1',
         position: 0,
       } as CreateSectionDto;
-      let sectionId: string;
+      let sectionId: string = '';
 
       await request(app.getHttpServer())
         .post(`${endpoint}/${existingCourseId}/section`)
@@ -341,7 +341,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            sectionId = body.data.id;
+            sectionId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -410,7 +410,7 @@ describe('Course Module', () => {
         description: 'Description 1',
         position: 0,
       } as CreateSectionDto;
-      let sectionId: string;
+      let sectionId: string = '';
 
       await request(app.getHttpServer())
         .post(`${endpoint}/${existingCourseId}/section`)
@@ -419,7 +419,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            sectionId = body.data.id;
+            sectionId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -487,7 +487,7 @@ describe('Course Module', () => {
         description: 'Description 1',
         position: 0,
       } as CreateSectionDto;
-      let sectionId: string;
+      let sectionId: string = '';
 
       await request(app.getHttpServer())
         .post(`${endpoint}/${existingCourseId}/section`)
@@ -496,7 +496,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            sectionId = body.data.id;
+            sectionId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -564,7 +564,7 @@ describe('Course Module', () => {
         description: 'Description 1',
         position: 0,
       } as CreateSectionDto;
-      let sectionId: string;
+      let sectionId: string = '';
 
       await request(app.getHttpServer())
         .post(`${endpoint}/${existingCourseId}/section`)
@@ -573,7 +573,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            sectionId = body.data.id;
+            sectionId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -632,7 +632,7 @@ describe('Course Module', () => {
         title: 'Updated',
       } as UpdateSectionDto;
 
-      let sectionId: string;
+      let sectionId: string = '';
 
       await request(app.getHttpServer())
         .post(`${endpoint}/${existingCourseId}/section`)
@@ -641,7 +641,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            sectionId = body.data.id;
+            sectionId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -759,7 +759,7 @@ describe('Course Module', () => {
         description: 'Description 1',
         position: 0,
       } as CreateSectionDto;
-      let sectionId: string;
+      let sectionId: string = '';
 
       await request(app.getHttpServer())
         .post(`${endpoint}/${existingCourseId}/section`)
@@ -768,7 +768,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            sectionId = body.data.id;
+            sectionId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -833,7 +833,7 @@ describe('Course Module', () => {
         description: 'Description 1',
         position: 0,
       } as CreateSectionDto;
-      let sectionId: string;
+      let sectionId: string = '';
 
       await request(app.getHttpServer())
         .post(`${endpoint}/${existingCourseId}/section`)
@@ -842,7 +842,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            sectionId = body.data.id;
+            sectionId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -906,7 +906,7 @@ describe('Course Module', () => {
         description: 'Description 1',
         position: 0,
       } as CreateSectionDto;
-      let sectionId: string;
+      let sectionId: string = '';
 
       await request(app.getHttpServer())
         .post(`${endpoint}/${existingCourseId}/section`)
@@ -915,7 +915,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            sectionId = body.data.id;
+            sectionId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -979,7 +979,7 @@ describe('Course Module', () => {
         description: 'Description 1',
         position: 0,
       } as CreateSectionDto;
-      let sectionId: string;
+      let sectionId: string = '';
 
       await request(app.getHttpServer())
         .post(`${endpoint}/${existingCourseId}/section`)
@@ -988,7 +988,7 @@ describe('Course Module', () => {
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<SectionResponseDto> }) => {
-            sectionId = body.data.id;
+            sectionId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({

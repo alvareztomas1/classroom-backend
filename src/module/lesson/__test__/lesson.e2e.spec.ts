@@ -66,20 +66,20 @@ describe('Lesson Module', () => {
         title: 'Lesson 1',
         description: 'Description 1',
       } as CreateLessonDto;
-      let lessonId: string;
+      let lessonId: string = '';
 
       await request(app.getHttpServer())
         .post(
           `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
         )
         .auth(adminToken, { type: 'bearer' })
-        .field('title', createLessonDto.title)
-        .field('description', createLessonDto.description)
+        .field('title', createLessonDto.title as string)
+        .field('description', createLessonDto.description as string)
         .attach('file', fileMock)
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<LessonResponseDto> }) => {
-            lessonId = body.data.id;
+            lessonId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -181,8 +181,8 @@ describe('Lesson Module', () => {
           `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
         )
         .auth(adminToken, { type: 'bearer' })
-        .field('title', createLessonDto.title)
-        .field('description', createLessonDto.description)
+        .field('title', createLessonDto.title as string)
+        .field('description', createLessonDto.description as string)
         .attach('file', fileMock)
         .expect(HttpStatus.CREATED)
         .then(({ body }) => {
@@ -223,20 +223,20 @@ describe('Lesson Module', () => {
       const updateLessonDto = {
         title: 'Edited',
       } as UpdateLessonDto;
-      let lessonId: string;
+      let lessonId: string = '';
 
       await request(app.getHttpServer())
         .post(
           `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
         )
         .auth(adminToken, { type: 'bearer' })
-        .field('title', createLessonDto.title)
-        .field('description', createLessonDto.description)
+        .field('title', createLessonDto.title as string)
+        .field('description', createLessonDto.description as string)
         .attach('file', fileMock)
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<LessonResponseDto> }) => {
-            lessonId = body.data.id;
+            lessonId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
@@ -269,7 +269,7 @@ describe('Lesson Module', () => {
         .patch(
           `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
         )
-        .field('title', updateLessonDto.title)
+        .field('title', updateLessonDto.title as string)
         .attach('file', fileMock)
         .auth(adminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
@@ -336,20 +336,20 @@ describe('Lesson Module', () => {
         title: 'Lesson 1',
         description: 'Description 1',
       } as CreateLessonDto;
-      let lessonId: string;
+      let lessonId: string = '';
 
       await request(app.getHttpServer())
         .post(
           `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
         )
         .auth(adminToken, { type: 'bearer' })
-        .field('title', createLessonDto.title)
-        .field('description', createLessonDto.description)
+        .field('title', createLessonDto.title as string)
+        .field('description', createLessonDto.description as string)
         .attach('file', fileMock)
         .expect(HttpStatus.CREATED)
         .then(
           ({ body }: { body: SerializedResponseDto<LessonResponseDto> }) => {
-            lessonId = body.data.id;
+            lessonId = body.data.id as string;
 
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
