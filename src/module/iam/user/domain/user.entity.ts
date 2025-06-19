@@ -9,7 +9,7 @@ export class User extends Base {
   lastName: string;
   roles: AppRole[];
   avatarUrl?: string;
-  isVerified: boolean;
+  isVerified?: boolean;
 
   constructor(
     email: string,

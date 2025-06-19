@@ -66,9 +66,9 @@ export class AuthenticationService {
     signUpDto.avatarUrl = avatar
       ? await this.fileSTorageService.uploadFile(
           avatar,
-          this.buildFileFolder(userId),
+          this.buildFileFolder(userId as string),
         )
-      : null;
+      : undefined;
 
     return this.signUpAndSave(
       email,
@@ -113,7 +113,7 @@ export class AuthenticationService {
       code,
     );
 
-    await this.userRepository.updateOneOrFail(existingUser.id, {
+    await this.userRepository.updateOneOrFail(existingUser.id as string, {
       isVerified: true,
     });
 
@@ -220,7 +220,7 @@ export class AuthenticationService {
       password,
     );
 
-    const user = await this.userRepository.updateOneOrFail(userId, {
+    const user = await this.userRepository.updateOneOrFail(userId as string, {
       externalId,
     });
 

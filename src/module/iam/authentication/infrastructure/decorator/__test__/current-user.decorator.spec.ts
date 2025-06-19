@@ -80,6 +80,6 @@ describe('@CurrentUser', () => {
     ).factory;
     const result = currentUserFactory('id', executionContext);
 
-    expect(result).toEqual(request.user.id);
+    expect(result).toEqual(request.user?.id);
   });
 });

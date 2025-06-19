@@ -48,7 +48,7 @@ describe('AppExceptionFilter', () => {
   });
 
   it('Should use default values if errorInfo is not provided', () => {
-    const mockHttpException = new HttpException(null, 400);
+    const mockHttpException = new HttpException('', 400);
 
     const host: ArgumentsHost = {
       switchToHttp: () => ({

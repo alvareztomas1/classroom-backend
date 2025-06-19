@@ -128,7 +128,7 @@ describe('User Module', () => {
     it('Should allow to sort by attributes', async () => {
       const firstUser = { firstName: '' } as UserDto;
       const lastUser = { firstName: '' } as UserDto;
-      let pageCount: number;
+      let pageCount: number = 0;
 
       await request(app.getHttpServer())
         .get('/api/v1/user?sort[firstName]=DESC&page[size]=10')

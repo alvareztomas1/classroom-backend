@@ -44,7 +44,9 @@ export class CognitoService implements IIdentityProviderService {
   private readonly clientId: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.clientId = this.configService.get('cognito.clientId');
+    this.clientId = this.configService.get<string>(
+      'cognito.clientId',
+    ) as string;
     this.client = new CognitoIdentityProviderClient({
       endpoint: this.configService.get('cognito.endpoint'),
     });
@@ -65,7 +67,7 @@ export class CognitoService implements IIdentityProviderService {
       });
 
       const result = await this.client.send(command);
-      return { externalId: result.UserSub };
+      return { externalId: result.UserSub as string };
     } catch (error) {
       if ((error as Error).name === 'InvalidPasswordException') {
         throw new PasswordValidationException({
@@ -93,8 +95,8 @@ export class CognitoService implements IIdentityProviderService {
       const result = await this.client.send(command);
 
       return {
-        accessToken: result.AuthenticationResult.AccessToken,
-        refreshToken: result.AuthenticationResult.RefreshToken,
+        accessToken: result.AuthenticationResult?.AccessToken as string,
+        refreshToken: result.AuthenticationResult?.RefreshToken as string,
       };
     } catch (error) {
       switch ((error as Error).name) {
@@ -249,7 +251,7 @@ export class CognitoService implements IIdentityProviderService {
 
       const result = await this.client.send(command);
       return {
-        accessToken: result.AuthenticationResult.AccessToken,
+        accessToken: result.AuthenticationResult?.AccessToken as string,
       };
     } catch (error) {
       if ((error as Error).name === 'NotAuthorizedException') {

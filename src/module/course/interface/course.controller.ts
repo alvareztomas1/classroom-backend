@@ -125,7 +125,7 @@ export class CourseController {
     @UploadedFile() image?: Express.Multer.File,
   ): Promise<CourseResponseDto> {
     return await this.courseService.saveOne(
-      { ...createDto, instructorId: user.id },
+      { ...createDto, instructorId: user.id as string },
       image,
     );
   }

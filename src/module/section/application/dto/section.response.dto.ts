@@ -1,17 +1,17 @@
 import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 
 export class SectionResponseDto extends BaseResponseDto {
-  title: string;
-  description: string;
-  position: number;
   courseId: string;
+  title?: string;
+  description?: string;
+  position?: number;
 
   constructor(
     type: string,
-    title: string,
-    description: string,
-    position: number,
     courseId: string,
+    title?: string,
+    description?: string,
+    position?: number,
     id?: string,
   ) {
     super(type, id);

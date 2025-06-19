@@ -6,6 +6,7 @@ import {
 import { InternalServerErrorException } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Readable } from 'stream';
 
 import { setupApp } from '@config/app.config';
 
@@ -39,7 +40,7 @@ const mockFile: Express.Multer.File = {
   destination: '',
   filename: '',
   path: '',
-  stream: null,
+  stream: new Readable(),
 };
 
 describe('AmazonS3Service', () => {

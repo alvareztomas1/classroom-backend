@@ -19,7 +19,9 @@ export class CaslAbilityFactory {
 
   createForUser(user: User, subject: AppSubjects): AppAbility {
     const subjectType = this.resolveSubjectType(subject);
-    const permissions = this.permissionStorage.getPermissions(subjectType);
+    const permissions = this.permissionStorage.getPermissions(
+      subjectType,
+    ) as IPermissionsDefinition;
 
     const builder = new AbilityBuilder<AppAbility>(createMongoAbility);
 

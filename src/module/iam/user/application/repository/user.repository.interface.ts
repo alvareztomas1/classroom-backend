@@ -8,9 +8,9 @@ export const USER_REPOSITORY_KEY = 'user_repository';
 export interface IUserRepository {
   getAll(options: IGetAllOptions<User>): Promise<ICollection<User>>;
 
-  getOneByEmail(email: string): Promise<User>;
+  getOneByEmail(email: string): Promise<User | null>;
 
-  getOneByExternalId(externalId: string): Promise<User>;
+  getOneByExternalId(externalId: string): Promise<User | null>;
 
   getOneByEmailOrFail(email: string): Promise<User>;
 

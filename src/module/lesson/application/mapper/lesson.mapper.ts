@@ -11,9 +11,9 @@ export class LessonMapper
 {
   fromCreateDtoToEntity(dto: CreateLessonDto): Lesson {
     return new Lesson(
-      dto.id,
       dto.courseId,
       dto.sectionId,
+      dto.id,
       dto.title,
       dto.description,
       dto.url,
@@ -23,9 +23,9 @@ export class LessonMapper
 
   fromUpdateDtoToEntity(entity: Lesson, dto: UpdateLessonDto): Lesson {
     return new Lesson(
-      dto.id ?? entity.id,
       dto.courseId ?? entity.courseId,
       dto.sectionId ?? entity.sectionId,
+      dto.id ?? entity.id,
       dto.title ?? entity.title,
       dto.description ?? entity.description,
       dto.url ?? entity.url,

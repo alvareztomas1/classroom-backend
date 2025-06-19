@@ -4,9 +4,9 @@ import { Course } from '@module/course/domain/course.entity';
 
 export class Section extends Base {
   courseId: string;
-  title: string;
-  description: string;
-  position: number;
+  title?: string;
+  description?: string;
+  position?: number;
   course?: Course;
 
   get instructorId(): string | undefined {
@@ -14,11 +14,11 @@ export class Section extends Base {
   }
 
   constructor(
-    id: string,
     courseId: string,
-    title: string,
-    description: string,
-    position: number,
+    title?: string,
+    description?: string,
+    position?: number,
+    id?: string,
     course?: Course,
   ) {
     super(id);

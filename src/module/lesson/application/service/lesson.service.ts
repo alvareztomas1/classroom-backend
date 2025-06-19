@@ -38,7 +38,7 @@ export class LessonService extends BaseCRUDService<
           lessonFile,
           this.buildFileFolder(courseId, sectionId),
         )
-      : null;
+      : undefined;
 
     return super.saveOne(createLessonDto);
   }

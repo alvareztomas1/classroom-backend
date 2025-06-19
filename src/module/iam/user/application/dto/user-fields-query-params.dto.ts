@@ -21,7 +21,7 @@ export class UserFieldsQueryParamsDto {
       'isVerified',
       'createdAt',
       'updatedAt',
-    ] as UserFields,
+    ],
     {
       each: true,
     },

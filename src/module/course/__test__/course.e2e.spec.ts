@@ -151,7 +151,7 @@ describe('Course Module', () => {
     it('Should allow to sort by attributes', async () => {
       const firstCourse = { title: '' } as CourseDto;
       const lastCourse = { title: '' } as CourseDto;
-      let pageCount: number;
+      let pageCount: number = 0;
 
       await request(app.getHttpServer())
         .get(`${endpoint}?sort[title]=DESC&page[size]=10`)
@@ -377,11 +377,11 @@ describe('Course Module', () => {
       await request(app.getHttpServer())
         .post(endpoint)
         .auth(adminToken, { type: 'bearer' })
-        .field('title', createCourseDto.title)
-        .field('description', createCourseDto.description)
-        .field('price', createCourseDto.price)
-        .field('status', createCourseDto.status)
-        .field('difficulty', createCourseDto.difficulty)
+        .field('title', createCourseDto.title as string)
+        .field('description', createCourseDto.description as string)
+        .field('price', createCourseDto.price as number)
+        .field('status', createCourseDto.status as PublishStatus)
+        .field('difficulty', createCourseDto.difficulty as Difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(
@@ -450,11 +450,11 @@ describe('Course Module', () => {
       await request(app.getHttpServer())
         .post(endpoint)
         .auth(adminToken, { type: 'bearer' })
-        .field('title', firstCreateCourseDto.title)
-        .field('description', firstCreateCourseDto.description)
-        .field('price', firstCreateCourseDto.price)
-        .field('status', firstCreateCourseDto.status)
-        .field('difficulty', firstCreateCourseDto.difficulty)
+        .field('title', firstCreateCourseDto.title as string)
+        .field('description', firstCreateCourseDto.description as string)
+        .field('price', firstCreateCourseDto.price as number)
+        .field('status', firstCreateCourseDto.status as PublishStatus)
+        .field('difficulty', firstCreateCourseDto.difficulty as Difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(
@@ -504,11 +504,11 @@ describe('Course Module', () => {
       await request(app.getHttpServer())
         .post(endpoint)
         .auth(adminToken, { type: 'bearer' })
-        .field('title', secondCreateCourseDto.title)
-        .field('description', secondCreateCourseDto.description)
-        .field('price', secondCreateCourseDto.price)
-        .field('status', secondCreateCourseDto.status)
-        .field('difficulty', secondCreateCourseDto.difficulty)
+        .field('title', secondCreateCourseDto.title as string)
+        .field('description', secondCreateCourseDto.description as string)
+        .field('price', secondCreateCourseDto.price as number)
+        .field('status', secondCreateCourseDto.status as PublishStatus)
+        .field('difficulty', secondCreateCourseDto.difficulty as Difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(({ body }) => {
@@ -573,16 +573,16 @@ describe('Course Module', () => {
         difficulty: Difficulty.BEGINNER,
       } as UpdateCourseDto;
 
-      let courseId: string;
+      let courseId: string = '';
 
       await request(app.getHttpServer())
         .post(endpoint)
         .auth(adminToken, { type: 'bearer' })
-        .field('title', createCourseDto.title)
-        .field('description', createCourseDto.description)
-        .field('price', createCourseDto.price)
-        .field('status', createCourseDto.status)
-        .field('difficulty', createCourseDto.difficulty)
+        .field('title', createCourseDto.title as string)
+        .field('description', createCourseDto.description as string)
+        .field('price', createCourseDto.price as number)
+        .field('status', createCourseDto.status as PublishStatus)
+        .field('difficulty', createCourseDto.difficulty as Difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(
@@ -627,18 +627,18 @@ describe('Course Module', () => {
               ]),
             });
             expect(body).toEqual(expectedResponse);
-            courseId = body.data.id;
+            courseId = body.data.id as string;
           },
         );
 
       await request(app.getHttpServer())
         .patch(`${endpoint}/${courseId}`)
         .auth(adminToken, { type: 'bearer' })
-        .field('title', updateCourseDto.title)
-        .field('description', updateCourseDto.description)
-        .field('price', updateCourseDto.price)
-        .field('status', updateCourseDto.status)
-        .field('difficulty', updateCourseDto.difficulty)
+        .field('title', updateCourseDto.title as string)
+        .field('description', updateCourseDto.description as string)
+        .field('price', updateCourseDto.price as number)
+        .field('status', updateCourseDto.status as PublishStatus)
+        .field('difficulty', updateCourseDto.difficulty as Difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.OK)
         .then(
@@ -740,16 +740,16 @@ describe('Course Module', () => {
         difficulty: Difficulty.BEGINNER,
       } as CreateCourseDto;
 
-      let courseId: string;
+      let courseId: string = '';
 
       await request(app.getHttpServer())
         .post(endpoint)
         .auth(adminToken, { type: 'bearer' })
-        .field('title', createCourseDto.title)
-        .field('description', createCourseDto.description)
-        .field('price', createCourseDto.price)
-        .field('status', createCourseDto.status)
-        .field('difficulty', createCourseDto.difficulty)
+        .field('title', createCourseDto.title as string)
+        .field('description', createCourseDto.description as string)
+        .field('price', createCourseDto.price as number)
+        .field('status', createCourseDto.status as PublishStatus)
+        .field('difficulty', createCourseDto.difficulty as Difficulty)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(
@@ -794,7 +794,7 @@ describe('Course Module', () => {
               ]),
             });
             expect(body).toEqual(expectedResponse);
-            courseId = body.data.id;
+            courseId = body.data.id as string;
           },
         );
 

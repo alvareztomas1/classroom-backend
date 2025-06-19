@@ -6,6 +6,10 @@ import {
   Repository,
 } from 'typeorm';
 
+import {
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+} from '@common/base/application/constant/base.constants';
 import { ICollection } from '@common/base/application/dto/collection.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
 import IEntity from '@common/base/domain/entity.interface';
@@ -25,28 +29,28 @@ abstract class BaseRepository<T extends IEntity> implements IRepository<T> {
       where: filter as FindOptionsWhere<T>,
       order: sort as FindOptionsOrder<T>,
       select: fields,
-      take: page.size,
-      skip: page.offset,
+      take: page?.size,
+      skip: page?.offset,
       relations: include,
     } as FindManyOptions<T>);
 
     return {
       data: items,
-      pageNumber: page.number,
-      pageSize: page.size,
-      pageCount: Math.ceil(itemCount / page.size),
+      pageNumber: page?.number || DEFAULT_PAGE_NUMBER,
+      pageSize: page?.size || DEFAULT_PAGE_NUMBER,
+      pageCount: Math.ceil(itemCount / (page?.size || DEFAULT_PAGE_SIZE)),
       itemCount,
     };
   }
 
-  async getOneById(id: string, include?: string[]): Promise<T> {
-    return this.repository.findOne({
+  async getOneById(id: string, include?: (keyof T)[]): Promise<T | null> {
+    return await this.repository.findOne({
       where: { id },
       relations: include,
     } as FindOneOptions<T>);
   }
 
-  async getOneByIdOrFail(id: string, include?: string[]): Promise<T> {
+  async getOneByIdOrFail(id: string, include?: (keyof T)[]): Promise<T> {
     const entity = await this.getOneById(id, include);
 
     if (!entity) {

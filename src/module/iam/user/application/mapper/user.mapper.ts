@@ -15,14 +15,14 @@ export class UserMapper
   fromEntityToResponseDto(entity: User): UserResponseDto {
     return new UserResponseDto(
       User.getEntityName(),
-      entity.id,
       entity.email,
       entity.firstName,
       entity.lastName,
       entity.roles,
-      entity.isVerified,
       entity.avatarUrl,
       entity.externalId,
+      entity.id,
+      entity.isVerified,
     );
   }
 

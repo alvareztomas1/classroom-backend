@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import { Readable } from 'stream';
 
 import { JWT_AUTOMATED_TESTS_SECRET } from '@test/test.constants';
 
@@ -21,5 +22,5 @@ export const mockJpgFile: Express.Multer.File = {
   destination: '/tmp/uploads',
   filename: 'profile-123.jpg',
   path: '/tmp/uploads/profile-123.jpg',
-  stream: null,
+  stream: new Readable(),
 };

@@ -46,7 +46,7 @@ export class AuthenticationGuard implements CanActivate {
       }
     }
 
-    throw error || new UnauthorizedException();
+    throw (error as Error) || new UnauthorizedException();
   }
 
   private getAuthTypes(context: ExecutionContext): AuthType[] {

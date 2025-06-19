@@ -70,7 +70,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
           responseData,
           currentRequestUrl,
           currentRequestMethod as HttpMethod,
-          baseAppUrl,
+          baseAppUrl as string,
           links,
         );
       }),

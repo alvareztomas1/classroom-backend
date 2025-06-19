@@ -27,7 +27,7 @@ export class PoliciesGuard implements CanActivate {
       await Promise.all(
         handlersCls.map((handlerCls) => {
           const handler = this.policyHandlerStorage.get(handlerCls);
-          return handler.handle(this.getContextRequest(context));
+          return handler?.handle(this.getContextRequest(context));
         }),
       ).catch((error) => {
         if (error instanceof HttpException) {

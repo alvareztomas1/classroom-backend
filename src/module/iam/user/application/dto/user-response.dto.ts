@@ -7,20 +7,20 @@ export class UserResponseDto extends BaseResponseDto {
   firstName: string;
   lastName: string;
   roles: AppRole[];
-  isVerified: boolean;
+  isVerified?: boolean;
   externalId?: string;
   avatarUrl?: string;
 
   constructor(
     type: string,
-    id: string,
     email: string,
     firstName: string,
     lastName: string,
     roles: AppRole[],
-    isVerified: boolean,
     avatarUrl?: string,
     externalId?: string,
+    id?: string,
+    isVerified?: boolean,
   ) {
     super(type, id);
 
