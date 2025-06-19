@@ -11,24 +11,24 @@ export type CourseResponseInstructor = Pick<
 
 export class CourseResponseDto extends BaseResponseDto {
   instructorId: string;
-  title: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  status: PublishStatus;
-  slug: string;
-  difficulty: Difficulty;
+  title?: string;
+  description?: string;
+  price?: number;
+  imageUrl?: string;
+  status?: PublishStatus;
+  slug?: string;
+  difficulty?: Difficulty;
   instructor?: CourseResponseInstructor;
   constructor(
     type: string,
     instructorId: string,
-    title: string,
-    description: string,
-    price: number,
-    imageUrl: string,
-    status: PublishStatus,
-    slug: string,
-    difficulty: Difficulty,
+    title?: string,
+    description?: string,
+    price?: number,
+    imageUrl?: string,
+    status?: PublishStatus,
+    slug?: string,
+    difficulty?: Difficulty,
     instructor?: CourseResponseInstructor,
     id?: string,
   ) {

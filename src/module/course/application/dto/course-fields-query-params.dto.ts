@@ -22,7 +22,7 @@ export class CourseFieldsQueryParamsDto {
       'createdAt',
       'updatedAt',
       'deletedAt',
-    ] as CourseFields,
+    ],
     {
       each: true,
     },
