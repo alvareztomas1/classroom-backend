@@ -31,7 +31,7 @@ export class UserFilterQueryParamsDto {
 
   @IsBoolean()
   @IsOptional()
-  isVerified: boolean;
+  isVerified?: boolean;
 
   @IsString()
   @IsOptional()

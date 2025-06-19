@@ -6,19 +6,19 @@ import { IDto } from '@common/base/application/dto/dto.interface';
 export class SignUpDto implements IDto {
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsNotEmpty()
   @IsString()
-  password: string;
+  password!: string;
 
   @IsNotEmpty()
   @IsString()
-  firstName: string;
+  firstName!: string;
 
   @IsNotEmpty()
   @IsString()
-  lastName: string;
+  lastName!: string;
 
   @IsOptional()
   @IsString()

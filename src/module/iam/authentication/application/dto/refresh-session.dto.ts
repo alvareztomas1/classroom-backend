@@ -3,8 +3,8 @@ import { IsEmail, IsNotEmpty } from 'class-validator';
 export class RefreshSessionDto {
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsNotEmpty()
-  refreshToken: string;
+  refreshToken!: string;
 }

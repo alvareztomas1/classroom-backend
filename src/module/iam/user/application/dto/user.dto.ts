@@ -39,5 +39,5 @@ export class UserDto extends BaseDto {
 
   @IsBoolean()
   @IsOptional()
-  isVerified: boolean;
+  isVerified?: boolean;
 }
