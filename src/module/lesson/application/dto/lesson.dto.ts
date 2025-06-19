@@ -15,11 +15,11 @@ import { Section } from '@module/section/domain/section.entity';
 export class LessonDto extends BaseDto {
   @IsNotEmpty()
   @IsUUID('4')
-  courseId: string;
+  courseId!: string;
 
   @IsNotEmpty()
   @IsUUID('4')
-  sectionId: string;
+  sectionId!: string;
 
   @IsOptional()
   @IsString()
