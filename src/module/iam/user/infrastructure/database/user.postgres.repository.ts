@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import {
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+} from '@common/base/application/constant/base.constants';
 import { ICollection } from '@common/base/application/dto/collection.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
 
@@ -20,35 +24,35 @@ export class UserPostgresRepository implements IUserRepository {
   ) {}
 
   async getAll(options: IGetAllOptions<User>): Promise<ICollection<User>> {
-    const { filter, page, sort, fields } = options || {};
+    const { filter, page: page, sort, fields } = options || {};
 
     const [items, itemCount] = await this.repository.findAndCount({
       where: {
         ...filter,
-        roles: filter.roles as unknown as AppRole,
+        roles: filter?.roles as unknown as AppRole,
       },
       order: sort,
-      select: fields,
-      take: page.size,
-      skip: page.offset,
+      select: fields as (keyof User)[],
+      take: page?.size,
+      skip: page?.offset,
     });
 
     return {
       data: items,
-      pageNumber: page.number,
-      pageSize: page.size,
-      pageCount: Math.ceil(itemCount / page.size),
+      pageNumber: page?.number || DEFAULT_PAGE_NUMBER,
+      pageSize: page?.size || DEFAULT_PAGE_SIZE,
+      pageCount: Math.ceil(itemCount / (page?.size || DEFAULT_PAGE_SIZE)),
       itemCount,
     };
   }
 
-  async getOneByEmail(email: string): Promise<User> {
+  async getOneByEmail(email: string): Promise<User | null> {
     return this.repository.findOne({
       where: { email },
     });
   }
 
-  async getOneByExternalId(externalId: string): Promise<User> {
+  async getOneByExternalId(externalId: string): Promise<User | null> {
     return this.repository.findOne({
       where: { externalId },
     });
