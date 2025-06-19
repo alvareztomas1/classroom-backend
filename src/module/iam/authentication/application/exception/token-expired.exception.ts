@@ -6,7 +6,7 @@ import {
 
 export class TokenExpiredException extends HttpException {
   constructor(
-    objectOrError?: string,
+    objectOrError: string = 'TokenExpired',
     descriptionOrOptions: string | HttpExceptionOptions = 'TokenExpired',
   ) {
     const { description, httpExceptionOptions } =
@@ -14,7 +14,7 @@ export class TokenExpiredException extends HttpException {
     super(
       HttpException.createBody(
         objectOrError,
-        description,
+        description ?? objectOrError,
         HttpStatus.UNAUTHORIZED,
       ),
       HttpStatus.UNAUTHORIZED,
