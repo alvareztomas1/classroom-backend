@@ -5,26 +5,26 @@ import { Base } from '@common/base/domain/base.entity';
 import { User } from '@module/iam/user/domain/user.entity';
 
 export class Course extends Base {
-  title: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  status: PublishStatus;
-  slug: string;
-  difficulty: Difficulty;
   instructorId: string;
+  title?: string;
+  description?: string;
+  price?: number;
+  imageUrl?: string;
+  status?: PublishStatus;
+  slug?: string;
+  difficulty?: Difficulty;
   instructor?: User;
 
   constructor(
-    id: string,
-    title: string,
-    description: string,
-    price: number,
-    imageUrl: string,
-    status: PublishStatus,
-    slug: string,
-    difficulty: Difficulty,
     instructorId: string,
+    id?: string,
+    title?: string,
+    description?: string,
+    price?: number,
+    imageUrl?: string,
+    slug?: string,
+    difficulty?: Difficulty,
+    status?: PublishStatus,
     instructor?: User,
   ) {
     super(id);

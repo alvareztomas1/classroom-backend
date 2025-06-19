@@ -17,9 +17,9 @@ export class Lesson extends Base {
   }
 
   constructor(
-    id: string,
     courseId: string,
     sectionId: string,
+    id?: string,
     title?: string,
     description?: string,
     url?: string,
