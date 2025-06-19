@@ -10,7 +10,6 @@ export class SuccessOperationResponseDto
   id?: string;
   message: string;
   success: boolean;
-  type: string;
 
   constructor(message: string, success: boolean, type: string, id?: string) {
     super(type, id);

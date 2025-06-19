@@ -2,12 +2,12 @@ import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class ConfirmPasswordDto {
   @IsNotEmpty()
-  code: string;
+  code!: string;
 
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email!: string;
 
   @IsNotEmpty()
-  newPassword: string;
+  newPassword!: string;
 }

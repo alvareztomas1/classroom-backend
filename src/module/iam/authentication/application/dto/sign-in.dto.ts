@@ -5,9 +5,9 @@ import { IDto } from '@common/base/application/dto/dto.interface';
 export class SignInDto implements IDto {
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email!: string;
 
   @IsString()
   @IsNotEmpty()
-  password: string;
+  password!: string;
 }

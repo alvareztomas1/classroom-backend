@@ -408,7 +408,7 @@ describe('Authentication Module', () => {
           .post('/api/v1/auth/confirm-user')
           .send(confirmUserDto)
           .expect(HttpStatus.OK)
-          .then(({ body }: { body }) => {
+          .then(({ body }) => {
             const expectedResponse = expect.objectContaining({
               data: expect.objectContaining({
                 type: AUTHENTICATION_NAME,

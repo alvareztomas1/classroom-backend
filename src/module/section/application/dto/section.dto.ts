@@ -11,7 +11,7 @@ import { BaseDto } from '@common/base/application/dto/base.dto';
 export class SectionDto extends BaseDto {
   @IsUUID('4')
   @IsNotEmpty()
-  courseId: string;
+  courseId!: string;
 
   @IsOptional()
   @IsString()

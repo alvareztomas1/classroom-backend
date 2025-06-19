@@ -8,6 +8,6 @@ export class SignInResponseDto
   extends BaseResponseDto
   implements ISignInResponse
 {
-  accessToken: string;
-  refreshToken: string;
+  accessToken!: string;
+  refreshToken!: string;
 }
