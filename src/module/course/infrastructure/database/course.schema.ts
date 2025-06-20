@@ -12,15 +12,23 @@ export const CourseSchema = new EntitySchema<Course>({
   columns: withBaseSchemaColumns({
     title: {
       type: String,
+      length: 100,
+      nullable: true,
     },
     description: {
       type: String,
+      length: 2000,
       nullable: true,
     },
     price: {
       type: 'decimal',
-      precision: 2,
+      precision: 10,
+      scale: 2,
       nullable: true,
+      transformer: {
+        to: (value: number | null) => value,
+        from: (value: string | null) => (value ? parseFloat(value) : null),
+      },
     },
     imageUrl: {
       type: String,
