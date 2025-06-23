@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { MIME_FILE_TYPE_MAP } from '@common/base/application/constant/file.constant';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
 import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
@@ -12,6 +13,7 @@ import {
   LESSON_REPOSITORY_KEY,
 } from '@module/lesson/application/repository/lesson.repository.interface';
 import { Lesson } from '@module/lesson/domain/lesson.entity';
+import { LessonType } from '@module/lesson/domain/lesson.type';
 
 @Injectable()
 export class LessonService extends BaseCRUDService<
@@ -28,17 +30,26 @@ export class LessonService extends BaseCRUDService<
     super(lessonRepository, lessonMapper, Lesson.getEntityName());
   }
 
+  private MIME_TYPE_TO_LESSON_TYPE: Record<string, LessonType> = {
+    [MIME_FILE_TYPE_MAP.pdf]: LessonType.PDF,
+    [MIME_FILE_TYPE_MAP.mp4]: LessonType.VIDEO,
+  };
+
   async saveOne(
     createLessonDto: CreateLessonDto,
     lessonFile?: Express.Multer.File,
   ): Promise<LessonResponseDto> {
     const { sectionId, courseId } = createLessonDto;
-    createLessonDto.url = lessonFile
-      ? await this.fileStorageService.uploadFile(
-          lessonFile,
-          this.buildFileFolder(courseId, sectionId),
-        )
-      : undefined;
+
+    if (lessonFile) {
+      createLessonDto.url = await this.fileStorageService.uploadFile(
+        lessonFile,
+        this.buildFileFolder(courseId, sectionId),
+      );
+
+      createLessonDto.lessonType =
+        this.MIME_TYPE_TO_LESSON_TYPE[lessonFile.mimetype];
+    }
 
     return super.saveOne(createLessonDto);
   }
@@ -63,6 +74,9 @@ export class LessonService extends BaseCRUDService<
         lessonFile,
         this.buildFileFolder(courseId, sectionId),
       );
+
+      UpdateLessonDto.lessonType =
+        this.MIME_TYPE_TO_LESSON_TYPE[lessonFile.mimetype];
     }
 
     return super.updateOne(id, UpdateLessonDto);
