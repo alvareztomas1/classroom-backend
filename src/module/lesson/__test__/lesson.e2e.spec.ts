@@ -21,6 +21,7 @@ import { createAccessToken, createLargeMockFile } from '@test/test.util';
 import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
 import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
+import { LessonType } from '@module/lesson/domain/lesson.type';
 
 describe('Lesson Module', () => {
   let app: NestExpressApplication;
@@ -172,13 +173,14 @@ describe('Lesson Module', () => {
   });
 
   describe('POST - /course/:courseId/section/:sectionId/lesson', () => {
-    it('Should create a lesson', async () => {
+    it('Should create lessons with lesson type based on file', async () => {
       const createLessonDto = {
         title: 'Lesson 1',
         description: 'Description 1',
       } as CreateLessonDto;
+      const videoMock = createLargeMockFile('video.mp4', 60);
 
-      return await request(app.getHttpServer())
+      await request(app.getHttpServer())
         .post(
           `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
         )
@@ -198,6 +200,44 @@ describe('Lesson Module', () => {
                 title: createLessonDto.title,
                 description: createLessonDto.description,
                 url: 'test-url',
+                lessonType: LessonType.PDF,
+              }),
+            }),
+            links: expect.arrayContaining([
+              expect.objectContaining({
+                href: expect.stringContaining(
+                  `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+                ),
+                rel: 'self',
+                method: HttpMethod.POST,
+              }),
+            ]),
+          });
+
+          expect(body).toEqual(expectedResponse);
+        });
+
+      return await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .field('title', createLessonDto.title as string)
+        .field('description', createLessonDto.description as string)
+        .attach('file', videoMock)
+        .expect(HttpStatus.CREATED)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.objectContaining({
+              type: 'lesson',
+              id: expect.any(String),
+              attributes: expect.objectContaining({
+                courseId: existingIds.course.first,
+                sectionId: existingIds.section.first,
+                title: createLessonDto.title,
+                description: createLessonDto.description,
+                url: 'test-url',
+                lessonType: LessonType.VIDEO,
               }),
             }),
             links: expect.arrayContaining([
@@ -286,6 +326,7 @@ describe('Lesson Module', () => {
         title: 'Edited',
       } as UpdateLessonDto;
       let lessonId: string = '';
+      const videoMock = createLargeMockFile('video.mp4', 60);
 
       await request(app.getHttpServer())
         .post(
@@ -310,6 +351,7 @@ describe('Lesson Module', () => {
                   title: createLessonDto.title,
                   description: createLessonDto.description,
                   url: 'test-url',
+                  lessonType: LessonType.PDF,
                 }),
               }),
               links: expect.arrayContaining([
@@ -332,7 +374,7 @@ describe('Lesson Module', () => {
           `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
         )
         .field('title', updateLessonDto.title as string)
-        .attach('file', fileMock)
+        .attach('file', videoMock)
         .auth(adminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(({ body }) => {
@@ -346,6 +388,7 @@ describe('Lesson Module', () => {
                 title: updateLessonDto.title,
                 description: createLessonDto.description,
                 url: 'test-url',
+                lessonType: LessonType.VIDEO,
               }),
             }),
             links: expect.arrayContaining([
