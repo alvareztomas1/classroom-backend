@@ -1,21 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { HttpStatus } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import path from 'path';
 import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
+import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant';
 import {
   SerializedResponseDto,
   SerializedResponseDtoCollection,
 } from '@common/base/application/dto/serialized-response.dto';
+import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
+import { MBTransformer } from '@common/transformers/mb.transformer';
 
 import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
-import { createAccessToken } from '@test/test.util';
+import { createAccessToken, createLargeMockFile } from '@test/test.util';
 
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
@@ -31,6 +35,13 @@ describe('User Module', () => {
   const adminToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000Y',
   });
+
+  const imageMock = path.resolve(
+    __dirname,
+    '../../../../test/__mocks__/avatar.jpg',
+  );
+
+  const txtMock = path.resolve(__dirname, '../../../../test/__mocks__/txt.txt');
 
   beforeAll(async () => {
     await loadFixtures(`${__dirname}/fixture`, datasourceOptions);
@@ -340,7 +351,8 @@ describe('User Module', () => {
       await request(app.getHttpServer())
         .patch('/api/v1/user/me')
         .auth(superAdminToken, { type: 'bearer' })
-        .send({ firstName: 'updated' })
+        .field({ firstName: 'updated' })
+        .attach('avatar', imageMock)
         .expect(HttpStatus.OK)
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
@@ -359,6 +371,51 @@ describe('User Module', () => {
         .patch('/api/v1/user/me')
         .send({ firstName: 'updated' })
         .expect(HttpStatus.UNAUTHORIZED);
+    });
+
+    it('Should validate oversized avatar file', async () => {
+      const oversizedFile = createLargeMockFile('avatar.jpg', 100);
+      await request(app.getHttpServer())
+        .patch('/api/v1/user/me')
+        .auth(superAdminToken, { type: 'bearer' })
+        .field({ firstName: 'updated' })
+        .attach('avatar', oversizedFile)
+        .expect(HttpStatus.PAYLOAD_TOO_LARGE)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: expect.objectContaining({
+              status: HttpStatus.PAYLOAD_TOO_LARGE.toString(),
+              title: 'File too large',
+              source: expect.objectContaining({
+                pointer: '/api/v1/user/me',
+              }),
+              detail: `File "avatar.jpg" exceeds the maximum size of ${MBTransformer.toMB(MAX_FILE_SIZES[ImageFormat.JPG as keyof typeof MAX_FILE_SIZES]).toFixed(1)} MB.`,
+            }),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should validate wrong avatar file format', async () => {
+      await request(app.getHttpServer())
+        .patch('/api/v1/user/me')
+        .auth(superAdminToken, { type: 'bearer' })
+        .field({ firstName: 'updated' })
+        .attach('avatar', txtMock)
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: expect.objectContaining({
+              detail: `File "txt.txt" is invalid. Only .${Object.values(ImageFormat).join(', .')} formats are allowed for avatar field.`,
+              status: HttpStatus.BAD_REQUEST.toString(),
+              source: expect.objectContaining({
+                pointer: '/api/v1/user/me',
+              }),
+              title: 'Wrong format',
+            }),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
     });
   });
 });

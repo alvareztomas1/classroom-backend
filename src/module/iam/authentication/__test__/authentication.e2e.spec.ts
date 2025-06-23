@@ -6,13 +6,16 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
+import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant';
+import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { IAppErrorResponse } from '@common/base/application/exception/app-error-response.interface';
+import { MBTransformer } from '@common/transformers/mb.transformer';
 
 import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
-import { createAccessToken } from '@test/test.util';
+import { createAccessToken, createLargeMockFile } from '@test/test.util';
 
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
@@ -379,13 +382,44 @@ describe('Authentication Module', () => {
           .then(({ body }) => {
             expect(body as IAppErrorResponse).toMatchObject({
               error: expect.objectContaining({
-                detail:
-                  'Only .jpeg, .jpg, .png, .webp, .svg, .avif formats are allowed for avatar image',
+                detail: `File "txt.txt" is invalid. Only .${Object.values(ImageFormat).join(', .')} formats are allowed for avatar field.`,
                 status: HttpStatus.BAD_REQUEST.toString(),
                 source: { pointer: '/api/v1/auth/sign-up' },
                 title: 'Wrong format',
               }),
             });
+          });
+      });
+
+      it('Should validate oversized avatar file', async () => {
+        const signUpDto: SignUpDto = {
+          email: 'some@account.com',
+          password: '$Test123',
+          firstName: 'test',
+          lastName: 'test',
+        };
+        const oversizedFile = createLargeMockFile('avatar.jpg', 100);
+
+        await request(app.getHttpServer())
+          .post('/api/v1/auth/sign-up')
+          .field('email', signUpDto.email)
+          .field('password', signUpDto.password)
+          .field('firstName', signUpDto.firstName)
+          .field('lastName', signUpDto.lastName)
+          .attach('avatar', oversizedFile)
+          .expect(HttpStatus.PAYLOAD_TOO_LARGE)
+          .then(({ body }) => {
+            const expectedResponse = expect.objectContaining({
+              error: expect.objectContaining({
+                status: HttpStatus.PAYLOAD_TOO_LARGE.toString(),
+                title: 'File too large',
+                source: expect.objectContaining({
+                  pointer: '/api/v1/auth/sign-up',
+                }),
+                detail: `File "avatar.jpg" exceeds the maximum size of ${MBTransformer.toMB(MAX_FILE_SIZES[ImageFormat.JPG as keyof typeof MAX_FILE_SIZES]).toFixed(1)} MB.`,
+              }),
+            });
+            expect(body).toEqual(expectedResponse);
           });
       });
     });

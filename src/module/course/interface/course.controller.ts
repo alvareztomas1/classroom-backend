@@ -18,8 +18,9 @@ import { Hypermedia } from '@common/base/application/decorator/hypermedia.decora
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/page-query-params';
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
+import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
-import { ImageOptionsFactory } from '@common/base/application/factory/image-options.factory';
+import { FileOptionsFactory } from '@common/base/application/factory/file-options.factory';
 
 import { CourseFieldsQueryParamsDto } from '@module/course/application/dto/course-fields-query-params.dto';
 import { CourseFilterQueryParamsDto } from '@module/course/application/dto/course-filter-query-params.dto';
@@ -40,7 +41,12 @@ import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/g
 import { User } from '@module/iam/user/domain/user.entity';
 
 @Controller('course')
-@UseInterceptors(FileInterceptor('image', ImageOptionsFactory.create('image')))
+@UseInterceptors(
+  FileInterceptor(
+    'image',
+    FileOptionsFactory.create('image', Object.values(ImageFormat)),
+  ),
+)
 @UseGuards(PoliciesGuard)
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}

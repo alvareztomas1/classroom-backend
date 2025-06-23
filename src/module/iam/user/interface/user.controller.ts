@@ -13,8 +13,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/page-query-params';
+import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
-import { ImageOptionsFactory } from '@common/base/application/factory/image-options.factory';
+import { FileOptionsFactory } from '@common/base/application/factory/file-options.factory';
 
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
@@ -31,7 +32,10 @@ import { User } from '@module/iam/user/domain/user.entity';
 
 @Controller('user')
 @UseInterceptors(
-  FileInterceptor('avatar', ImageOptionsFactory.create('avatar')),
+  FileInterceptor(
+    'avatar',
+    FileOptionsFactory.create('avatar', Object.values(ImageFormat)),
+  ),
 )
 @UseGuards(PoliciesGuard)
 export class UserController {

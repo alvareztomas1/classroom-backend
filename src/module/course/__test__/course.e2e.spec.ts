@@ -6,20 +6,23 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
+import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant';
 import {
   SerializedResponseDto,
   SerializedResponseDtoCollection,
 } from '@common/base/application/dto/serialized-response.dto';
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 import { Difficulty } from '@common/base/application/enum/difficulty.enum';
+import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
+import { MBTransformer } from '@common/transformers/mb.transformer';
 
 import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
-import { createAccessToken } from '@test/test.util';
+import { createAccessToken, createLargeMockFile } from '@test/test.util';
 
 import { CourseResponseDto } from '@module/course/application/dto/course-response.dto';
 import { CourseDto } from '@module/course/application/dto/course.dto';
@@ -33,6 +36,8 @@ describe('Course Module', () => {
     __dirname,
     '../../../test/__mocks__/avatar.jpg',
   );
+
+  const txtMock = path.resolve(__dirname, '../../../test/__mocks__/txt.txt');
 
   const adminToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000Y',
@@ -552,6 +557,78 @@ describe('Course Module', () => {
         .auth(regularToken, { type: 'bearer' })
         .send(createCourseDto)
         .expect(HttpStatus.FORBIDDEN);
+    });
+
+    it('Should validate oversize file', async () => {
+      const createCourseDto = {
+        title: 'Introduction to Programming 2',
+        description: 'Learn the basics of programming with JavaScript 2',
+        price: 49.99,
+        status: PublishStatus.drafted,
+        difficulty: Difficulty.BEGINNER,
+      } as CreateCourseDto;
+      const oversizedImageMock = createLargeMockFile('image.svg', 30);
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(adminToken, { type: 'bearer' })
+        .field('title', createCourseDto.title as string)
+        .field('description', createCourseDto.description as string)
+        .field('price', createCourseDto.price as number)
+        .field('status', createCourseDto.status as PublishStatus)
+        .field('difficulty', createCourseDto.difficulty as Difficulty)
+        .attach('image', oversizedImageMock)
+        .expect(HttpStatus.PAYLOAD_TOO_LARGE)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: expect.objectContaining({
+              status: HttpStatus.PAYLOAD_TOO_LARGE.toString(),
+              title: 'File too large',
+              source: expect.objectContaining({
+                pointer: endpoint,
+              }),
+              detail: `File "image.svg" exceeds the maximum size of ${MBTransformer.toMB(MAX_FILE_SIZES[ImageFormat.SVG]).toFixed(1)} MB.`,
+            }),
+          });
+
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should validate invalid file format', async () => {
+      const createCourseDto = {
+        title: 'Introduction to Programming 2',
+        description: 'Learn the basics of programming with JavaScript 2',
+        price: 49.99,
+        status: PublishStatus.drafted,
+        difficulty: Difficulty.BEGINNER,
+      } as CreateCourseDto;
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(adminToken, { type: 'bearer' })
+        .field('title', createCourseDto.title as string)
+        .field('description', createCourseDto.description as string)
+        .field('price', createCourseDto.price as number)
+        .field('status', createCourseDto.status as PublishStatus)
+        .field('difficulty', createCourseDto.difficulty as Difficulty)
+        .attach('image', txtMock)
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          const expectedExtensions = Object.values(ImageFormat).join(', .');
+          const expectedResponse = expect.objectContaining({
+            error: expect.objectContaining({
+              status: HttpStatus.BAD_REQUEST.toString(),
+              source: expect.objectContaining({
+                pointer: endpoint,
+              }),
+              title: 'Wrong format',
+              detail: `File "txt.txt" is invalid. Only .${expectedExtensions} formats are allowed for image field.`,
+            }),
+          });
+
+          expect(body).toEqual(expectedResponse);
+        });
     });
   });
 
