@@ -14,6 +14,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
+import { FileFormat } from '@common/base/application/enum/file-format.enum';
+import { FileOptionsFactory } from '@common/base/application/factory/file-options.factory';
 
 import { CreateLessonDtoQuery } from '@module/lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
@@ -21,7 +23,12 @@ import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dt
 import { LessonService } from '@module/lesson/application/service/lesson.service';
 
 @Controller('course/:courseId/section/:sectionId/lesson')
-@UseInterceptors(FileInterceptor('file'))
+@UseInterceptors(
+  FileInterceptor(
+    'file',
+    FileOptionsFactory.create('file', Object.values(FileFormat)),
+  ),
+)
 export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 
