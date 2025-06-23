@@ -1,4 +1,7 @@
+import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
+import * as os from 'os';
+import * as path from 'path';
 import { Readable } from 'stream';
 
 import { JWT_AUTOMATED_TESTS_SECRET } from '@test/test.constants';
@@ -24,3 +27,13 @@ export const mockJpgFile: Express.Multer.File = {
   path: '/tmp/uploads/profile-123.jpg',
   stream: new Readable(),
 };
+
+export function createLargeMockFile(
+  fileName: string,
+  sizeInMB: number,
+): string {
+  const tempFilePath = path.join(os.tmpdir(), fileName);
+  const sizeInBytes = sizeInMB * 1024 * 1024;
+  fs.writeFileSync(tempFilePath, Buffer.alloc(sizeInBytes, 0));
+  return tempFilePath;
+}

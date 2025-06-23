@@ -11,8 +11,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
+import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
-import { ImageOptionsFactory } from '@common/base/application/factory/image-options.factory';
+import { FileOptionsFactory } from '@common/base/application/factory/file-options.factory';
 
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
@@ -35,7 +36,10 @@ export class AuthenticationController {
 
   @Post('sign-up')
   @UseInterceptors(
-    FileInterceptor('avatar', ImageOptionsFactory.create('avatar')),
+    FileInterceptor(
+      'avatar',
+      FileOptionsFactory.create('avatar', Object.values(ImageFormat)),
+    ),
   )
   @Hypermedia([
     {

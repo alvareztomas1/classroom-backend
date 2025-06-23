@@ -6,14 +6,17 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
+import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant';
 import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
+import { FileFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
+import { MBTransformer } from '@common/transformers/mb.transformer';
 
 import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
-import { createAccessToken } from '@test/test.util';
+import { createAccessToken, createLargeMockFile } from '@test/test.util';
 
 import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
@@ -26,10 +29,9 @@ describe('Lesson Module', () => {
     sub: '00000000-0000-0000-0000-00000000000Y',
   });
 
-  const fileMock = path.resolve(
-    __dirname,
-    '../../../test/__mocks__/avatar.jpg',
-  );
+  const fileMock = path.resolve(__dirname, '../../../test/__mocks__/pdf.pdf');
+
+  const txtMock = path.resolve(__dirname, '../../../test/__mocks__/txt.txt');
 
   beforeAll(async () => {
     await loadFixtures(`${__dirname}/fixture`, datasourceOptions);
@@ -207,6 +209,66 @@ describe('Lesson Module', () => {
                 method: HttpMethod.POST,
               }),
             ]),
+          });
+
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error when receiving an invalid file', async () => {
+      const createLessonDto = {
+        title: 'Lesson 1',
+        description: 'Description 1',
+      } as CreateLessonDto;
+
+      await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .field('title', createLessonDto.title as string)
+        .field('description', createLessonDto.description as string)
+        .attach('file', txtMock)
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          const expectedExtensions = Object.values(FileFormat).join(', .');
+          const expectedResponse = expect.objectContaining({
+            error: expect.objectContaining({
+              status: HttpStatus.BAD_REQUEST.toString(),
+              source: expect.objectContaining({
+                pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+              }),
+              title: 'Wrong format',
+              detail: `File "txt.txt" is invalid. Only .${expectedExtensions} formats are allowed for file field.`,
+            }),
+          });
+
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny lesson creation with oversized file', async () => {
+      const largePdfMock = createLargeMockFile('large.pdf', 60);
+
+      await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .field('title', 'Lesson Oversized')
+        .field('description', 'Test oversized file')
+        .attach('file', largePdfMock)
+        .expect(HttpStatus.PAYLOAD_TOO_LARGE)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: expect.objectContaining({
+              status: HttpStatus.PAYLOAD_TOO_LARGE.toString(),
+              title: 'File too large',
+              source: expect.objectContaining({
+                pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+              }),
+              detail: `File "large.pdf" exceeds the maximum size of ${MBTransformer.toMB(MAX_FILE_SIZES[FileFormat.PDF]).toFixed(1)} MB.`,
+            }),
           });
 
           expect(body).toEqual(expectedResponse);
