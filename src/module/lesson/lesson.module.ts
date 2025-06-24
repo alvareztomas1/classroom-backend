@@ -5,6 +5,7 @@ import { AuthorizationModule } from '@module/iam/authorization/authorization.mod
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 import { LessonMapper } from '@module/lesson/application/mapper/lesson.mapper';
 import { CreateLessonPolicyHandler } from '@module/lesson/application/policy/create-lesson-policy.handler';
+import { UpdateLessonPolicyHandler } from '@module/lesson/application/policy/update-lesson-policy.handler';
 import { LESSON_REPOSITORY_KEY } from '@module/lesson/application/repository/lesson.repository.interface';
 import { LessonService } from '@module/lesson/application/service/lesson.service';
 import { Lesson } from '@module/lesson/domain/lesson.entity';
@@ -12,13 +13,17 @@ import { lessonPermissions } from '@module/lesson/domain/lesson.permissions';
 import { LessonPostgresRepository } from '@module/lesson/infrastructure/database/lesson.postgres.repository';
 import { LessonSchema } from '@module/lesson/infrastructure/database/lesson.schema';
 import { LessonController } from '@module/lesson/interface/lesson.controller';
+import { SectionModule } from '@module/section/section.module';
 
 const lessonRepositoryProvider: Provider = {
   provide: LESSON_REPOSITORY_KEY,
   useClass: LessonPostgresRepository,
 };
 
-const policyHandlersProvider = [CreateLessonPolicyHandler];
+const policyHandlersProvider = [
+  CreateLessonPolicyHandler,
+  UpdateLessonPolicyHandler,
+];
 
 @Module({
   imports: [

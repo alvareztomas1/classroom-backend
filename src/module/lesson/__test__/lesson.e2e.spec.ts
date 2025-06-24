@@ -553,6 +553,129 @@ describe('Lesson Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should deny access to regular users', async () => {
+      const updateLessonDto = {
+        title: 'Edited',
+      } as UpdateLessonDto;
+      return await request(app.getHttpServer())
+        .patch(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${existingIds.lesson.first}`,
+        )
+        .field('title', updateLessonDto.title as string)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${existingIds.lesson.first}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny access to non instructors admins', async () => {
+      const updateLessonDto = {
+        title: 'Edited',
+      } as UpdateLessonDto;
+      return await request(app.getHttpServer())
+        .patch(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${existingIds.lesson.first}`,
+        )
+        .field('title', updateLessonDto.title as string)
+        .auth(secondAdminToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${existingIds.lesson.first}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should grant access to super admins', async () => {
+      const updateLessonDto = {
+        title: 'Edited',
+      } as UpdateLessonDto;
+      return await request(app.getHttpServer())
+        .patch(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${existingIds.lesson.first}`,
+        )
+        .field('title', updateLessonDto.title as string)
+        .auth(superAdminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.any(Object),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error if the lesson does not belong to the section', async () => {
+      const updateLessonDto = {
+        title: 'Edited',
+      } as UpdateLessonDto;
+      return await request(app.getHttpServer())
+        .patch(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.third}/lesson/${existingIds.lesson.first}`,
+        )
+        .field('title', updateLessonDto.title as string)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `The lesson with id ${existingIds.lesson.first} does not belong to the section with id ${existingIds.section.third}`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.third}/lesson/${existingIds.lesson.first}`,
+              },
+              status: HttpStatus.BAD_REQUEST.toString(),
+              title: 'Bad request',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error if the section does not belong to the course', async () => {
+      const updateLessonDto = {
+        title: 'Edited',
+      } as UpdateLessonDto;
+      return await request(app.getHttpServer())
+        .patch(
+          `${endpoint}/${existingIds.course.second}/section/${existingIds.section.first}/lesson/${existingIds.lesson.first}`,
+        )
+        .field('title', updateLessonDto.title as string)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `The section with id ${existingIds.section.first} does not belong to the course with id ${existingIds.course.second}`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.second}/section/${existingIds.section.first}/lesson/${existingIds.lesson.first}`,
+              },
+              status: HttpStatus.BAD_REQUEST.toString(),
+              title: 'Bad request',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 
   describe('DELETE - /course/:courseId/section/:sectionId/lesson/:id', () => {

@@ -24,6 +24,7 @@ import { CreateLessonDtoQuery } from '@module/lesson/application/dto/create-less
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
 import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
 import { CreateLessonPolicyHandler } from '@module/lesson/application/policy/create-lesson-policy.handler';
+import { UpdateLessonPolicyHandler } from '@module/lesson/application/policy/update-lesson-policy.handler';
 import { LessonService } from '@module/lesson/application/service/lesson.service';
 
 @Controller('course/:courseId/section/:sectionId/lesson')
@@ -61,6 +62,7 @@ export class LessonController {
   }
 
   @Patch(':id')
+  @Policies(UpdateLessonPolicyHandler)
   async updateOne(
     @Body() updateLessonDto: UpdateLessonDto,
     @Param('sectionId', ParseUUIDPipe) sectionId: string,
