@@ -41,7 +41,7 @@ const policyHandlersProviders = [
     ...policyHandlersProviders,
   ],
   controllers: [SectionController],
-  exports: [SectionService, sectionRepositoryProvider],
+  exports: [sectionRepositoryProvider],
 })
 export class SectionModule implements OnModuleInit {
   constructor(private readonly registry: AppSubjectPermissionStorage) {}

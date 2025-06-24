@@ -18,6 +18,7 @@ import { datasourceOptions } from '@config/orm.config';
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken, createLargeMockFile } from '@test/test.util';
 
+import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
 import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
@@ -28,6 +29,15 @@ describe('Lesson Module', () => {
 
   const adminToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000Y',
+  });
+  const secondAdminToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000W',
+  });
+  const regularToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000Z',
+  });
+  const superAdminToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000X',
   });
 
   const fileMock = path.resolve(__dirname, '../../../test/__mocks__/pdf.pdf');
@@ -60,6 +70,9 @@ describe('Lesson Module', () => {
       first: '31487427-8f89-4e65-bd09-fb84ab56775b',
       second: 'e231901b-57a6-47c0-b84d-d58ce150a315',
       third: '10950e31-025b-4328-b0c1-e3d7062e5fae',
+    },
+    lesson: {
+      first: '23de5a50-aa82-45f1-996e-7e6730852631',
     },
   };
 
@@ -311,6 +324,113 @@ describe('Lesson Module', () => {
             }),
           });
 
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny access to regular users', async () => {
+      await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+        )
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Create.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny access to non instructors admins', async () => {
+      await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+        )
+        .auth(secondAdminToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Create.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should grant access to super admins', async () => {
+      await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+        )
+        .auth(superAdminToken, { type: 'bearer' })
+        .expect(HttpStatus.CREATED)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.any(Object),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error if the section does not belong to the course', async () => {
+      const nonExistingCourseId = 'f7b7b729-cad2-4aae-a6cc-fa75a80f550b';
+
+      await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${nonExistingCourseId}/section/${existingIds.section.first}/lesson`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `The section with id ${existingIds.section.first} does not belong to the course with id ${nonExistingCourseId}`,
+              source: {
+                pointer: `${endpoint}/${nonExistingCourseId}/section/${existingIds.section.first}/lesson`,
+              },
+              status: HttpStatus.BAD_REQUEST.toString(),
+              title: 'Bad request',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error if the section does not exists', async () => {
+      const nonExistingSectionId = '17aa38f3-507e-44f8-9ffc-a7badebe8fe3';
+
+      await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${existingIds.course.first}/section/${nonExistingSectionId}/lesson`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `Entity with id ${nonExistingSectionId} not found`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.first}/section/${nonExistingSectionId}/lesson`,
+              },
+              status: HttpStatus.NOT_FOUND.toString(),
+              title: 'Entity not found',
+            },
+          });
           expect(body).toEqual(expectedResponse);
         });
     });
