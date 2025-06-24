@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -17,12 +18,18 @@ import { SuccessOperationResponseDto } from '@common/base/application/dto/succes
 import { FileFormat } from '@common/base/application/enum/file-format.enum';
 import { FileOptionsFactory } from '@common/base/application/factory/file-options.factory';
 
+import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
 import { CreateLessonDtoQuery } from '@module/lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
 import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
+import { CreateLessonPolicyHandler } from '@module/lesson/application/policy/create-lesson-policy.handler';
+import { DeleteLessonPolicyHandler } from '@module/lesson/application/policy/delete-lession-policy.handler';
+import { UpdateLessonPolicyHandler } from '@module/lesson/application/policy/update-lesson-policy.handler';
 import { LessonService } from '@module/lesson/application/service/lesson.service';
 
 @Controller('course/:courseId/section/:sectionId/lesson')
+@UseGuards(PoliciesGuard)
 @UseInterceptors(
   FileInterceptor(
     'file',
@@ -42,6 +49,7 @@ export class LessonController {
   }
 
   @Post()
+  @Policies(CreateLessonPolicyHandler)
   async saveOne(
     @Body() createLessonDto: CreateLessonDtoQuery,
     @Param('sectionId', ParseUUIDPipe) sectionId: string,
@@ -55,6 +63,7 @@ export class LessonController {
   }
 
   @Patch(':id')
+  @Policies(UpdateLessonPolicyHandler)
   async updateOne(
     @Body() updateLessonDto: UpdateLessonDto,
     @Param('sectionId', ParseUUIDPipe) sectionId: string,
@@ -70,6 +79,7 @@ export class LessonController {
   }
 
   @Delete(':id')
+  @Policies(DeleteLessonPolicyHandler)
   async deleteOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Param('courseId', ParseUUIDPipe) _courseId: string,

@@ -30,7 +30,7 @@ export class FileOptionsFactory implements MulterOptions {
     const maxFileSize =
       Math.max(
         ...formats.map((format) => MAX_FILE_SIZES[format as FileFormat]),
-      ) + 1;
+      ) + 5;
 
     return {
       limits: {
