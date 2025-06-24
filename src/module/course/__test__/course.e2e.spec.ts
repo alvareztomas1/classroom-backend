@@ -567,7 +567,7 @@ describe('Course Module', () => {
         status: PublishStatus.drafted,
         difficulty: Difficulty.BEGINNER,
       } as CreateCourseDto;
-      const oversizedImageMock = createLargeMockFile('image.svg', 30);
+      const oversizedImageMock = createLargeMockFile('image.svg', 5.1);
 
       await request(app.getHttpServer())
         .post(endpoint)

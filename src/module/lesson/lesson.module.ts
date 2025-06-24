@@ -5,6 +5,7 @@ import { AuthorizationModule } from '@module/iam/authorization/authorization.mod
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 import { LessonMapper } from '@module/lesson/application/mapper/lesson.mapper';
 import { CreateLessonPolicyHandler } from '@module/lesson/application/policy/create-lesson-policy.handler';
+import { DeleteLessonPolicyHandler } from '@module/lesson/application/policy/delete-lession-policy.handler';
 import { UpdateLessonPolicyHandler } from '@module/lesson/application/policy/update-lesson-policy.handler';
 import { LESSON_REPOSITORY_KEY } from '@module/lesson/application/repository/lesson.repository.interface';
 import { LessonService } from '@module/lesson/application/service/lesson.service';
@@ -23,6 +24,7 @@ const lessonRepositoryProvider: Provider = {
 const policyHandlersProvider = [
   CreateLessonPolicyHandler,
   UpdateLessonPolicyHandler,
+  DeleteLessonPolicyHandler,
 ];
 
 @Module({

@@ -798,5 +798,246 @@ describe('Lesson Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should deny access to regular users', async () => {
+      const createLessonDto = {
+        title: 'Lesson 1',
+        description: 'Description 1',
+      } as CreateLessonDto;
+      let lessonId: string = '';
+
+      await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .field('title', createLessonDto.title as string)
+        .field('description', createLessonDto.description as string)
+        .attach('file', fileMock)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<LessonResponseDto> }) => {
+            lessonId = body.data.id as string;
+
+            const expectedResponse = expect.objectContaining({
+              data: expect.objectContaining({
+                type: 'lesson',
+                id: expect.any(String),
+                attributes: expect.objectContaining({
+                  courseId: existingIds.course.first,
+                  sectionId: existingIds.section.first,
+                  title: createLessonDto.title,
+                  description: createLessonDto.description,
+                  url: 'test-url',
+                }),
+              }),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+                  ),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+              ]),
+            });
+
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+
+      return await request(app.getHttpServer())
+        .delete(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+        )
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Delete.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny access to non instructors admins', async () => {
+      const createLessonDto = {
+        title: 'Lesson 1',
+        description: 'Description 1',
+      } as CreateLessonDto;
+      let lessonId: string = '';
+
+      await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .field('title', createLessonDto.title as string)
+        .field('description', createLessonDto.description as string)
+        .attach('file', fileMock)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<LessonResponseDto> }) => {
+            lessonId = body.data.id as string;
+
+            const expectedResponse = expect.objectContaining({
+              data: expect.objectContaining({
+                type: 'lesson',
+                id: expect.any(String),
+                attributes: expect.objectContaining({
+                  courseId: existingIds.course.first,
+                  sectionId: existingIds.section.first,
+                  title: createLessonDto.title,
+                  description: createLessonDto.description,
+                  url: 'test-url',
+                }),
+              }),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+                  ),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+              ]),
+            });
+
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+
+      return await request(app.getHttpServer())
+        .delete(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+        )
+        .auth(secondAdminToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Delete.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should grant access to super admins', async () => {
+      const createLessonDto = {
+        title: 'Lesson 1',
+        description: 'Description 1',
+      } as CreateLessonDto;
+      let lessonId: string = '';
+
+      await request(app.getHttpServer())
+        .post(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .field('title', createLessonDto.title as string)
+        .field('description', createLessonDto.description as string)
+        .attach('file', fileMock)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<LessonResponseDto> }) => {
+            lessonId = body.data.id as string;
+
+            const expectedResponse = expect.objectContaining({
+              data: expect.objectContaining({
+                type: 'lesson',
+                id: expect.any(String),
+                attributes: expect.objectContaining({
+                  courseId: existingIds.course.first,
+                  sectionId: existingIds.section.first,
+                  title: createLessonDto.title,
+                  description: createLessonDto.description,
+                  url: 'test-url',
+                }),
+              }),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+                  ),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+              ]),
+            });
+
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+
+      return await request(app.getHttpServer())
+        .delete(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+        )
+        .auth(superAdminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.any(Object),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error if the lesson does not belong to the section', async () => {
+      return await request(app.getHttpServer())
+        .delete(
+          `${endpoint}/${existingIds.course.first}/section/${existingIds.section.third}/lesson/${existingIds.lesson.first}`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `The lesson with id ${existingIds.lesson.first} does not belong to the section with id ${existingIds.section.third}`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.third}/lesson/${existingIds.lesson.first}`,
+              },
+              status: HttpStatus.BAD_REQUEST.toString(),
+              title: 'Bad request',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error if the section does not belong to the course', async () => {
+      return await request(app.getHttpServer())
+        .delete(
+          `${endpoint}/${existingIds.course.second}/section/${existingIds.section.first}/lesson/${existingIds.lesson.first}`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `The section with id ${existingIds.section.first} does not belong to the course with id ${existingIds.course.second}`,
+              source: {
+                pointer: `${endpoint}/${existingIds.course.second}/section/${existingIds.section.first}/lesson/${existingIds.lesson.first}`,
+              },
+              status: HttpStatus.BAD_REQUEST.toString(),
+              title: 'Bad request',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 });
