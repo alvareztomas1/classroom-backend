@@ -147,10 +147,31 @@ describe('Lesson Module', () => {
               links: expect.arrayContaining([
                 expect.objectContaining({
                   href: expect.stringContaining(
-                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
                   ),
                   rel: 'self',
                   method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+                  ),
+                  rel: 'create-lesson',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+                  ),
+                  rel: 'update-lesson',
+                  method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+                  ),
+                  rel: 'delete-lesson',
+                  method: HttpMethod.DELETE,
                 }),
               ]),
             });
@@ -192,6 +213,7 @@ describe('Lesson Module', () => {
         description: 'Description 1',
       } as CreateLessonDto;
       const videoMock = createLargeMockFile('video.mp4', 60);
+      let lessonId = '';
 
       await request(app.getHttpServer())
         .post(
@@ -239,33 +261,57 @@ describe('Lesson Module', () => {
         .field('description', createLessonDto.description as string)
         .attach('file', videoMock)
         .expect(HttpStatus.CREATED)
-        .then(({ body }) => {
-          const expectedResponse = expect.objectContaining({
-            data: expect.objectContaining({
-              type: 'lesson',
-              id: expect.any(String),
-              attributes: expect.objectContaining({
-                courseId: existingIds.course.first,
-                sectionId: existingIds.section.first,
-                title: createLessonDto.title,
-                description: createLessonDto.description,
-                url: 'test-url',
-                lessonType: LessonType.VIDEO,
+        .then(
+          ({ body }: { body: SerializedResponseDto<LessonResponseDto> }) => {
+            lessonId = body.data.id as string;
+            const expectedResponse = expect.objectContaining({
+              data: expect.objectContaining({
+                type: 'lesson',
+                id: expect.any(String),
+                attributes: expect.objectContaining({
+                  courseId: existingIds.course.first,
+                  sectionId: existingIds.section.first,
+                  title: createLessonDto.title,
+                  description: createLessonDto.description,
+                  url: 'test-url',
+                  lessonType: LessonType.VIDEO,
+                }),
               }),
-            }),
-            links: expect.arrayContaining([
-              expect.objectContaining({
-                href: expect.stringContaining(
-                  `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
-                ),
-                rel: 'self',
-                method: HttpMethod.POST,
-              }),
-            ]),
-          });
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+                  ),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+                  ),
+                  rel: 'get-lesson',
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+                  ),
+                  rel: 'update-lesson',
+                  method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  href: expect.stringContaining(
+                    `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+                  ),
+                  rel: 'delete-lesson',
+                  method: HttpMethod.DELETE,
+                }),
+              ]),
+            });
 
-          expect(body).toEqual(expectedResponse);
-        });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
     });
 
     it('Should throw an error when receiving an invalid file', async () => {
@@ -519,6 +565,27 @@ describe('Lesson Module', () => {
                 rel: 'self',
                 method: HttpMethod.PATCH,
               }),
+              expect.objectContaining({
+                href: expect.stringContaining(
+                  `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/`,
+                ),
+                rel: 'get-lesson',
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                href: expect.stringContaining(
+                  `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+                ),
+                rel: 'create-lesson',
+                method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                href: expect.stringContaining(
+                  `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
+                ),
+                rel: 'delete-lesson',
+                method: HttpMethod.DELETE,
+              }),
             ]),
           });
 
@@ -748,6 +815,13 @@ describe('Lesson Module', () => {
                 ),
                 rel: 'self',
                 method: HttpMethod.DELETE,
+              }),
+              expect.objectContaining({
+                href: expect.stringContaining(
+                  `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
+                ),
+                rel: 'create-lesson',
+                method: HttpMethod.POST,
               }),
             ]),
           });
