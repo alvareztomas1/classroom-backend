@@ -23,6 +23,7 @@ export class LinkBuilderService implements ILinkBuilderService {
     baseAppUrl: string,
     linksMetadata: ILinkMetadata[],
     responseDto: BaseResponseDto,
+    params: Record<string, string>,
   ): ILink[] {
     const selfLink = this.buildSelfLink(
       currentRequestUrl,
@@ -32,6 +33,7 @@ export class LinkBuilderService implements ILinkBuilderService {
       linksMetadata,
       baseAppUrl,
       responseDto,
+      params,
     );
 
     return [selfLink, ...relatedLinks];
@@ -126,18 +128,26 @@ export class LinkBuilderService implements ILinkBuilderService {
     linksMetadata: ILinkMetadata[],
     baseAppUrl: string,
     dto: BaseResponseDto,
+    params: Record<string, string>,
   ): ILink[] {
     return linksMetadata.map((link) => ({
-      href: `${baseAppUrl}${this.replacePathParams(link.endpoint, dto)}`,
+      href: `${baseAppUrl}${this.replacePathParams(link.endpoint, dto, params)}`,
       rel: link.rel,
       method: link.method,
     }));
   }
 
-  private replacePathParams(endpoint: string, dto: BaseResponseDto): string {
+  private replacePathParams(
+    endpoint: string,
+    dto: BaseResponseDto,
+    params: Record<string, string>,
+  ): string {
     return endpoint.replace(
       this.pathParamRegex,
-      (_, param) => dto[param as keyof BaseResponseDto] ?? `:${param}`,
+      (_, param) =>
+        dto[param as keyof BaseResponseDto] ??
+        params?.[param as string] ??
+        `:${param}`,
     );
   }
 }

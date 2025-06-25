@@ -14,6 +14,7 @@ export interface ILinkBuilderService {
     baseAppUrl: string,
     linksMetadata: ILinkMetadata[],
     responseDto: BaseResponseDto,
+    params: Record<string, string>,
   ): ILink[];
   buildCollectionLinks(
     currentRequestUrl: string,
