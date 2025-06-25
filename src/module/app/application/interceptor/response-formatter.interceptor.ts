@@ -56,6 +56,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     const baseAppUrl = this.configService.get<string>('server.baseUrl');
     const user = request.user as User;
     const links = this.filterLinksByAuthorization(linksMetadata, user);
+
     return next.handle().pipe(
       map((responseData: BaseResponseDto | CollectionDto<IResponseDto>) => {
         if (responseData instanceof CollectionDto) {
@@ -72,6 +73,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
           currentRequestMethod as HttpMethod,
           baseAppUrl as string,
           links,
+          request.params,
         );
       }),
     );
@@ -112,6 +114,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     currentRequestMethod: HttpMethod,
     baseAppUrl: string,
     linksMetadata: ILinkMetadata[],
+    params: Record<string, string>,
   ): SerializedResponseDto<Omit<BaseResponseDto, 'type'>> {
     const links = this.linkBuilderService.buildSingleEntityLinks(
       currentRequestUrl,
@@ -119,6 +122,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
       baseAppUrl,
       linksMetadata,
       responseDto,
+      params,
     );
     const serializedResponseData =
       this.buildSerializedResponseData(responseDto);
