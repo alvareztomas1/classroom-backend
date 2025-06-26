@@ -1,6 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
+import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
 import { SlugService } from '@module/app/application/service/slug.service';
@@ -56,11 +57,18 @@ export class CourseService extends BaseCRUDService<
     updateDto: UpdateCourseDto,
     image?: Express.Multer.File,
   ): Promise<CourseResponseDto> {
-    if (image) {
-      const course = await (
-        this.repository as ICourseRepository
-      ).getOneByIdOrFail(id);
+    const course = await (
+      this.repository as ICourseRepository
+    ).getOneByIdOrFail(id);
 
+    if (
+      updateDto.status === PublishStatus.published &&
+      course.status === PublishStatus.drafted
+    ) {
+      this.verifyCourseIsComplete(course, updateDto);
+    }
+
+    if (image) {
       if (course.imageUrl) {
         await this.fileStorageService.deleteFile(course.imageUrl);
       }
@@ -71,7 +79,11 @@ export class CourseService extends BaseCRUDService<
       );
     }
 
-    return super.updateOne(id, updateDto);
+    const courseToUpdate = this.mapper.fromUpdateDtoToEntity(course, updateDto);
+    const updatedEntity = await this.repository.saveOne(courseToUpdate);
+    const responseDto = this.mapper.fromEntityToResponseDto(updatedEntity);
+
+    return responseDto;
   }
 
   private async buildUniqueSlug(title: string): Promise<string> {
@@ -91,5 +103,28 @@ export class CourseService extends BaseCRUDService<
 
   private buildFileFolder(courseId: string): string {
     return `${this.fileStorageService.COURSES_FOLDER}/${courseId}/${this.fileStorageService.IMAGES_FOLDER}`;
+  }
+
+  private verifyCourseIsComplete(
+    course: Course,
+    updateDto: UpdateCourseDto,
+  ): void {
+    const requiredFields: Array<keyof Course> = [
+      'title',
+      'description',
+      'price',
+      'imageUrl',
+      'difficulty',
+    ];
+
+    const missingFields = requiredFields.filter(
+      (field) => course[field] == null && updateDto[field] == null,
+    );
+
+    if (missingFields.length) {
+      throw new BadRequestException(
+        `Cannot publish course: missing required fields: ${missingFields.join(', ')}`,
+      );
+    }
   }
 }

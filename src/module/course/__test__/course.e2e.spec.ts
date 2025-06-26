@@ -28,6 +28,7 @@ import { CourseResponseDto } from '@module/course/application/dto/course-respons
 import { CourseDto } from '@module/course/application/dto/course.dto';
 import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
 import { UpdateCourseDto } from '@module/course/application/dto/update-course.dto';
+import { Course } from '@module/course/domain/course.entity';
 
 describe('Course Module', () => {
   let app: NestExpressApplication;
@@ -567,7 +568,7 @@ describe('Course Module', () => {
         status: PublishStatus.drafted,
         difficulty: Difficulty.BEGINNER,
       } as CreateCourseDto;
-      const oversizedImageMock = createLargeMockFile('image.svg', 5.1);
+      const oversizedImageMock = createLargeMockFile('image.jpg', 100);
 
       await request(app.getHttpServer())
         .post(endpoint)
@@ -587,7 +588,7 @@ describe('Course Module', () => {
               source: expect.objectContaining({
                 pointer: endpoint,
               }),
-              detail: `File "image.svg" exceeds the maximum size of ${MBTransformer.toMB(MAX_FILE_SIZES[ImageFormat.SVG]).toFixed(1)} MB.`,
+              detail: `File "image.jpg" exceeds the maximum size of ${MBTransformer.toMB(MAX_FILE_SIZES[ImageFormat.JPG as keyof typeof MAX_FILE_SIZES]).toFixed(1)} MB.`,
             }),
           });
 
@@ -804,6 +805,60 @@ describe('Course Module', () => {
         .auth(secondAdminToken, { type: 'bearer' })
         .send(updateCourseDto)
         .expect(HttpStatus.FORBIDDEN);
+    });
+
+    it('Should deny course publishing when with empty fields', async () => {
+      const createCourseDto = {} as CreateCourseDto;
+      const updateCourseDto = {
+        status: PublishStatus.published,
+      } as UpdateCourseDto;
+      let courseId = '';
+      const requiredFields: Array<keyof Course> = [
+        'title',
+        'description',
+        'price',
+        'imageUrl',
+        'difficulty',
+      ];
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(adminToken, { type: 'bearer' })
+        .send(createCourseDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<CourseResponseDto> }) => {
+            courseId = body.data.id as string;
+            const expectedResponse = expect.objectContaining({
+              data: expect.objectContaining({
+                id: expect.any(String),
+                attributes: expect.objectContaining({
+                  status: PublishStatus.drafted,
+                }),
+              }),
+            });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${courseId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(updateCourseDto)
+        .expect(HttpStatus.BAD_REQUEST)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              source: {
+                pointer: `${endpoint}/${courseId}`,
+              },
+              status: HttpStatus.BAD_REQUEST.toString(),
+              title: 'Bad request',
+              detail: `Cannot publish course: missing required fields: ${requiredFields.join(', ')}`,
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
     });
   });
 
