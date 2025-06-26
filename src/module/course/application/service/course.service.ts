@@ -65,7 +65,7 @@ export class CourseService extends BaseCRUDService<
       updateDto.status === PublishStatus.published &&
       course.status === PublishStatus.drafted
     ) {
-      this.verifyCourseIsComplete(course);
+      this.verifyCourseIsComplete(course, updateDto);
     }
 
     if (image) {
@@ -105,8 +105,10 @@ export class CourseService extends BaseCRUDService<
     return `${this.fileStorageService.COURSES_FOLDER}/${courseId}/${this.fileStorageService.IMAGES_FOLDER}`;
   }
 
-  private verifyCourseIsComplete(course: Course): void {
-    const missingFields: Array<keyof Course> = [];
+  private verifyCourseIsComplete(
+    course: Course,
+    updateDto: UpdateCourseDto,
+  ): void {
     const requiredFields: Array<keyof Course> = [
       'title',
       'description',
@@ -115,11 +117,9 @@ export class CourseService extends BaseCRUDService<
       'difficulty',
     ];
 
-    for (const field of requiredFields) {
-      if (!course[field]) {
-        missingFields.push(field);
-      }
-    }
+    const missingFields = requiredFields.filter(
+      (field) => course[field] == null && updateDto[field] == null,
+    );
 
     if (missingFields.length) {
       throw new BadRequestException(
