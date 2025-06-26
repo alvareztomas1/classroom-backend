@@ -2,7 +2,6 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   IsUUID,
   IsUrl,
@@ -10,6 +9,7 @@ import {
   MaxLength,
   Min,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 
 import { BaseDto } from '@common/base/application/dto/base.dto';
@@ -23,20 +23,20 @@ export class CourseDto extends BaseDto {
   @IsUUID('4')
   instructorId!: string;
 
-  @IsOptional()
+  @ValidateIf((o: CourseDto) => o.status === PublishStatus.published)
   @MinLength(5, { message: 'Title must be at least 5 characters long' })
   @MaxLength(100, { message: 'Title cannot be longer than 100 characters' })
   @IsString()
   title?: string;
 
-  @IsOptional()
+  @ValidateIf((o: CourseDto) => o.status === PublishStatus.published)
   @IsString()
   @MaxLength(2000, {
     message: 'Description cannot be longer than 2000 characters',
   })
   description?: string;
 
-  @IsOptional()
+  @ValidateIf((o: CourseDto) => o.status === PublishStatus.published)
   @IsNumber(
     {
       maxDecimalPlaces: 2,
@@ -47,21 +47,21 @@ export class CourseDto extends BaseDto {
   @Max(10000, { message: 'Price cannot exceed $10,000' })
   price?: number;
 
-  @IsOptional()
+  @ValidateIf((o: CourseDto) => o.status === PublishStatus.published)
   @IsUrl()
   imageUrl?: string;
 
-  @IsOptional()
+  @ValidateIf((o: CourseDto) => o.status === PublishStatus.published)
   @IsEnum(PublishStatus, {
     message: `Status must be one of: ${Object.values(PublishStatus).join(', ')}`,
   })
-  status?: PublishStatus;
+  status?: PublishStatus = PublishStatus.drafted;
 
-  @IsOptional()
+  @ValidateIf((o: CourseDto) => o.status === PublishStatus.published)
   @IsString()
   slug?: string;
 
-  @IsOptional()
+  @ValidateIf((o: CourseDto) => o.status === PublishStatus.published)
   @IsEnum(Difficulty, {
     message: `Difficulty must be one of: ${Object.values(Difficulty).join(', ')}`,
   })
