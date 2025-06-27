@@ -1,6 +1,10 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
+import {
+  OPERATION_RESPONSE_TYPE,
+  SuccessOperationResponseDto,
+} from '@common/base/application/dto/success-operation-response.dto';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
@@ -84,6 +88,16 @@ export class CourseService extends BaseCRUDService<
     const responseDto = this.mapper.fromEntityToResponseDto(updatedEntity);
 
     return responseDto;
+  }
+
+  async deleteOneByIdOrFail(id: string): Promise<SuccessOperationResponseDto> {
+    await this.repository.deleteOneByIdOrFail(id);
+
+    return new SuccessOperationResponseDto(
+      `The ${this.entityName} with id ${id} has been deleted successfully`,
+      true,
+      OPERATION_RESPONSE_TYPE,
+    );
   }
 
   private async buildUniqueSlug(title: string): Promise<string> {
