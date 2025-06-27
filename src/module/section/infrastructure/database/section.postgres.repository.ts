@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
+import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
 import { ISectionRepository } from '@module/section/application/repository/section.repository.interface';
 import { Section } from '@module/section/domain/section.entity';
@@ -17,5 +18,18 @@ export class SectionPostgresRepository
     @InjectRepository(SectionSchema) repository: Repository<Section>,
   ) {
     super(repository);
+  }
+
+  async deleteOneByIdOrFail(id: string): Promise<void> {
+    const section = await this.repository.findOne({
+      where: { id },
+      relations: ['lessons'],
+    });
+
+    if (!section) {
+      throw new EntityNotFoundException(id);
+    }
+
+    await this.repository.softRemove(section);
   }
 }

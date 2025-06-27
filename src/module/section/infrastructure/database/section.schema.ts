@@ -33,5 +33,11 @@ export const SectionSchema = new EntitySchema<Section>({
         name: 'course_id',
       },
     },
+    lessons: {
+      type: 'one-to-many',
+      target: 'Lesson',
+      cascade: ['soft-remove'],
+      inverseSide: 'section',
+    },
   },
 });

@@ -1,6 +1,7 @@
 import { Base } from '@common/base/domain/base.entity';
 
 import { Course } from '@module/course/domain/course.entity';
+import { Lesson } from '@module/lesson/domain/lesson.entity';
 
 export class Section extends Base {
   courseId: string;
@@ -8,6 +9,7 @@ export class Section extends Base {
   description?: string;
   position?: number;
   course?: Course;
+  lessons?: Lesson[];
 
   get instructorId(): string | undefined {
     return this.course?.instructorId;
@@ -20,6 +22,7 @@ export class Section extends Base {
     position?: number,
     id?: string,
     course?: Course,
+    lessons?: Lesson[],
   ) {
     super(id);
     this.courseId = courseId;
@@ -27,5 +30,6 @@ export class Section extends Base {
     this.description = description;
     this.position = position;
     this.course = course;
+    this.lessons = lessons;
   }
 }

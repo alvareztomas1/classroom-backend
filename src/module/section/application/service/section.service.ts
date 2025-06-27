@@ -1,5 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import {
+  OPERATION_RESPONSE_TYPE,
+  SuccessOperationResponseDto,
+} from '@common/base/application/dto/success-operation-response.dto';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
 import { CreateSectionDto } from '@module/section/application/dto/create.section.dto';
@@ -24,5 +28,15 @@ export class SectionService extends BaseCRUDService<
     protected readonly mapper: SectionMapper,
   ) {
     super(repository, mapper, Section.getEntityName());
+  }
+
+  async deleteOneByIdOrFail(id: string): Promise<SuccessOperationResponseDto> {
+    await this.repository.deleteOneByIdOrFail(id);
+
+    return new SuccessOperationResponseDto(
+      `The ${this.entityName} with id ${id} has been deleted successfully`,
+      true,
+      OPERATION_RESPONSE_TYPE,
+    );
   }
 }

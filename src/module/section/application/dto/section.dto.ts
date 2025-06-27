@@ -8,6 +8,8 @@ import {
 
 import { BaseDto } from '@common/base/application/dto/base.dto';
 
+import { Lesson } from '@module/lesson/domain/lesson.entity';
+
 export class SectionDto extends BaseDto {
   @IsUUID('4')
   @IsNotEmpty()
@@ -24,4 +26,6 @@ export class SectionDto extends BaseDto {
   @IsOptional()
   @IsNumber()
   position?: number;
+
+  lessons?: Lesson[];
 }
