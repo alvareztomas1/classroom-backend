@@ -11,9 +11,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/page-query-params';
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
+import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
@@ -51,6 +53,23 @@ export class PaymentMethodController {
   }
 
   @Get(':id')
+  @Hypermedia([
+    {
+      endpoint: '/payment-method',
+      rel: 'create-payment-method',
+      method: HttpMethod.POST,
+    },
+    {
+      endpoint: '/payment-method/:id',
+      rel: 'update-payment-method',
+      method: HttpMethod.PATCH,
+    },
+    {
+      endpoint: '/payment-method/:id',
+      rel: 'delete-payment-method',
+      method: HttpMethod.DELETE,
+    },
+  ])
   async getOneById(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<PaymentMethodResponseDto> {
@@ -58,6 +77,23 @@ export class PaymentMethodController {
   }
 
   @Post()
+  @Hypermedia([
+    {
+      endpoint: '/payment-method/:id',
+      rel: 'get-payment-method',
+      method: HttpMethod.GET,
+    },
+    {
+      endpoint: '/payment-method/:id',
+      rel: 'update-payment-method',
+      method: HttpMethod.PATCH,
+    },
+    {
+      endpoint: '/payment-method/:id',
+      rel: 'delete-payment-method',
+      method: HttpMethod.DELETE,
+    },
+  ])
   @Policies(CreatePaymentMethodPolicyHandler)
   async saveOne(
     @Body() createPaymentMethodDto: CreatePaymentMethodDto,
@@ -66,6 +102,23 @@ export class PaymentMethodController {
   }
 
   @Patch(':id')
+  @Hypermedia([
+    {
+      endpoint: '/payment-method/:id',
+      rel: 'get-payment-method',
+      method: HttpMethod.GET,
+    },
+    {
+      endpoint: '/payment-method/:id',
+      rel: 'create-payment-method',
+      method: HttpMethod.POST,
+    },
+    {
+      endpoint: '/payment-method/:id',
+      rel: 'delete-payment-method',
+      method: HttpMethod.DELETE,
+    },
+  ])
   @Policies(UpdatePaymentMethodPolicyHandler)
   async updateOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -78,6 +131,13 @@ export class PaymentMethodController {
   }
 
   @Delete(':id')
+  @Hypermedia([
+    {
+      endpoint: '/payment-method/:id',
+      rel: 'create-payment-method',
+      method: HttpMethod.POST,
+    },
+  ])
   @Policies(DeletePaymentMethodPolicyHandler)
   async deleteOne(
     @Param('id', ParseUUIDPipe) id: string,

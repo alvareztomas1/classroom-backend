@@ -219,6 +219,21 @@ describe('PaymentMethod Module', () => {
                 href: expect.stringContaining(`${endpoint}/${paymentMethodId}`),
                 method: HttpMethod.GET,
               }),
+              expect.objectContaining({
+                rel: 'create-payment-method',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                rel: 'update-payment-method',
+                href: expect.stringContaining(`${endpoint}/${paymentMethodId}`),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'delete-payment-method',
+                href: expect.stringContaining(`${endpoint}/${paymentMethodId}`),
+                method: HttpMethod.DELETE,
+              }),
             ]),
           });
 
@@ -253,6 +268,7 @@ describe('PaymentMethod Module', () => {
       const createPaymentMethod = {
         name: 'Mercado Pago',
       } as CreatePaymentMethodDto;
+      let paymentMethodId = '';
 
       await request(app.getHttpServer())
         .post(endpoint)
@@ -265,6 +281,7 @@ describe('PaymentMethod Module', () => {
           }: {
             body: SerializedResponseDto<PaymentMethodResponseDto>;
           }) => {
+            paymentMethodId = body.data.id as string;
             const expectedResponse = {
               data: expect.objectContaining({
                 type: 'payment-method',
@@ -278,6 +295,27 @@ describe('PaymentMethod Module', () => {
                   href: expect.stringContaining(endpoint),
                   rel: 'self',
                   method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'get-payment-method',
+                  href: expect.stringContaining(
+                    `${endpoint}/${paymentMethodId}`,
+                  ),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'update-payment-method',
+                  href: expect.stringContaining(
+                    `${endpoint}/${paymentMethodId}`,
+                  ),
+                  method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  rel: 'delete-payment-method',
+                  href: expect.stringContaining(
+                    `${endpoint}/${paymentMethodId}`,
+                  ),
+                  method: HttpMethod.DELETE,
                 }),
               ]),
             };
@@ -475,6 +513,25 @@ describe('PaymentMethod Module', () => {
                   rel: 'self',
                   method: HttpMethod.PATCH,
                 }),
+                expect.objectContaining({
+                  rel: 'get-payment-method',
+                  href: expect.stringContaining(
+                    `${endpoint}/${paymentMethodId}`,
+                  ),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'create-payment-method',
+                  href: expect.stringContaining(endpoint),
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'delete-payment-method',
+                  href: expect.stringContaining(
+                    `${endpoint}/${paymentMethodId}`,
+                  ),
+                  method: HttpMethod.DELETE,
+                }),
               ]),
             });
             expect(body).toEqual(expectedResponse);
@@ -663,6 +720,11 @@ describe('PaymentMethod Module', () => {
                   href: expect.stringContaining(endpoint),
                   rel: 'self',
                   method: HttpMethod.DELETE,
+                }),
+                expect.objectContaining({
+                  rel: 'create-payment-method',
+                  href: expect.stringContaining(endpoint),
+                  method: HttpMethod.POST,
                 }),
               ]),
             });
