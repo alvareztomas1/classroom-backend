@@ -25,13 +25,13 @@ export class CreatePaymentMethodPolicyHandler
 
   handle(request: Request): Promise<void> | void {
     const user = this.getCurrentUser(request);
-    console.log(user);
+
     const isAllowed = this.authorizationService.isAllowed(
       user,
       this.action,
       PaymentMethod,
     );
-    console.log(isAllowed);
+
     if (!isAllowed) {
       throw new ForbiddenException(
         `You are not allowed to ${this.action.toUpperCase()} this resource`,
