@@ -503,6 +503,101 @@ describe('PaymentMethod Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should deny access to non-super-admin users', async () => {
+      const createPaymentMethod = {
+        name: 'Payment method',
+      } as CreatePaymentMethodDto;
+
+      const updatePaymentMethod = {
+        name: 'credit-card',
+      } as UpdatePaymentMethodDto;
+
+      let paymentMethodId: string = '';
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createPaymentMethod)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDto<PaymentMethodResponseDto>;
+          }) => {
+            paymentMethodId = body.data.id as string;
+
+            const expectedResponse = {
+              data: expect.objectContaining({
+                type: 'payment-method',
+                id: expect.any(String),
+                attributes: expect.objectContaining({
+                  name: createPaymentMethod.name,
+                }),
+              }),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(endpoint),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+              ]),
+            };
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${paymentMethodId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .send(updatePaymentMethod)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDto<PaymentMethodResponseDto>;
+          }) => {
+            const expectedResponse = expect.objectContaining({
+              error: {
+                detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+                source: {
+                  pointer: `${endpoint}/${paymentMethodId}`,
+                },
+                status: HttpStatus.FORBIDDEN.toString(),
+                title: 'Forbidden',
+              },
+            });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+
+      return await request(app.getHttpServer())
+        .patch(`${endpoint}/${paymentMethodId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(updatePaymentMethod)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDto<PaymentMethodResponseDto>;
+          }) => {
+            const expectedResponse = expect.objectContaining({
+              error: {
+                detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+                source: {
+                  pointer: `${endpoint}/${paymentMethodId}`,
+                },
+                status: HttpStatus.FORBIDDEN.toString(),
+                title: 'Forbidden',
+              },
+            });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+    });
   });
 
   describe('DELETE - /payment-method/:id', () => {

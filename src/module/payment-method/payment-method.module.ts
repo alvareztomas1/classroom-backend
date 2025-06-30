@@ -5,6 +5,7 @@ import { AuthorizationModule } from '@module/iam/authorization/authorization.mod
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 import { PaymentMethodMapper } from '@module/payment-method/application/mapper/payment-method.mapper';
 import { CreatePaymentMethodPolicyHandler } from '@module/payment-method/application/policy/create-payment-method-policy.handler';
+import { UpdatePaymentMethodPolicyHandler } from '@module/payment-method/application/policy/update-payment-method-policy.handler';
 import { PAYMENT_METHOD_REPOSITORY_KEY } from '@module/payment-method/application/repository/payment-method-repository.interface';
 import { PaymentMethodCRUDService } from '@module/payment-method/application/service/payment-method-crud.service';
 import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
@@ -18,7 +19,10 @@ const paymentMethodRepositoryProvider: Provider = {
   useClass: PaymentMethodPostgresRepository,
 };
 
-const policyHandlersProviders = [CreatePaymentMethodPolicyHandler];
+const policyHandlersProviders = [
+  CreatePaymentMethodPolicyHandler,
+  UpdatePaymentMethodPolicyHandler,
+];
 
 @Module({
   imports: [
