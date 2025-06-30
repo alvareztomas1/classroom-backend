@@ -18,6 +18,7 @@ import { datasourceOptions } from '@config/orm.config';
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';
 
+import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
 import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
 import { PaymentMethodDto } from '@module/payment-method/application/dto/payment-method.dto';
@@ -29,8 +30,11 @@ describe('PaymentMethod Module', () => {
   const regularToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000Z',
   });
+  const adminToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000Y',
+  });
   const superAdminToken = createAccessToken({
-    sub: '00000000-0000-0000-0000-00000000000Z',
+    sub: '00000000-0000-0000-0000-00000000000X',
   });
 
   beforeAll(async () => {
@@ -337,6 +341,62 @@ describe('PaymentMethod Module', () => {
                 },
                 status: HttpStatus.CONFLICT.toString(),
                 title: 'Entity already exists',
+              },
+            });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+    });
+
+    it('Should deny access to non-super-admin users', async () => {
+      const createPaymentMethod = {
+        name: 'Mercado Pago',
+      } as CreatePaymentMethodDto;
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(regularToken, { type: 'bearer' })
+        .send(createPaymentMethod)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDto<PaymentMethodResponseDto>;
+          }) => {
+            const expectedResponse = expect.objectContaining({
+              error: {
+                detail: `You are not allowed to ${AppAction.Create.toUpperCase()} this resource`,
+                source: {
+                  pointer: endpoint,
+                },
+                status: HttpStatus.FORBIDDEN.toString(),
+                title: 'Forbidden',
+              },
+            });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+
+      return await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(adminToken, { type: 'bearer' })
+        .send(createPaymentMethod)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDto<PaymentMethodResponseDto>;
+          }) => {
+            const expectedResponse = expect.objectContaining({
+              error: {
+                detail: `You are not allowed to ${AppAction.Create.toUpperCase()} this resource`,
+                source: {
+                  pointer: endpoint,
+                },
+                status: HttpStatus.FORBIDDEN.toString(),
+                title: 'Forbidden',
               },
             });
             expect(body).toEqual(expectedResponse);
