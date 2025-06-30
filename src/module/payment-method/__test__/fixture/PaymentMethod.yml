@@ -1,0 +1,9 @@
+entity: PaymentMethod
+items:
+  payment-method1:
+    id: '361cb833-1f51-4b21-b5e9-1089c5d09b09'
+    name: 'Stellar'
+  payment-method2:
+    name: '{{person.firstName}}'
+  payment-method{3..23}:
+    name: '{{person.firstName}}'
