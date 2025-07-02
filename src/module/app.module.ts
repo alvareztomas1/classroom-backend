@@ -7,6 +7,7 @@ import { datasourceOptions } from '@config/orm.config';
 
 import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
 import { SlugService } from '@module/app/application/service/slug.service';
+import { CategoryModule } from '@module/category/category.module';
 import { CloudModule } from '@module/cloud/cloud.module';
 import { CourseModule } from '@module/course/course.module';
 import { IamModule } from '@module/iam/iam.module';
@@ -33,6 +34,7 @@ import { SectionModule } from '@module/section/section.module';
     SectionModule,
     LessonModule,
     PaymentMethodModule,
+    CategoryModule,
   ],
   providers: [LinkBuilderService, SlugService],
   exports: [LinkBuilderService, SlugService],
