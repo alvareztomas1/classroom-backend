@@ -1,0 +1,12 @@
+entity: Category
+items:
+  category1:
+    id: '2d915994-8c06-425c-9a64-23a7b2b8603e'
+    name: 'Programming'
+  category2:
+    id: '5fb9c427-2551-4787-81c4-b6c603175f45'
+    name: 'JavaScript'
+  category3:
+    name: 'Algorithms'
+  category{4..23}:
+    name: '{{person.firstName}}'
