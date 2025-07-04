@@ -23,6 +23,7 @@ import { CategoryIncludeQueryDto } from '@module/category/application/dto/query-
 import { CategorySortQueryParamsDto } from '@module/category/application/dto/query-params/category-sort-query-params.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
 import { CreateCategoryPolicyHandler } from '@module/category/application/policy/create-category-policy.handler';
+import { DeleteCategoryPolicyHandler } from '@module/category/application/policy/delete-category-policy.handler';
 import { UpdateCategoryPolicyHandler } from '@module/category/application/policy/update-category-policy.handler';
 import { CategoryCRUDService } from '@module/category/application/service/category-crud.service';
 import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
@@ -76,6 +77,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @Policies(DeleteCategoryPolicyHandler)
   async deleteOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<SuccessOperationResponseDto> {

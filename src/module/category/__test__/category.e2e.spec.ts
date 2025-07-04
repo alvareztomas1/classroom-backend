@@ -691,5 +691,45 @@ describe('Category Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should deny access to non-super-admin users', async () => {
+      const categoryId = mockFirstSubCategory.id;
+
+      await request(app.getHttpServer())
+        .delete(`${endpoint}/${categoryId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Delete.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${categoryId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+
+      return await request(app.getHttpServer())
+        .delete(`${endpoint}/${categoryId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Delete.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${categoryId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 });

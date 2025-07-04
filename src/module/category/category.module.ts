@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CategoryMapper } from '@module/category/application/mapper/category.mapper';
 import { CreateCategoryPolicyHandler } from '@module/category/application/policy/create-category-policy.handler';
+import { DeleteCategoryPolicyHandler } from '@module/category/application/policy/delete-category-policy.handler';
 import { UpdateCategoryPolicyHandler } from '@module/category/application/policy/update-category-policy.handler';
 import { CATEGORY_REPOSITORY_KEY } from '@module/category/application/repository/category.repository.interface';
 import { CategoryCRUDService } from '@module/category/application/service/category-crud.service';
@@ -22,6 +23,7 @@ const categoryRepositoryProvider: Provider = {
 const policyHandlersProviders = [
   CreateCategoryPolicyHandler,
   UpdateCategoryPolicyHandler,
+  DeleteCategoryPolicyHandler,
 ];
 
 @Module({
