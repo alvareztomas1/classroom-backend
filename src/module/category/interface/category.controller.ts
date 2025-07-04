@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
@@ -21,9 +22,15 @@ import { CategoryFilterQueryParamsDto } from '@module/category/application/dto/q
 import { CategoryIncludeQueryDto } from '@module/category/application/dto/query-params/category-include-query-param.dto';
 import { CategorySortQueryParamsDto } from '@module/category/application/dto/query-params/category-sort-query-params.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
+import { CreateCategoryPolicyHandler } from '@module/category/application/policy/create-category-policy.handler';
+import { DeleteCategoryPolicyHandler } from '@module/category/application/policy/delete-category-policy.handler';
+import { UpdateCategoryPolicyHandler } from '@module/category/application/policy/update-category-policy.handler';
 import { CategoryCRUDService } from '@module/category/application/service/category-crud.service';
+import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
 
 @Controller('category')
+@UseGuards(PoliciesGuard)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryCRUDService) {}
 
@@ -53,6 +60,7 @@ export class CategoryController {
   }
 
   @Post()
+  @Policies(CreateCategoryPolicyHandler)
   async saveOne(
     @Body() createCategoryDto: CreateCategoryDto,
   ): Promise<CategoryResponseDto> {
@@ -60,6 +68,7 @@ export class CategoryController {
   }
 
   @Patch(':id')
+  @Policies(UpdateCategoryPolicyHandler)
   async updateOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -68,6 +77,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @Policies(DeleteCategoryPolicyHandler)
   async deleteOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<SuccessOperationResponseDto> {

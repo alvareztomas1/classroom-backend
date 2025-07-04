@@ -24,6 +24,7 @@ import { CategoryResponseDto } from '@module/category/application/dto/category-r
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
 import { Category } from '@module/category/domain/category.entity';
+import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 
 describe('Category Module', () => {
   let app: NestExpressApplication;
@@ -31,7 +32,9 @@ describe('Category Module', () => {
   const regularToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000Z',
   });
-
+  const adminToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000Y',
+  });
   const superAdminToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000X',
   });
@@ -377,6 +380,50 @@ describe('Category Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should deny access to non-super-admin users', async () => {
+      const createCategoryDto = {
+        name: 'Mathematics',
+      } as CreateCategoryDto;
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(regularToken, { type: 'bearer' })
+        .send(createCategoryDto)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Create.toUpperCase()} this resource`,
+              source: {
+                pointer: endpoint,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+
+      return await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(adminToken, { type: 'bearer' })
+        .send(createCategoryDto)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Create.toUpperCase()} this resource`,
+              source: {
+                pointer: endpoint,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 
   describe('PATCH - /category/:id', () => {
@@ -537,6 +584,53 @@ describe('Category Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should deny access to non-super-admin users', async () => {
+      const updateCategoryDto = {
+        name: '',
+        parentId: mockParent.id,
+      } as UpdateCategoryDto;
+
+      const categoryId = mockFirstSubCategory.id;
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${categoryId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .send(updateCategoryDto)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${categoryId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+
+      return await request(app.getHttpServer())
+        .patch(`${endpoint}/${categoryId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(updateCategoryDto)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${categoryId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 
   describe('DELETE - /category/:id', () => {
@@ -592,6 +686,46 @@ describe('Category Module', () => {
               },
               status: HttpStatus.NOT_FOUND.toString(),
               title: 'Entity not found',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny access to non-super-admin users', async () => {
+      const categoryId = mockFirstSubCategory.id;
+
+      await request(app.getHttpServer())
+        .delete(`${endpoint}/${categoryId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Delete.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${categoryId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+
+      return await request(app.getHttpServer())
+        .delete(`${endpoint}/${categoryId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Delete.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${categoryId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
             },
           });
           expect(body).toEqual(expectedResponse);
