@@ -5,7 +5,10 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
-import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
+import {
+  SerializedResponseDto,
+  SerializedResponseDtoCollection,
+} from '@common/base/application/dto/serialized-response.dto';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { setupApp } from '@config/app.config';
@@ -68,6 +71,97 @@ describe('Category Module', () => {
   );
 
   mockFirstSubCategory.subCategories?.push(mockSecondSubCategory);
+
+  const mockCategories = [
+    mockParent,
+    mockFirstSubCategory,
+    mockSecondSubCategory,
+  ];
+
+  describe('GET - /category', () => {
+    it('Should return paginated categories', async () => {
+      mockTypeOrmRepository.findAndCount.mockImplementationOnce(() => [
+        mockCategories,
+        mockCategories.length,
+      ]);
+
+      return await request(app.getHttpServer())
+        .get(endpoint)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDtoCollection<CategoryResponseDto>;
+          }) => {
+            const expectedResponse = expect.objectContaining({
+              data: expect.arrayContaining([
+                expect.objectContaining({
+                  type: 'category',
+                  id: mockParent.id,
+                  attributes: expect.objectContaining({
+                    name: mockParent.name,
+                  }),
+                }),
+                expect.objectContaining({
+                  type: 'category',
+                  id: mockFirstSubCategory.id,
+                  attributes: expect.objectContaining({
+                    name: mockFirstSubCategory.name,
+                    parent: expect.objectContaining({
+                      id: mockParent.id,
+                      name: mockParent.name,
+                    }),
+                    subCategories: expect.arrayContaining([
+                      expect.objectContaining({
+                        id: mockSecondSubCategory.id,
+                        name: mockSecondSubCategory.name,
+                      }),
+                    ]),
+                  }),
+                }),
+                expect.objectContaining({
+                  type: 'category',
+                  id: mockSecondSubCategory.id,
+                  attributes: expect.objectContaining({
+                    name: mockSecondSubCategory.name,
+                    parent: expect.objectContaining({
+                      id: mockFirstSubCategory.id,
+                      name: mockFirstSubCategory.name,
+                    }),
+                  }),
+                }),
+              ]),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  rel: 'self',
+                  href: expect.any(String),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'first',
+                  href: expect.any(String),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'last',
+                  href: expect.any(String),
+                  method: HttpMethod.GET,
+                }),
+              ]),
+              meta: expect.objectContaining({
+                pageNumber: expect.any(Number),
+                pageSize: expect.any(Number),
+                pageCount: expect.any(Number),
+                itemCount: expect.any(Number),
+              }),
+            });
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+    });
+  });
 
   describe('GET - /category/:id', () => {
     it('Should return a category by its id', async () => {

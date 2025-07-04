@@ -25,6 +25,7 @@ export const mockTypeOrmRepository = {
   create: jest.fn(),
   save: jest.fn(),
   find: jest.fn(),
+  findAndCount: jest.fn(),
   findOne: jest.fn(),
   softDelete: jest.fn(),
   softRemove: jest.fn(),
