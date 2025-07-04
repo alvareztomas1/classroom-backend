@@ -26,4 +26,27 @@ export class CategoryCRUDService extends BaseCRUDService<
   ) {
     super(categoryRepository, categoryMapper, Category.getEntityName());
   }
+
+  async saveOne(createDto: CreateCategoryDto): Promise<CategoryResponseDto> {
+    const { parentId } = createDto;
+
+    createDto.parent = parentId
+      ? await this.categoryRepository.getOneByIdOrFail(parentId)
+      : undefined;
+
+    return super.saveOne(createDto);
+  }
+
+  async updateOne(
+    id: string,
+    updateDto: UpdateCategoryDto,
+  ): Promise<CategoryResponseDto> {
+    const { parentId } = updateDto;
+
+    updateDto.parent = parentId
+      ? await this.categoryRepository.getOneByIdOrFail(parentId)
+      : undefined;
+
+    return super.updateOne(id, updateDto);
+  }
 }
