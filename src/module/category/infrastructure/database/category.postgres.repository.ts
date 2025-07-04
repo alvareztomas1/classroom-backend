@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
+import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
 import { Category } from '@module/category/domain/category.entity';
 import { CategorySchema } from '@module/category/infrastructure/database/category.schema';
@@ -33,6 +34,20 @@ export class CategoryPostgresRepository extends BaseRepository<Category> {
 
     return await this.categoryRepository.save(entity);
   }
+
+  async deleteOneByIdOrFail(id: string): Promise<void> {
+    const category = await this.repository.findOne({
+      where: { id },
+      relations: ['subCategories'],
+    });
+
+    if (!category) {
+      throw new EntityNotFoundException(id);
+    }
+
+    await this.repository.softRemove(category);
+  }
+
   private async findExistingCategory(
     name: string,
     parentId?: string,
