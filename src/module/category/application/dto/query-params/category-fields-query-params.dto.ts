@@ -6,14 +6,15 @@ import { fromCommaSeparatedToArray } from '@common/base/application/mapper/base.
 
 import { Category } from '@module/category/domain/category.entity';
 
-type CategoryRelations = IGetAllOptions<Category>['include'];
-export class CategoryIncludeQueryDto {
-  @IsIn(['parent', 'subCategories'], {
+type CategoryFields = IGetAllOptions<Category>['fields'];
+
+export class CategoryFieldsQueryParamsDto {
+  @IsIn(['id', 'name', 'createdAt', 'updatedAt', 'deletedAt'], {
     each: true,
   })
-  @IsOptional()
   @Transform((params) => {
     return fromCommaSeparatedToArray(params.value as string);
   })
-  target?: CategoryRelations;
+  @IsOptional()
+  target?: CategoryFields;
 }
