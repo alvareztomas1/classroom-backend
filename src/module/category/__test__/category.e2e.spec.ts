@@ -190,6 +190,21 @@ describe('Category Module', () => {
                 href: expect.stringContaining(`${endpoint}/${categoryId}`),
                 method: HttpMethod.GET,
               }),
+              expect.objectContaining({
+                rel: 'create-category',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                rel: 'update-category',
+                href: expect.stringContaining(`${endpoint}/${categoryId}`),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'delete-category',
+                href: expect.stringContaining(`${endpoint}/${categoryId}`),
+                method: HttpMethod.DELETE,
+              }),
             ]),
           });
 
@@ -280,7 +295,7 @@ describe('Category Module', () => {
           const expectedResponse = {
             data: expect.objectContaining({
               type: 'category',
-              id: expect.any(String),
+              id: mockParent.id,
               attributes: expect.objectContaining({
                 name: createCategoryDto.name,
               }),
@@ -290,6 +305,21 @@ describe('Category Module', () => {
                 href: expect.stringContaining(endpoint),
                 rel: 'self',
                 method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                rel: 'get-category',
+                href: expect.stringContaining(`${endpoint}/${mockParent.id}`),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'update-category',
+                href: expect.stringContaining(`${endpoint}/${mockParent.id}`),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'delete-category',
+                href: expect.stringContaining(`${endpoint}/${mockParent.id}`),
+                method: HttpMethod.DELETE,
               }),
             ]),
           };
@@ -463,6 +493,21 @@ describe('Category Module', () => {
                   href: expect.stringContaining(`${endpoint}/${categoryId}`),
                   rel: 'self',
                   method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  rel: 'get-category',
+                  href: expect.stringContaining(`${endpoint}/${categoryId}`),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'create-category',
+                  href: expect.stringContaining(`${endpoint}/${categoryId}`),
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'delete-category',
+                  href: expect.stringContaining(`${endpoint}/${categoryId}`),
+                  method: HttpMethod.DELETE,
                 }),
               ]),
             };
@@ -661,6 +706,11 @@ describe('Category Module', () => {
                   href: expect.stringContaining(`${endpoint}/${categoryId}`),
                   rel: 'self',
                   method: HttpMethod.DELETE,
+                }),
+                expect.objectContaining({
+                  rel: 'create-category',
+                  href: expect.stringContaining(endpoint),
+                  method: HttpMethod.POST,
                 }),
               ]),
             };
