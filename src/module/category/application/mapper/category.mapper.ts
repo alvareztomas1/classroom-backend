@@ -15,20 +15,25 @@ export class CategoryMapper
     >
 {
   fromCreateDtoToEntity(dto: CreateCategoryDto): Category {
-    const { id, name } = dto;
+    const { id, name, parent, subCategories } = dto;
 
-    return new Category(name, id);
+    return new Category(name, id, parent, subCategories);
   }
 
   fromUpdateDtoToEntity(entity: Category, dto: UpdateCategoryDto): Category {
-    const { id } = entity;
+    const { id, parent, subCategories } = entity;
 
-    return new Category(dto.name ?? entity.name, id);
+    return new Category(dto.name ?? entity.name, id, parent, subCategories);
   }
 
   fromEntityToResponseDto(entity: Category): CategoryResponseDto {
-    const { name, id } = entity;
-
-    return new CategoryResponseDto(Category.getEntityName(), name, id);
+    const { name, id, parent, subCategories } = entity;
+    return new CategoryResponseDto(
+      Category.getEntityName(),
+      name,
+      id,
+      parent,
+      subCategories,
+    );
   }
 }
