@@ -1,12 +1,15 @@
-import { Module, Provider } from '@nestjs/common';
+import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CategoryMapper } from '@module/category/application/mapper/category.mapper';
 import { CATEGORY_REPOSITORY_KEY } from '@module/category/application/repository/category.repository.interface';
 import { CategoryCRUDService } from '@module/category/application/service/category-crud.service';
+import { Category } from '@module/category/domain/category.entity';
+import { categoryPermissions } from '@module/category/domain/category.permission';
 import { CategoryPostgresRepository } from '@module/category/infrastructure/database/category.postgres.repository';
 import { CategorySchema } from '@module/category/infrastructure/database/category.schema';
 import { CategoryController } from '@module/category/interface/category.controller';
+import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 
 const categoryRepositoryProvider: Provider = {
   provide: CATEGORY_REPOSITORY_KEY,
@@ -18,4 +21,10 @@ const categoryRepositoryProvider: Provider = {
   providers: [CategoryCRUDService, CategoryMapper, categoryRepositoryProvider],
   controllers: [CategoryController],
 })
-export class CategoryModule {}
+export class CategoryModule implements OnModuleInit {
+  constructor(private readonly registry: AppSubjectPermissionStorage) {}
+
+  onModuleInit(): void {
+    this.registry.set(Category, categoryPermissions);
+  }
+}
