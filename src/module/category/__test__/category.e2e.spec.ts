@@ -584,6 +584,53 @@ describe('Category Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should deny access to non-super-admin users', async () => {
+      const updateCategoryDto = {
+        name: '',
+        parentId: mockParent.id,
+      } as UpdateCategoryDto;
+
+      const categoryId = mockFirstSubCategory.id;
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${categoryId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .send(updateCategoryDto)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${categoryId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+
+      return await request(app.getHttpServer())
+        .patch(`${endpoint}/${categoryId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(updateCategoryDto)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${categoryId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 
   describe('DELETE - /category/:id', () => {

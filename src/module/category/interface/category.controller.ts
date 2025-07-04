@@ -23,6 +23,7 @@ import { CategoryIncludeQueryDto } from '@module/category/application/dto/query-
 import { CategorySortQueryParamsDto } from '@module/category/application/dto/query-params/category-sort-query-params.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
 import { CreateCategoryPolicyHandler } from '@module/category/application/policy/create-category-policy.handler';
+import { UpdateCategoryPolicyHandler } from '@module/category/application/policy/update-category-policy.handler';
 import { CategoryCRUDService } from '@module/category/application/service/category-crud.service';
 import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
@@ -66,6 +67,7 @@ export class CategoryController {
   }
 
   @Patch(':id')
+  @Policies(UpdateCategoryPolicyHandler)
   async updateOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
