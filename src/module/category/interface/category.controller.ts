@@ -11,9 +11,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/page-query-params';
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
+import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
@@ -52,6 +54,23 @@ export class CategoryController {
   }
 
   @Get(':id')
+  @Hypermedia([
+    {
+      endpoint: '/category',
+      rel: 'create-category',
+      method: HttpMethod.POST,
+    },
+    {
+      endpoint: '/category/:id',
+      rel: 'update-category',
+      method: HttpMethod.PATCH,
+    },
+    {
+      endpoint: '/category/:id',
+      rel: 'delete-category',
+      method: HttpMethod.DELETE,
+    },
+  ])
   async getOneById(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('include') include: CategoryIncludeQueryDto,
@@ -60,6 +79,23 @@ export class CategoryController {
   }
 
   @Post()
+  @Hypermedia([
+    {
+      endpoint: '/category/:id',
+      rel: 'get-category',
+      method: HttpMethod.GET,
+    },
+    {
+      endpoint: '/category/:id',
+      rel: 'update-category',
+      method: HttpMethod.PATCH,
+    },
+    {
+      endpoint: '/category/:id',
+      rel: 'delete-category',
+      method: HttpMethod.DELETE,
+    },
+  ])
   @Policies(CreateCategoryPolicyHandler)
   async saveOne(
     @Body() createCategoryDto: CreateCategoryDto,
@@ -68,6 +104,23 @@ export class CategoryController {
   }
 
   @Patch(':id')
+  @Hypermedia([
+    {
+      endpoint: '/category/:id',
+      rel: 'get-category',
+      method: HttpMethod.GET,
+    },
+    {
+      endpoint: '/category/:id',
+      rel: 'create-category',
+      method: HttpMethod.POST,
+    },
+    {
+      endpoint: '/category/:id',
+      rel: 'delete-category',
+      method: HttpMethod.DELETE,
+    },
+  ])
   @Policies(UpdateCategoryPolicyHandler)
   async updateOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -77,6 +130,13 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @Hypermedia([
+    {
+      endpoint: '/category/:id',
+      rel: 'create-category',
+      method: HttpMethod.POST,
+    },
+  ])
   @Policies(DeleteCategoryPolicyHandler)
   async deleteOne(
     @Param('id', ParseUUIDPipe) id: string,
