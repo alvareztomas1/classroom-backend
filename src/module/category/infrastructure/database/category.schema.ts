@@ -14,4 +14,24 @@ export const CategorySchema = new EntitySchema<Category>({
       length: 60,
     },
   }),
+  relations: {
+    parent: {
+      type: 'many-to-one',
+      target: Category.name,
+      nullable: true,
+      inverseSide: 'subCategories',
+    },
+    subCategories: {
+      type: 'one-to-many',
+      target: Category.name,
+      inverseSide: 'parent',
+      cascade: ['soft-remove'],
+    },
+  },
+  uniques: [
+    {
+      name: 'UQ_CATEGORY_PARENT_NAME',
+      columns: ['name', 'parent'],
+    },
+  ],
 });
