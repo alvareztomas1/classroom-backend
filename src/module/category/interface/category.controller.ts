@@ -7,12 +7,14 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
+import { CategoryIncludeQueryDto } from '@module/category/application/dto/query/category-include-query-param.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
 import { CategoryCRUDService } from '@module/category/application/service/category-crud.service';
 
@@ -23,8 +25,9 @@ export class CategoryController {
   @Get(':id')
   async getOneById(
     @Param('id', ParseUUIDPipe) id: string,
+    @Query('include') include: CategoryIncludeQueryDto,
   ): Promise<CategoryResponseDto> {
-    return await this.categoryService.getOneByIdOrFail(id);
+    return await this.categoryService.getOneByIdOrFail(id, include.target);
   }
 
   @Post()
