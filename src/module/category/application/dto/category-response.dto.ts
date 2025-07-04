@@ -29,8 +29,8 @@ export class CategoryResponseDto extends BaseResponseDto {
     const { name, id } = category;
 
     return {
-      name,
       id,
+      name,
     };
   }
 }
