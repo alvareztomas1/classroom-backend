@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { AppModule } from '@module/app.module';
-import { Category } from '@module/category/domain/category.entity';
 import { FILE_STORAGE_PROVIDER_SERVICE_KEY } from '@module/cloud/application/interface/file-storage-provider.interface';
 import { IDENTITY_PROVIDER_SERVICE_KEY } from '@module/iam/authentication/application/service/identity-provider.service.interface';
 
@@ -21,16 +19,6 @@ export const fileStorageProviderServiceMock = {
   deleteFile: jest.fn(() => Promise.resolve()),
 };
 
-export const mockTypeOrmRepository = {
-  create: jest.fn(),
-  save: jest.fn(),
-  find: jest.fn(),
-  findAndCount: jest.fn(),
-  findOne: jest.fn(),
-  softDelete: jest.fn(),
-  softRemove: jest.fn(),
-};
-
 export const testModuleBootstrapper = (): Promise<TestingModule> => {
   return Test.createTestingModule({
     imports: [AppModule],
@@ -39,7 +27,6 @@ export const testModuleBootstrapper = (): Promise<TestingModule> => {
     .useValue(identityProviderServiceMock)
     .overrideProvider(FILE_STORAGE_PROVIDER_SERVICE_KEY)
     .useValue(fileStorageProviderServiceMock)
-    .overrideProvider(getRepositoryToken(Category))
-    .useValue(mockTypeOrmRepository)
+
     .compile();
 };

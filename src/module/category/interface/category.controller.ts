@@ -73,9 +73,8 @@ export class CategoryController {
   ])
   async getOneById(
     @Param('id', ParseUUIDPipe) id: string,
-    @Query('include') include: CategoryIncludeQueryDto,
   ): Promise<CategoryResponseDto> {
-    return await this.categoryService.getOneByIdOrFail(id, include.target);
+    return await this.categoryService.getOneByIdOrFail(id);
   }
 
   @Post()
