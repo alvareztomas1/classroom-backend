@@ -14,16 +14,12 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
-import {
-  mockTypeOrmRepository,
-  testModuleBootstrapper,
-} from '@test/test.module.bootstrapper';
+import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';
 
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
-import { Category } from '@module/category/domain/category.entity';
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 
 describe('Category Module', () => {
@@ -57,37 +53,8 @@ describe('Category Module', () => {
 
   const endpoint = '/api/v1/category';
 
-  const mockParent = new Category(
-    'Data Structures',
-    'e7a70fc2-5277-492f-bd24-a14ce394a5b8',
-  );
-  const mockFirstSubCategory = new Category(
-    'Algorithms',
-    'feba550d-3713-4f6a-a045-07d0508dc25e',
-    mockParent,
-    [],
-  );
-  const mockSecondSubCategory = new Category(
-    'Sorting',
-    'bd1cf912-6545-4636-8fea-087654f10232',
-    mockFirstSubCategory,
-  );
-
-  mockFirstSubCategory.subCategories?.push(mockSecondSubCategory);
-
-  const mockCategories = [
-    mockParent,
-    mockFirstSubCategory,
-    mockSecondSubCategory,
-  ];
-
   describe('GET - /category', () => {
     it('Should return paginated categories', async () => {
-      mockTypeOrmRepository.findAndCount.mockImplementationOnce(() => [
-        mockCategories,
-        mockCategories.length,
-      ]);
-
       return await request(app.getHttpServer())
         .get(endpoint)
         .auth(regularToken, { type: 'bearer' })
@@ -102,37 +69,9 @@ describe('Category Module', () => {
               data: expect.arrayContaining([
                 expect.objectContaining({
                   type: 'category',
-                  id: mockParent.id,
+                  id: expect.any(String),
                   attributes: expect.objectContaining({
-                    name: mockParent.name,
-                  }),
-                }),
-                expect.objectContaining({
-                  type: 'category',
-                  id: mockFirstSubCategory.id,
-                  attributes: expect.objectContaining({
-                    name: mockFirstSubCategory.name,
-                    parent: expect.objectContaining({
-                      id: mockParent.id,
-                      name: mockParent.name,
-                    }),
-                    subCategories: expect.arrayContaining([
-                      expect.objectContaining({
-                        id: mockSecondSubCategory.id,
-                        name: mockSecondSubCategory.name,
-                      }),
-                    ]),
-                  }),
-                }),
-                expect.objectContaining({
-                  type: 'category',
-                  id: mockSecondSubCategory.id,
-                  attributes: expect.objectContaining({
-                    name: mockSecondSubCategory.name,
-                    parent: expect.objectContaining({
-                      id: mockFirstSubCategory.id,
-                      name: mockFirstSubCategory.name,
-                    }),
+                    name: expect.any(String),
                   }),
                 }),
               ]),
@@ -152,6 +91,11 @@ describe('Category Module', () => {
                   href: expect.any(String),
                   method: HttpMethod.GET,
                 }),
+                expect.objectContaining({
+                  rel: 'next',
+                  href: expect.any(String),
+                  method: HttpMethod.GET,
+                }),
               ]),
               meta: expect.objectContaining({
                 pageNumber: expect.any(Number),
@@ -168,8 +112,7 @@ describe('Category Module', () => {
 
   describe('GET - /category/:id', () => {
     it('Should return a category by its id', async () => {
-      mockTypeOrmRepository.findOne.mockImplementationOnce(() => mockParent);
-      const categoryId = mockParent.id;
+      const categoryId = '2d915994-8c06-425c-9a64-23a7b2b8603e';
 
       await request(app.getHttpServer())
         .get(`${endpoint}/${categoryId}`)
@@ -181,7 +124,7 @@ describe('Category Module', () => {
               type: 'category',
               id: categoryId,
               attributes: expect.objectContaining({
-                name: mockParent.name,
+                name: 'Category 1',
               }),
             }),
             links: expect.arrayContaining([
@@ -213,7 +156,6 @@ describe('Category Module', () => {
     });
 
     it('Should throw an error if category is not found', async () => {
-      mockTypeOrmRepository.findOne.mockImplementationOnce(() => null);
       const nonExistingCategoryId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
 
       await request(app.getHttpServer())
@@ -235,14 +177,11 @@ describe('Category Module', () => {
         });
     });
 
-    it('Should include related categories', async () => {
-      mockTypeOrmRepository.findOne.mockImplementationOnce(
-        () => mockFirstSubCategory,
-      );
-      const categoryId = mockFirstSubCategory.id;
+    it('Should include a path to the ancestors', async () => {
+      const categoryId = '143ce6ee-b7c0-4d25-9463-76d0f7a14663';
 
       await request(app.getHttpServer())
-        .get(`${endpoint}/${categoryId}?include=parent,subCategories`)
+        .get(`${endpoint}/${categoryId}`)
         .auth(regularToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(({ body }) => {
@@ -251,15 +190,19 @@ describe('Category Module', () => {
               type: 'category',
               id: categoryId,
               attributes: expect.objectContaining({
-                name: mockFirstSubCategory.name,
-                parent: expect.objectContaining({
-                  id: mockParent.id,
-                  name: mockParent.name,
-                }),
-                subCategories: expect.arrayContaining([
+                name: 'Category 3',
+                path: expect.arrayContaining([
                   expect.objectContaining({
-                    id: mockSecondSubCategory.id,
-                    name: mockSecondSubCategory.name,
+                    id: expect.any(String),
+                    name: 'Category 1',
+                  }),
+                  expect.objectContaining({
+                    id: expect.any(String),
+                    name: 'Category 2',
+                  }),
+                  expect.objectContaining({
+                    id: expect.any(String),
+                    name: 'Category 3',
                   }),
                 ]),
               }),
@@ -280,10 +223,8 @@ describe('Category Module', () => {
 
   describe('POST - /category', () => {
     it('Should create a new category', async () => {
-      mockTypeOrmRepository.findOne.mockImplementationOnce(() => null);
-      mockTypeOrmRepository.save.mockImplementationOnce(() => mockParent);
       const createCategoryDto = {
-        name: mockParent.name,
+        name: 'Programming',
       } as CreateCategoryDto;
 
       await request(app.getHttpServer())
@@ -291,57 +232,68 @@ describe('Category Module', () => {
         .auth(superAdminToken, { type: 'bearer' })
         .send(createCategoryDto)
         .expect(HttpStatus.CREATED)
-        .then(({ body }) => {
-          const expectedResponse = {
-            data: expect.objectContaining({
-              type: 'category',
-              id: mockParent.id,
-              attributes: expect.objectContaining({
-                name: createCategoryDto.name,
+        .then(
+          ({ body }: { body: SerializedResponseDto<CategoryResponseDto> }) => {
+            const { id } = body.data;
+            const expectedResponse = {
+              data: expect.objectContaining({
+                type: 'category',
+                id: expect.any(String),
+                attributes: expect.objectContaining({
+                  name: createCategoryDto.name,
+                }),
               }),
-            }),
-            links: expect.arrayContaining([
-              expect.objectContaining({
-                href: expect.stringContaining(endpoint),
-                rel: 'self',
-                method: HttpMethod.POST,
-              }),
-              expect.objectContaining({
-                rel: 'get-category',
-                href: expect.stringContaining(`${endpoint}/${mockParent.id}`),
-                method: HttpMethod.GET,
-              }),
-              expect.objectContaining({
-                rel: 'update-category',
-                href: expect.stringContaining(`${endpoint}/${mockParent.id}`),
-                method: HttpMethod.PATCH,
-              }),
-              expect.objectContaining({
-                rel: 'delete-category',
-                href: expect.stringContaining(`${endpoint}/${mockParent.id}`),
-                method: HttpMethod.DELETE,
-              }),
-            ]),
-          };
-          expect(body).toEqual(expectedResponse);
-        });
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  href: expect.stringContaining(endpoint),
+                  rel: 'self',
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'get-category',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'update-category',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  rel: 'delete-category',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.DELETE,
+                }),
+              ]),
+            };
+            expect(body).toEqual(expectedResponse);
+          },
+        );
     });
 
     it('Should throw an error when the root category already exists', async () => {
-      mockTypeOrmRepository.findOne.mockImplementationOnce(() => mockParent);
-      const createCategoryDto = {
-        name: mockParent.name,
+      const createNonDuplicatedCategoryDto = {
+        name: 'Design',
+      } as CreateCategoryDto;
+      const createDuplicatedCategoryDto = {
+        name: createNonDuplicatedCategoryDto.name,
       } as CreateCategoryDto;
 
       await request(app.getHttpServer())
         .post(endpoint)
         .auth(superAdminToken, { type: 'bearer' })
-        .send(createCategoryDto)
+        .send(createNonDuplicatedCategoryDto)
+        .expect(HttpStatus.CREATED);
+
+      return await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createDuplicatedCategoryDto)
         .expect(HttpStatus.CONFLICT)
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Root category '${createCategoryDto.name}' already exists`,
+              detail: `Root category '${createDuplicatedCategoryDto.name}' already exists`,
               source: {
                 pointer: endpoint,
               },
@@ -354,23 +306,47 @@ describe('Category Module', () => {
     });
 
     it('Should throw an error when the subcategory already exists', async () => {
-      mockTypeOrmRepository.findOne
-        .mockImplementationOnce(() => mockParent)
-        .mockImplementationOnce(() => mockFirstSubCategory);
-      const createCategoryDto = {
-        name: mockFirstSubCategory.name,
-        parentId: mockParent.id,
+      const createParentCategoryDto = {
+        name: 'Mathematics',
       } as CreateCategoryDto;
+      const createSubCategoryDto = {
+        name: 'Algebra',
+      } as CreateCategoryDto;
+
+      let parentId = '';
 
       await request(app.getHttpServer())
         .post(endpoint)
         .auth(superAdminToken, { type: 'bearer' })
-        .send(createCategoryDto)
+        .send(createParentCategoryDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<CategoryResponseDto> }) => {
+            parentId = body.data.id as string;
+          },
+        );
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send({
+          ...createSubCategoryDto,
+          parentId,
+        })
+        .expect(HttpStatus.CREATED);
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send({
+          ...createSubCategoryDto,
+          parentId,
+        })
         .expect(HttpStatus.CONFLICT)
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Subcategory '${createCategoryDto.name}' already exists under '${mockParent.name}' category`,
+              detail: `Subcategory '${createSubCategoryDto.name}' already exists under '${createParentCategoryDto.name}' category`,
               source: {
                 pointer: endpoint,
               },
@@ -383,11 +359,9 @@ describe('Category Module', () => {
     });
 
     it('Should throw an error when the parent category does not exist', async () => {
-      mockTypeOrmRepository.findOne.mockImplementationOnce(() => null);
-
       const nonExistingCategoryId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
       const createCategoryDto = {
-        name: mockFirstSubCategory.name,
+        name: 'Fishing',
         parentId: nonExistingCategoryId,
       } as CreateCategoryDto;
 
@@ -458,20 +432,25 @@ describe('Category Module', () => {
 
   describe('PATCH - /category/:id', () => {
     it('Should update an existing category', async () => {
+      const createCategoryDto = {
+        name: 'Ssports',
+      } as CreateCategoryDto;
       const updateCategoryDto = {
-        name: 'Edited',
+        name: 'Sports',
       } as UpdateCategoryDto;
 
-      mockTypeOrmRepository.findOne.mockImplementationOnce(
-        () => mockFirstSubCategory,
-      );
+      let categoryId = '';
 
-      mockTypeOrmRepository.save.mockImplementationOnce(() => ({
-        ...mockFirstSubCategory,
-        name: updateCategoryDto.name,
-      }));
-
-      const categoryId = mockFirstSubCategory.id;
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createCategoryDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<CategoryResponseDto> }) => {
+            categoryId = body.data.id as string;
+          },
+        );
 
       await request(app.getHttpServer())
         .patch(`${endpoint}/${categoryId}`)
@@ -517,8 +496,6 @@ describe('Category Module', () => {
     });
 
     it('Should throw an error if category to update is not found', async () => {
-      mockTypeOrmRepository.findOne.mockImplementationOnce(() => null);
-
       const nonExistingCategoryId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
       const updateCategoryDto = {
         name: 'Edited',
@@ -544,16 +521,38 @@ describe('Category Module', () => {
         });
     });
 
-    it('Should throw an error when the root category already exists', async () => {
-      mockTypeOrmRepository.findOne
-        .mockImplementationOnce(() => mockFirstSubCategory)
-        .mockImplementationOnce(() => mockParent);
+    it('Should throw an error when the root category already exists under the new name', async () => {
+      const createFirstRootCategoryDto = {
+        name: 'History',
+      } as CreateCategoryDto;
+      const createSecondRootCategoryDto = {
+        name: 'Geography',
+      } as CreateCategoryDto;
       const updateCategoryDto = {
-        name: 'Edited',
+        name: createFirstRootCategoryDto.name,
       } as UpdateCategoryDto;
 
+      let categoryId = '';
+
       await request(app.getHttpServer())
-        .patch(`${endpoint}/${mockFirstSubCategory.id}`)
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createFirstRootCategoryDto)
+        .expect(HttpStatus.CREATED);
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createSecondRootCategoryDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<CategoryResponseDto> }) => {
+            categoryId = body.data.id as string;
+          },
+        );
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${categoryId}`)
         .auth(superAdminToken, { type: 'bearer' })
         .send(updateCategoryDto)
         .expect(HttpStatus.CONFLICT)
@@ -562,7 +561,7 @@ describe('Category Module', () => {
             error: {
               detail: `Root category '${updateCategoryDto.name}' already exists`,
               source: {
-                pointer: `${endpoint}/${mockFirstSubCategory.id}`,
+                pointer: `${endpoint}/${categoryId}`,
               },
               status: HttpStatus.CONFLICT.toString(),
               title: 'Category already exists',
@@ -573,25 +572,63 @@ describe('Category Module', () => {
     });
 
     it('Should throw an error when the subcategory already exists', async () => {
-      mockTypeOrmRepository.findOne
-        .mockImplementationOnce(() => mockParent)
-        .mockImplementationOnce(() => mockFirstSubCategory);
-
+      const createRootCategoryDto = {
+        name: 'Literature',
+      } as CreateCategoryDto;
+      const createSubCategoryCategoryDto = {
+        name: 'Novel',
+      } as CreateCategoryDto;
+      const createSecondSubCategoryCategoryDto = {
+        name: 'Classic',
+      } as CreateCategoryDto;
       const updateCategoryDto = {
-        name: 'Edited',
+        name: createSubCategoryCategoryDto.name,
       } as UpdateCategoryDto;
+      let parentId = '';
+      let categoryId = '';
 
       await request(app.getHttpServer())
-        .patch(`${endpoint}/${mockFirstSubCategory.id}`)
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createRootCategoryDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<CategoryResponseDto> }) => {
+            parentId = body.data.id as string;
+          },
+        );
+
+      createSubCategoryCategoryDto.parentId = parentId;
+      createSecondSubCategoryCategoryDto.parentId = parentId;
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createSubCategoryCategoryDto)
+        .expect(HttpStatus.CREATED);
+
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createSecondSubCategoryCategoryDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<CategoryResponseDto> }) => {
+            categoryId = body.data.id as string;
+          },
+        );
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${categoryId}`)
         .auth(superAdminToken, { type: 'bearer' })
         .send(updateCategoryDto)
         .expect(HttpStatus.CONFLICT)
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Subcategory '${updateCategoryDto.name}' already exists under '${mockParent.name}' category`,
+              detail: `Subcategory '${updateCategoryDto.name}' already exists under '${createRootCategoryDto.name}' category`,
               source: {
-                pointer: `${endpoint}/${mockFirstSubCategory.id}`,
+                pointer: `${endpoint}/${categoryId}`,
               },
               status: HttpStatus.CONFLICT.toString(),
               title: 'Category already exists',
@@ -602,16 +639,29 @@ describe('Category Module', () => {
     });
 
     it('Should throw an error when the parent category does not exist', async () => {
-      mockTypeOrmRepository.findOne.mockImplementationOnce(() => null);
-
+      const createRootCategoryDto = {
+        name: 'Literaturee',
+      } as CreateCategoryDto;
       const nonExistingCategoryId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
       const updateCategoryDto = {
-        name: 'Edited',
+        name: 'Literature',
         parentId: nonExistingCategoryId,
       } as UpdateCategoryDto;
+      let categoryId = '';
 
       await request(app.getHttpServer())
-        .patch(`${endpoint}/${mockFirstSubCategory.id}`)
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createRootCategoryDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<CategoryResponseDto> }) => {
+            categoryId = body.data.id as string;
+          },
+        );
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${categoryId}`)
         .auth(superAdminToken, { type: 'bearer' })
         .send(updateCategoryDto)
         .expect(HttpStatus.NOT_FOUND)
@@ -620,7 +670,7 @@ describe('Category Module', () => {
             error: {
               detail: `Entity with id ${nonExistingCategoryId} not found`,
               source: {
-                pointer: `${endpoint}/${mockFirstSubCategory.id}`,
+                pointer: `${endpoint}/${categoryId}`,
               },
               status: HttpStatus.NOT_FOUND.toString(),
               title: 'Entity not found',
@@ -632,11 +682,10 @@ describe('Category Module', () => {
 
     it('Should deny access to non-super-admin users', async () => {
       const updateCategoryDto = {
-        name: '',
-        parentId: mockParent.id,
+        name: 'Edited',
       } as UpdateCategoryDto;
 
-      const categoryId = mockFirstSubCategory.id;
+      const categoryId = '2d915994-8c06-425c-9a64-23a7b2b8603e';
 
       await request(app.getHttpServer())
         .patch(`${endpoint}/${categoryId}`)
@@ -680,12 +729,21 @@ describe('Category Module', () => {
 
   describe('DELETE - /category/:id', () => {
     it('Should delete an existing category', async () => {
-      mockTypeOrmRepository.findOne.mockImplementationOnce(
-        () => mockFirstSubCategory,
-      );
-      mockTypeOrmRepository.softRemove.mockImplementationOnce(() => true);
+      const createCategoryDto = {
+        name: 'Blockchain',
+      } as CreateCategoryDto;
+      let categoryId = '';
 
-      const categoryId = mockFirstSubCategory.id;
+      await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createCategoryDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<CategoryResponseDto> }) => {
+            categoryId = body.data.id as string;
+          },
+        );
 
       await request(app.getHttpServer())
         .delete(`${endpoint}/${categoryId}`)
@@ -717,10 +775,27 @@ describe('Category Module', () => {
             expect(body).toEqual(expectedResponse);
           },
         );
+
+      return await request(app.getHttpServer())
+        .get(`${endpoint}/${categoryId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `Entity with id ${categoryId} not found`,
+              source: {
+                pointer: `${endpoint}/${categoryId}`,
+              },
+              status: HttpStatus.NOT_FOUND.toString(),
+              title: 'Entity not found',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
     });
 
     it('Should throw an error if category to delete is not found', async () => {
-      mockTypeOrmRepository.findOne.mockImplementationOnce(() => null);
       const nonExistingCategoryId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
 
       await request(app.getHttpServer())
@@ -743,7 +818,7 @@ describe('Category Module', () => {
     });
 
     it('Should deny access to non-super-admin users', async () => {
-      const categoryId = mockFirstSubCategory.id;
+      const categoryId = '143ce6ee-b7c0-4d25-9463-76d0f7a14663';
 
       await request(app.getHttpServer())
         .delete(`${endpoint}/${categoryId}`)
