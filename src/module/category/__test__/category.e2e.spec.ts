@@ -18,6 +18,7 @@ import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';
 
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
+import { CategoryDto } from '@module/category/application/dto/category.dto';
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
@@ -105,6 +106,125 @@ describe('Category Module', () => {
               }),
             });
             expect(body).toEqual(expectedResponse);
+          },
+        );
+    });
+
+    it('Should allow to filter by attributes', async () => {
+      const expectedName = 'Category 2';
+      const parentId = '2d915994-8c06-425c-9a64-23a7b2b8603e';
+
+      return await request(app.getHttpServer())
+        .get(`${endpoint}?filter[parentId]=${parentId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDtoCollection<CategoryResponseDto>;
+          }) => {
+            const expectedResponse = expect.objectContaining({
+              data: expect.arrayContaining([
+                expect.objectContaining({
+                  attributes: expect.objectContaining({
+                    name: expectedName,
+                  }),
+                }),
+              ]),
+            });
+            expect(body).toEqual(expectedResponse);
+            expect(body.data).toHaveLength(1);
+          },
+        );
+    });
+
+    it('Should allow to filter by categories with no parent', async () => {
+      const idWithParents = [
+        '5fb9c427-2551-4787-81c4-b6c603175f45',
+        '143ce6ee-b7c0-4d25-9463-76d0f7a14663',
+      ];
+
+      return await request(app.getHttpServer())
+        .get(`${endpoint}?filter[parentId]=null`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDtoCollection<CategoryResponseDto>;
+          }) => {
+            idWithParents.forEach((id) => {
+              expect(body.data).not.toContainEqual(
+                expect.objectContaining({
+                  id,
+                }),
+              );
+            });
+          },
+        );
+    });
+
+    it('Should allow to sort by attributes', async () => {
+      const firstCategory = { name: '' } as CategoryDto;
+      const lastCategory = { name: '' } as CategoryDto;
+      let pageCount: number = 0;
+
+      await request(app.getHttpServer())
+        .get(`${endpoint}?sort[name]=DESC&page[size]=10`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDtoCollection<CategoryResponseDto>;
+          }) => {
+            firstCategory.name = body.data[0].attributes.name;
+            pageCount = body.meta.pageCount;
+          },
+        );
+
+      await request(app.getHttpServer())
+        .get(
+          `${endpoint}?page[size]=10&sort[name]=ASC&page[number]=${pageCount}`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDtoCollection<CategoryResponseDto>;
+          }) => {
+            const resources = body.data;
+            lastCategory.name = resources[resources.length - 1].attributes.name;
+            expect(lastCategory.name).toBe(firstCategory.name);
+          },
+        );
+    });
+
+    it('Should allow to select specific attributes', async () => {
+      const attributes = ['name'] as (keyof CategoryDto)[];
+
+      await request(app.getHttpServer())
+        .get(`${endpoint}?page[size]=10&fields[target]=${attributes.join(',')}`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({
+            body,
+          }: {
+            body: SerializedResponseDtoCollection<CategoryResponseDto>;
+          }) => {
+            const resourceAttributes = body.data[0].attributes;
+            expect(Object.keys(resourceAttributes).length).toBe(
+              attributes.length,
+            );
+            expect(resourceAttributes).toEqual({
+              name: expect.any(String),
+            });
           },
         );
     });
