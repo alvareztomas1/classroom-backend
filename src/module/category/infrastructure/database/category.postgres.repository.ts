@@ -14,6 +14,7 @@ import EntityNotFoundException from '@common/base/infrastructure/exception/not.f
 import {
   CATEGORY_TREE_REPOSITORY_KEY,
   CategoryWithAncestors,
+  CategoryWithChildren,
   ICategoryRepository,
 } from '@module/category/application/repository/category.repository.interface';
 import { Category } from '@module/category/domain/category.entity';
@@ -53,6 +54,21 @@ export class CategoryPostgresRepository
       pageSize: page?.size || DEFAULT_PAGE_SIZE,
       pageCount: Math.ceil(itemCount / (page?.size || DEFAULT_PAGE_SIZE)),
       itemCount,
+    };
+  }
+
+  async getChildrenByIdOrFail(id: string): Promise<CategoryWithChildren> {
+    const category = await this.getOneById(id);
+
+    if (!category) {
+      throw new EntityNotFoundException(id);
+    }
+
+    const children = await this.findChildren(id);
+
+    return {
+      ...category,
+      children,
     };
   }
 
@@ -149,5 +165,11 @@ export class CategoryPostgresRepository
     }
 
     return where;
+  }
+
+  private async findChildren(parentId: string): Promise<Category[]> {
+    return await this.categoryRepository.find({
+      where: { parent: { id: parentId } },
+    });
   }
 }
