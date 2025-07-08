@@ -74,6 +74,30 @@ export class CategoryController {
     return await this.categoryService.getOneByIdOrFail(id);
   }
 
+  @Get(':id/children')
+  @Hypermedia([
+    {
+      endpoint: '/category',
+      rel: 'create-category',
+      method: HttpMethod.POST,
+    },
+    {
+      endpoint: '/category/:id',
+      rel: 'update-category',
+      method: HttpMethod.PATCH,
+    },
+    {
+      endpoint: '/category/:id',
+      rel: 'delete-category',
+      method: HttpMethod.DELETE,
+    },
+  ])
+  async getChildrenById(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<CategoryResponseDto> {
+    return await this.categoryService.getChildrenByIdOrFail(id);
+  }
+
   @Post()
   @Hypermedia([
     {

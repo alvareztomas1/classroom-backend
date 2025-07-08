@@ -9,9 +9,14 @@ export interface CategoryWithAncestors extends Category {
   ancestors?: Category[];
 }
 
+export interface CategoryWithChildren extends Category {
+  children?: Category[];
+}
+
 export interface ICategoryRepository extends BaseRepository<Category> {
   getOneByIdOrFail(
     id: string,
     include?: (keyof Category)[],
   ): Promise<CategoryWithAncestors>;
+  getChildrenByIdOrFail(id: string): Promise<CategoryWithChildren>;
 }

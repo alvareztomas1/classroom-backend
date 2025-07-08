@@ -341,6 +341,80 @@ describe('Category Module', () => {
     });
   });
 
+  describe('GET - /category/:id/children', () => {
+    it('Should return a category with its children by id', async () => {
+      const categoryId = '2d915994-8c06-425c-9a64-23a7b2b8603e';
+
+      await request(app.getHttpServer())
+        .get(`${endpoint}/${categoryId}/children`)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.objectContaining({
+              type: 'category',
+              id: categoryId,
+              attributes: expect.objectContaining({
+                name: 'Category 1',
+                children: expect.arrayContaining([
+                  expect.objectContaining({
+                    id: expect.any(String),
+                    name: 'Category 2',
+                  }),
+                ]),
+              }),
+            }),
+            links: expect.arrayContaining([
+              expect.objectContaining({
+                rel: 'self',
+                href: expect.stringContaining(`${endpoint}/${categoryId}`),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'create-category',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                rel: 'update-category',
+                href: expect.stringContaining(`${endpoint}/${categoryId}`),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'delete-category',
+                href: expect.stringContaining(`${endpoint}/${categoryId}`),
+                method: HttpMethod.DELETE,
+              }),
+            ]),
+          });
+
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error if category is not found', async () => {
+      const nonExistingCategoryId = '22f38dae-00f1-49ff-8f3f-0dd6539af039';
+
+      await request(app.getHttpServer())
+        .get(`${endpoint}/${nonExistingCategoryId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `Entity with id ${nonExistingCategoryId} not found`,
+              source: {
+                pointer: `${endpoint}/${nonExistingCategoryId}`,
+              },
+              status: HttpStatus.NOT_FOUND.toString(),
+              title: 'Entity not found',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+  });
+
   describe('POST - /category', () => {
     it('Should create a new category', async () => {
       const createCategoryDto = {
