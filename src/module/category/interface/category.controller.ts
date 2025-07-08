@@ -21,7 +21,6 @@ import { CategoryResponseDto } from '@module/category/application/dto/category-r
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
 import { CategoryFieldsQueryParamsDto } from '@module/category/application/dto/query-params/category-fields-query-params.dto';
 import { CategoryFilterQueryParamsDto } from '@module/category/application/dto/query-params/category-filter-query-params.dto';
-import { CategoryIncludeQueryDto } from '@module/category/application/dto/query-params/category-include-query-param.dto';
 import { CategorySortQueryParamsDto } from '@module/category/application/dto/query-params/category-sort-query-params.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
 import { CreateCategoryPolicyHandler } from '@module/category/application/policy/create-category-policy.handler';
@@ -42,14 +41,12 @@ export class CategoryController {
     @Query('filter') filter: CategoryFilterQueryParamsDto,
     @Query('fields') fields: CategoryFieldsQueryParamsDto,
     @Query('sort') sort: CategorySortQueryParamsDto,
-    @Query('include') include: CategoryIncludeQueryDto,
   ): Promise<CollectionDto<CategoryResponseDto>> {
     return await this.categoryService.getAll({
       page,
       filter,
       fields: fields.target,
       sort,
-      include: include.target,
     });
   }
 

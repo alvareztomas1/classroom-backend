@@ -4,4 +4,8 @@ export class CategoryFilterQueryParamsDto {
   @IsString()
   @IsOptional()
   name?: string;
+
+  @IsString()
+  @IsOptional()
+  parentId?: string;
 }
