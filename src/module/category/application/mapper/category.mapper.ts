@@ -3,7 +3,10 @@ import { IDtoMapper } from '@common/base/application/dto/dto.interface';
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
-import { CategoryWithAncestors } from '@module/category/application/repository/category.repository.interface';
+import {
+  CategoryWithAncestors,
+  CategoryWithChildren,
+} from '@module/category/application/repository/category.repository.interface';
 import { Category } from '@module/category/domain/category.entity';
 
 export class CategoryMapper
@@ -30,14 +33,21 @@ export class CategoryMapper
     return new Category(dto.name ?? entity.name, id, parent, subCategories);
   }
 
-  fromEntityToResponseDto(entity: CategoryWithAncestors): CategoryResponseDto {
-    const { name, id, ancestors } = entity;
+  fromEntityToResponseDto(
+    entity: CategoryWithAncestors | CategoryWithChildren,
+  ): CategoryResponseDto {
+    const { name, id } = entity;
+
+    const hasChildren = 'children' in entity && Array.isArray(entity.children);
+    const hasAncestors =
+      'ancestors' in entity && Array.isArray(entity.ancestors);
 
     return new CategoryResponseDto(
       Category.getEntityName(),
       name,
       id,
-      ancestors,
+      hasAncestors ? entity.ancestors : undefined,
+      hasChildren ? entity.children : undefined,
     );
   }
 }
