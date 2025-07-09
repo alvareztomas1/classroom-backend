@@ -7,6 +7,7 @@ import request from 'supertest';
 import { loadFixtures } from '@data/util/fixture-loader';
 
 import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant';
+import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
 import {
   SerializedResponseDto,
   SerializedResponseDtoCollection,
@@ -170,7 +171,7 @@ describe('Course Module', () => {
             body: SerializedResponseDtoCollection<CourseResponseDto>;
           }) => {
             firstCourse.title = body.data[0].attributes.title;
-            pageCount = body.meta.pageCount;
+            pageCount = (body.meta as IPagingCollectionData).pageCount;
           },
         );
 

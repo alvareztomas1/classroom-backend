@@ -5,6 +5,7 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
+import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
 import {
   SerializedResponseDto,
   SerializedResponseDtoCollection,
@@ -148,7 +149,7 @@ describe('PaymentMethod Module', () => {
             body: SerializedResponseDtoCollection<PaymentMethodResponseDto>;
           }) => {
             firstPaymentMethod.name = body.data[0].attributes.name;
-            pageCount = body.meta.pageCount;
+            pageCount = (body.meta as IPagingCollectionData).pageCount;
           },
         );
 
