@@ -5,10 +5,12 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
+import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
 import {
   SerializedResponseDto,
   SerializedResponseDtoCollection,
 } from '@common/base/application/dto/serialized-response.dto';
+import { INonPaginatedSerializedCollection } from '@common/base/application/dto/serialized-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { setupApp } from '@config/app.config';
@@ -111,11 +113,10 @@ describe('Category Module', () => {
     });
 
     it('Should allow to filter by attributes', async () => {
-      const expectedName = 'Category 2';
-      const parentId = '2d915994-8c06-425c-9a64-23a7b2b8603e';
+      const name = 'Category 1';
 
       return await request(app.getHttpServer())
-        .get(`${endpoint}?filter[parentId]=${parentId}`)
+        .get(`${endpoint}?filter[name]=${name}`)
         .auth(adminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(
@@ -128,40 +129,13 @@ describe('Category Module', () => {
               data: expect.arrayContaining([
                 expect.objectContaining({
                   attributes: expect.objectContaining({
-                    name: expectedName,
+                    name,
                   }),
                 }),
               ]),
             });
             expect(body).toEqual(expectedResponse);
             expect(body.data).toHaveLength(1);
-          },
-        );
-    });
-
-    it('Should allow to filter by categories with no parent', async () => {
-      const idWithParents = [
-        '5fb9c427-2551-4787-81c4-b6c603175f45',
-        '143ce6ee-b7c0-4d25-9463-76d0f7a14663',
-      ];
-
-      return await request(app.getHttpServer())
-        .get(`${endpoint}?filter[parentId]=null`)
-        .auth(adminToken, { type: 'bearer' })
-        .expect(HttpStatus.OK)
-        .then(
-          ({
-            body,
-          }: {
-            body: SerializedResponseDtoCollection<CategoryResponseDto>;
-          }) => {
-            idWithParents.forEach((id) => {
-              expect(body.data).not.toContainEqual(
-                expect.objectContaining({
-                  id,
-                }),
-              );
-            });
           },
         );
     });
@@ -182,7 +156,7 @@ describe('Category Module', () => {
             body: SerializedResponseDtoCollection<CategoryResponseDto>;
           }) => {
             firstCategory.name = body.data[0].attributes.name;
-            pageCount = body.meta.pageCount;
+            pageCount = (body.meta as IPagingCollectionData).pageCount;
           },
         );
 
@@ -225,6 +199,63 @@ describe('Category Module', () => {
             expect(resourceAttributes).toEqual({
               name: expect.any(String),
             });
+          },
+        );
+    });
+  });
+
+  describe('GET - /category/roots', () => {
+    it('Should return a list of root categories', async () => {
+      const nonRootCategoryIds = [
+        '5fb9c427-2551-4787-81c4-b6c603175f45',
+        '143ce6ee-b7c0-4d25-9463-76d0f7a14663',
+      ];
+
+      return await request(app.getHttpServer())
+        .get(`${endpoint}/roots`)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({
+            body,
+          }: {
+            body: INonPaginatedSerializedCollection<CategoryResponseDto>;
+          }) => {
+            const { data } = body;
+            nonRootCategoryIds.forEach((id) => {
+              expect(data).not.toContainEqual(
+                expect.objectContaining({
+                  id,
+                }),
+              );
+            });
+
+            const expectedResponse = expect.objectContaining({
+              data: expect.arrayContaining([
+                expect.objectContaining({
+                  type: 'category',
+                  id: expect.any(String),
+                  attributes: expect.objectContaining({
+                    name: expect.any(String),
+                  }),
+                  links: expect.arrayContaining([
+                    expect.objectContaining({
+                      rel: 'get-category-children',
+                      href: expect.stringMatching(/category\/.*\/children/),
+                      method: HttpMethod.GET,
+                    }),
+                  ]),
+                }),
+              ]),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  rel: 'self',
+                  href: expect.stringContaining(`${endpoint}/roots`),
+                  method: HttpMethod.GET,
+                }),
+              ]),
+            });
+            expect(body).toEqual(expectedResponse);
           },
         );
     });
