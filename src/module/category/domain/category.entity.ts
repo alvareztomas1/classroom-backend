@@ -2,7 +2,6 @@ import { Base } from '@common/base/domain/base.entity';
 
 export class Category extends Base {
   name: string;
-  parentId?: string;
   parent?: Category;
   subCategories?: Category[];
 
@@ -16,7 +15,6 @@ export class Category extends Base {
 
     this.name = name;
     this.parent = parent;
-    this.parentId = parent?.id;
     this.subCategories = subCategories;
   }
 }
