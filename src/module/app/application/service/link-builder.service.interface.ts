@@ -16,9 +16,13 @@ export interface ILinkBuilderService {
     responseDto: BaseResponseDto,
     params: Record<string, string>,
   ): ILink[];
-  buildCollectionLinks(
+  buildPaginatedCollectionLinks(
     currentRequestUrl: string,
     currentRequestMethod: HttpMethod,
     pagingData: IPagingCollectionData,
+  ): ICollectionLinks;
+  buildCollectionLinks(
+    currentRequestUrl: string,
+    currentRequestMethod: HttpMethod,
   ): ICollectionLinks;
 }

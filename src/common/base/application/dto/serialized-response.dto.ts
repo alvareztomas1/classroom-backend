@@ -8,21 +8,21 @@ import {
 export class SerializedResponseDtoCollection<ResponseDto extends object> {
   data: ISerializedResponseData<ResponseDto>[];
   links: ICollectionLinks;
-  meta: IPagingCollectionData;
+  meta?: IPagingCollectionData;
 
   constructor(
     data: ISerializedResponseData<ResponseDto>[],
     links: ICollectionLinks,
-    meta: IPagingCollectionData,
+    meta?: IPagingCollectionData,
   ) {
     this.data = data;
     this.links = links;
-    this.meta = meta;
+    if (meta) this.meta = meta;
   }
 }
 
 export class SerializedResponseDto<ResponseDto extends object> {
-  data: ISerializedResponseData<ResponseDto>;
+  data: Omit<ISerializedResponseData<ResponseDto>, 'links'>;
   links: IResponseDtoLinks;
 
   constructor(

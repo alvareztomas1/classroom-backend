@@ -7,6 +7,7 @@ import request from 'supertest';
 import { loadFixtures } from '@data/util/fixture-loader';
 
 import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant';
+import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
 import {
   SerializedResponseDto,
   SerializedResponseDtoCollection,
@@ -152,7 +153,7 @@ describe('User Module', () => {
             body: SerializedResponseDtoCollection<UserResponseDto>;
           }) => {
             firstUser.firstName = body.data[0].attributes.firstName;
-            pageCount = body.meta.pageCount;
+            pageCount = (body.meta as IPagingCollectionData).pageCount;
           },
         );
 

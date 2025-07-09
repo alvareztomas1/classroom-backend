@@ -24,11 +24,11 @@ export class LinkBuilderService implements ILinkBuilderService {
     linksMetadata: ILinkMetadata[],
     responseDto: BaseResponseDto,
     params: Record<string, string>,
+    withSelfLink = true,
   ): ILink[] {
-    const selfLink = this.buildSelfLink(
-      currentRequestUrl,
-      currentRequestMethod,
-    );
+    const selfLink =
+      withSelfLink &&
+      this.buildSelfLink(currentRequestUrl, currentRequestMethod);
     const relatedLinks = this.buildRelatedLinks(
       linksMetadata,
       baseAppUrl,
@@ -36,10 +36,10 @@ export class LinkBuilderService implements ILinkBuilderService {
       params,
     );
 
-    return [selfLink, ...relatedLinks];
+    return selfLink ? [selfLink, ...relatedLinks] : relatedLinks;
   }
 
-  buildCollectionLinks(
+  buildPaginatedCollectionLinks(
     currentRequestUrl: string,
     currentRequestMethod: HttpMethod,
     pagingData: IPagingCollectionData,
@@ -51,6 +51,18 @@ export class LinkBuilderService implements ILinkBuilderService {
 
     const pagingLinks = this.buildPagingLinks(currentRequestUrl, pagingData);
     return [selfLink, ...pagingLinks];
+  }
+
+  buildCollectionLinks(
+    currentRequestUrl: string,
+    currentRequestMethod: HttpMethod,
+  ): ICollectionLinks {
+    const selfLinks = this.buildSelfLink(
+      currentRequestUrl,
+      currentRequestMethod,
+    );
+
+    return [selfLinks];
   }
 
   private buildPagingLinks(

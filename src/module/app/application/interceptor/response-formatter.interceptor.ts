@@ -21,7 +21,10 @@ import {
   SerializedResponseDto,
   SerializedResponseDtoCollection,
 } from '@common/base/application/dto/serialized-response.dto';
-import { ISerializedResponseData } from '@common/base/application/dto/serialized-response.interface';
+import {
+  INonPaginatedSerializedCollection,
+  ISerializedResponseData,
+} from '@common/base/application/dto/serialized-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
@@ -60,11 +63,23 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((responseData: BaseResponseDto | CollectionDto<IResponseDto>) => {
         if (responseData instanceof CollectionDto) {
-          return this.buildSerializedCollection(
-            responseData,
-            currentRequestUrl,
-            currentRequestMethod as HttpMethod,
-          );
+          const meta = this.buildPagingData(responseData);
+
+          return meta
+            ? this.buildPaginatedSerializedCollection(
+                responseData,
+                currentRequestUrl,
+                currentRequestMethod as HttpMethod,
+                meta,
+              )
+            : this.buildSerializedCollection(
+                responseData,
+                currentRequestUrl,
+                currentRequestMethod as HttpMethod,
+                baseAppUrl as string,
+                links,
+                request.params,
+              );
         }
 
         return this.buildSerializedResponseDto(
@@ -79,23 +94,19 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     );
   }
 
-  private buildSerializedCollection(
+  private buildPaginatedSerializedCollection(
     collection: CollectionDto<IResponseDto>,
     currentRequestUrl: string,
     currentRequestMethod: HttpMethod,
+    meta: IPagingCollectionData,
   ): SerializedResponseDtoCollection<Omit<BaseResponseDto, 'type'>> {
     const serializedCollectionData: ISerializedResponseData<
       Omit<BaseResponseDto, 'type'>
     >[] = collection.data.map((responseDto) =>
       this.buildSerializedResponseData(responseDto),
     );
-    const meta: IPagingCollectionData = {
-      itemCount: collection.itemCount,
-      pageCount: collection.pageCount,
-      pageNumber: collection.pageNumber,
-      pageSize: collection.pageSize,
-    };
-    const links = this.linkBuilderService.buildCollectionLinks(
+
+    const links = this.linkBuilderService.buildPaginatedCollectionLinks(
       currentRequestUrl,
       currentRequestMethod,
       meta,
@@ -128,6 +139,45 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
       this.buildSerializedResponseData(responseDto);
 
     return new SerializedResponseDto(serializedResponseData, links);
+  }
+
+  private buildSerializedCollection(
+    collection: CollectionDto<IResponseDto>,
+    currentRequestUrl: string,
+    currentRequestMethod: HttpMethod,
+    baseAppUrl: string,
+    linksMetadata: ILinkMetadata[],
+    params: Record<string, string>,
+  ): INonPaginatedSerializedCollection<Omit<BaseResponseDto, 'type'>> {
+    const serializedCollectionData: ISerializedResponseData<
+      Omit<BaseResponseDto, 'type'>
+    >[] = collection.data.map((responseDto) =>
+      this.buildSerializedResponseData(responseDto),
+    );
+
+    serializedCollectionData.forEach((serializedResponseData) => {
+      const links = this.linkBuilderService.buildSingleEntityLinks(
+        currentRequestUrl,
+        currentRequestMethod,
+        baseAppUrl,
+        linksMetadata,
+        serializedResponseData,
+        params,
+        false,
+      );
+
+      serializedResponseData.links = links;
+    });
+
+    const collectionLinks = this.linkBuilderService.buildCollectionLinks(
+      currentRequestUrl,
+      currentRequestMethod,
+    );
+
+    return new SerializedResponseDtoCollection(
+      serializedCollectionData,
+      collectionLinks,
+    );
   }
 
   private buildSerializedResponseData(
@@ -168,5 +218,18 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     subject: AppSubjects,
   ): boolean {
     return this.authorizationService.isAllowed(user, action, subject);
+  }
+
+  private buildPagingData(
+    collection: CollectionDto<IResponseDto>,
+  ): IPagingCollectionData | undefined {
+    const { itemCount, pageCount, pageNumber, pageSize } = collection;
+
+    return itemCount !== undefined &&
+      pageCount !== undefined &&
+      pageNumber !== undefined &&
+      pageSize !== undefined
+      ? { itemCount, pageCount, pageNumber, pageSize }
+      : undefined;
   }
 }

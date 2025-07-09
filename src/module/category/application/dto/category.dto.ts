@@ -12,4 +12,8 @@ export class CategoryDto extends BaseDto {
   parent?: Category;
 
   subCategories?: Category[];
+
+  children?: Category[];
+
+  ancestors?: Category[];
 }
