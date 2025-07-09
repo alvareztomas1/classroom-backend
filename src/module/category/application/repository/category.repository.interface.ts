@@ -1,3 +1,4 @@
+import { ICollection } from '@common/base/application/dto/collection.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 
 import { Category } from '@module/category/domain/category.entity';
@@ -19,4 +20,5 @@ export interface ICategoryRepository extends BaseRepository<Category> {
     include?: (keyof Category)[],
   ): Promise<CategoryWithAncestors>;
   getChildrenByIdOrFail(id: string): Promise<CategoryWithChildren>;
+  getCategoriesRoot(): Promise<ICollection<Category>>;
 }

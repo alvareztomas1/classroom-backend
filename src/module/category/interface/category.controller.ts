@@ -50,6 +50,18 @@ export class CategoryController {
     });
   }
 
+  @Get('roots')
+  @Hypermedia([
+    {
+      endpoint: '/category/:id/children',
+      rel: 'get-category-children',
+      method: HttpMethod.GET,
+    },
+  ])
+  async getCategoriesRoots(): Promise<CollectionDto<CategoryResponseDto>> {
+    return await this.categoryService.getCategoriesRoot();
+  }
+
   @Get(':id')
   @Hypermedia([
     {

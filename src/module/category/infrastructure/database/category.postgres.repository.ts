@@ -1,13 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, IsNull, Repository, TreeRepository } from 'typeorm';
+import { IsNull, Repository, TreeRepository } from 'typeorm';
 
-import {
-  DEFAULT_PAGE_NUMBER,
-  DEFAULT_PAGE_SIZE,
-} from '@common/base/application/constant/base.constants';
 import { ICollection } from '@common/base/application/dto/collection.interface';
-import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
@@ -34,26 +29,12 @@ export class CategoryPostgresRepository
   ) {
     super(categoryRepository);
   }
-  async getAll(
-    options: IGetAllOptions<Category>,
-  ): Promise<ICollection<Category>> {
-    const { filter = {}, page, sort, fields } = options;
-    const where = this.buildCategoryFilter(filter);
 
-    const [items, itemCount] = await this.categoryRepository.findAndCount({
-      where,
-      order: sort,
-      select: fields as (keyof Category)[],
-      take: page?.size,
-      skip: page?.offset,
-    });
+  async getCategoriesRoot(): Promise<ICollection<Category>> {
+    const categories = await this.treeRepository.findRoots();
 
     return {
-      data: items,
-      pageNumber: page?.number || DEFAULT_PAGE_NUMBER,
-      pageSize: page?.size || DEFAULT_PAGE_SIZE,
-      pageCount: Math.ceil(itemCount / (page?.size || DEFAULT_PAGE_SIZE)),
-      itemCount,
+      data: categories,
     };
   }
 
@@ -149,22 +130,6 @@ export class CategoryPostgresRepository
     }
 
     return path;
-  }
-
-  private buildCategoryFilter(
-    filter: Partial<Record<string, unknown>>,
-  ): FindOptionsWhere<Category> {
-    const { parentId, ...rest } = filter;
-
-    const where: FindOptionsWhere<Category> = { ...rest };
-
-    if (parentId === 'null') {
-      where.parent = IsNull();
-    } else if (typeof parentId === 'string') {
-      where.parent = { id: parentId };
-    }
-
-    return where;
   }
 
   private async findChildren(parentId: string): Promise<Category[]> {

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
@@ -25,6 +26,16 @@ export class CategoryCRUDService extends BaseCRUDService<
     private readonly categoryMapper: CategoryMapper,
   ) {
     super(categoryRepository, categoryMapper, Category.getEntityName());
+  }
+
+  async getCategoriesRoot(): Promise<CollectionDto<CategoryResponseDto>> {
+    const categories = await this.categoryRepository.getCategoriesRoot();
+
+    return new CollectionDto({
+      data: categories.data.map((category) =>
+        this.categoryMapper.fromEntityToResponseDto(category),
+      ),
+    });
   }
 
   async getChildrenByIdOrFail(id: string): Promise<CategoryResponseDto> {
