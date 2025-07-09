@@ -6,6 +6,6 @@ export interface IPagingCollectionData {
 }
 
 export interface ICollection<Entity extends object>
-  extends IPagingCollectionData {
+  extends Partial<IPagingCollectionData> {
   data: Entity[];
 }

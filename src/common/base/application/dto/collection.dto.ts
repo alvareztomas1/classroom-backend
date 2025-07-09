@@ -6,13 +6,13 @@ export class CollectionDto<Data extends IResponseDto>
 {
   readonly data: Data[];
 
-  readonly pageNumber: number;
+  readonly pageNumber?: number;
 
-  readonly pageSize: number;
+  readonly pageSize?: number;
 
-  readonly pageCount: number;
+  readonly pageCount?: number;
 
-  readonly itemCount: number;
+  readonly itemCount?: number;
 
   constructor({
     data,

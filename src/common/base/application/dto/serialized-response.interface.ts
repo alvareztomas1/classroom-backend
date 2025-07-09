@@ -18,10 +18,16 @@ export interface ISerializedCollection<Entity extends object> {
   meta: IPagingCollectionData;
 }
 
+export type INonPaginatedSerializedCollection<Entity extends object> = Omit<
+  ISerializedCollection<Entity>,
+  'meta'
+>;
+
 export interface ISerializedResponseData<ResponseDto extends IDto> {
   type: string;
   id?: string;
   attributes: ResponseDto;
+  links?: IResponseDtoLinks;
 }
 export interface ISerializeResponseDtoParams<ResponseDto extends IDto> {
   responseDto: ResponseDto;
