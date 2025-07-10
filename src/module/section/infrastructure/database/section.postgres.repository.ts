@@ -7,7 +7,7 @@ import EntityNotFoundException from '@common/base/infrastructure/exception/not.f
 
 import { ISectionRepository } from '@module/section/application/repository/section.repository.interface';
 import { Section } from '@module/section/domain/section.entity';
-import { SectionSchema } from '@module/section/infrastructure/database/section.schema';
+import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
 @Injectable()
 export class SectionPostgresRepository
@@ -15,7 +15,7 @@ export class SectionPostgresRepository
   implements ISectionRepository
 {
   constructor(
-    @InjectRepository(SectionSchema) repository: Repository<Section>,
+    @InjectRepository(SectionEntity) repository: Repository<Section>,
   ) {
     super(repository);
   }

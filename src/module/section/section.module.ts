@@ -12,8 +12,8 @@ import { SECTION_REPOSITORY_KEY } from '@module/section/application/repository/s
 import { SectionService } from '@module/section/application/service/section.service';
 import { Section } from '@module/section/domain/section.entity';
 import { sectionPermissions } from '@module/section/domain/section.permissions';
+import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 import { SectionPostgresRepository } from '@module/section/infrastructure/database/section.postgres.repository';
-import { SectionSchema } from '@module/section/infrastructure/database/section.schema';
 import { SectionController } from '@module/section/interface/section.controller';
 
 export const sectionRepositoryProvider: Provider = {
@@ -29,7 +29,7 @@ const policyHandlersProviders = [
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([SectionSchema]),
+    TypeOrmModule.forFeature([SectionEntity]),
     AuthorizationModule.forFeature(),
     CourseModule,
   ],
