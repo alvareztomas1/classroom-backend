@@ -7,14 +7,14 @@ import EntityNotFoundException from '@common/base/infrastructure/exception/not.f
 
 import { ICourseRepository } from '@module/course/application/repository/repository.interface';
 import { Course } from '@module/course/domain/course.entity';
-import { CourseSchema } from '@module/course/infrastructure/database/course.schema';
+import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
 
 @Injectable()
 export class CoursePostgresRepository
   extends BaseRepository<Course>
   implements ICourseRepository
 {
-  constructor(@InjectRepository(CourseSchema) repository: Repository<Course>) {
+  constructor(@InjectRepository(CourseEntity) repository: Repository<Course>) {
     super(repository);
   }
 

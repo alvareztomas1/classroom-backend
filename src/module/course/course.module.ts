@@ -9,8 +9,8 @@ import { COURSE_REPOSITORY_KEY } from '@module/course/application/repository/rep
 import { CourseService } from '@module/course/application/service/course.service';
 import { Course } from '@module/course/domain/course.entity';
 import { coursePermissions } from '@module/course/domain/course.permissions';
+import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
 import { CoursePostgresRepository } from '@module/course/infrastructure/database/course.postrges.repository';
-import { CourseSchema } from '@module/course/infrastructure/database/course.schema';
 import { CourseController } from '@module/course/interface/course.controller';
 import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
@@ -28,7 +28,7 @@ const policyHandlersProviders = [
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CourseSchema]),
+    TypeOrmModule.forFeature([CourseEntity]),
     AuthorizationModule.forFeature(),
   ],
   providers: [

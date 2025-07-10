@@ -11,8 +11,8 @@ import { PAYMENT_METHOD_REPOSITORY_KEY } from '@module/payment-method/applicatio
 import { PaymentMethodCRUDService } from '@module/payment-method/application/service/payment-method-crud.service';
 import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
 import { paymentMethodPermissions } from '@module/payment-method/domain/payment-method.permissions';
+import { PaymentMethodEntity } from '@module/payment-method/infrastructure/database/payment-method.entity';
 import { PaymentMethodPostgresRepository } from '@module/payment-method/infrastructure/database/payment-method.postgres.repository';
-import { PaymentMethodSchema } from '@module/payment-method/infrastructure/database/payment-method.schema';
 import { PaymentMethodController } from '@module/payment-method/interface/payment-method.controller';
 
 const paymentMethodRepositoryProvider: Provider = {
@@ -28,7 +28,7 @@ const policyHandlersProviders = [
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PaymentMethodSchema]),
+    TypeOrmModule.forFeature([PaymentMethodEntity]),
     AuthorizationModule.forFeature(),
   ],
   providers: [

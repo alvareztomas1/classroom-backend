@@ -6,6 +6,10 @@ import {
 } from 'typeorm';
 
 export abstract class BaseEntity {
+  static get domainClass(): unknown {
+    throw new Error('Not implemented');
+  }
+
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 

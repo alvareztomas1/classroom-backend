@@ -14,12 +14,12 @@ import { IUserRepository } from '@module/iam/user/application/repository/user.re
 import { User } from '@module/iam/user/domain/user.entity';
 import { EmailNotFoundException } from '@module/iam/user/infrastructure/database/exception/email-not-found.exception';
 import { UserNotFoundException } from '@module/iam/user/infrastructure/database/exception/user-not-found.exception';
-import { UserSchema } from '@module/iam/user/infrastructure/database/user.schema';
+import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
 
 @Injectable()
 export class UserPostgresRepository implements IUserRepository {
   constructor(
-    @InjectRepository(UserSchema)
+    @InjectRepository(UserEntity)
     private readonly repository: Repository<User>,
   ) {}
 
