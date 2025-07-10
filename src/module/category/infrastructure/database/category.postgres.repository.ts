@@ -13,7 +13,7 @@ import {
   ICategoryRepository,
 } from '@module/category/application/repository/category.repository.interface';
 import { Category } from '@module/category/domain/category.entity';
-import { CategoryEntity } from '@module/category/infrastructure/database/category.schema';
+import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
 import { CategoryAlreadyExistsException } from '@module/category/infrastructure/database/exception/category-alredy-exists.exception';
 
 @Injectable()
