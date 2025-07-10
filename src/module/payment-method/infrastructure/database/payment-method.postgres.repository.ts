@@ -7,7 +7,7 @@ import EntityAlreadyExistsException from '@common/base/infrastructure/exception/
 
 import { IPaymentMethodRepository } from '@module/payment-method/application/repository/payment-method-repository.interface';
 import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
-import { PaymentMethodSchema } from '@module/payment-method/infrastructure/database/payment-method.schema';
+import { PaymentMethodEntity } from '@module/payment-method/infrastructure/database/payment-method.entity';
 
 @Injectable()
 export class PaymentMethodPostgresRepository
@@ -15,7 +15,7 @@ export class PaymentMethodPostgresRepository
   implements IPaymentMethodRepository
 {
   constructor(
-    @InjectRepository(PaymentMethodSchema)
+    @InjectRepository(PaymentMethodEntity)
     protected readonly repository: Repository<PaymentMethod>,
   ) {
     super(repository);
