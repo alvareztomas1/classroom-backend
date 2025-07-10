@@ -1,4 +1,4 @@
-entity: User
+entity: user
 items:
   super-admin-user:
     email: 'test_super_admin@email.co'

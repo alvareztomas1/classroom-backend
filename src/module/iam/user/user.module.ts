@@ -9,8 +9,8 @@ import { USER_REPOSITORY_KEY } from '@module/iam/user/application/repository/use
 import { UserService } from '@module/iam/user/application/service/user.service';
 import { User } from '@module/iam/user/domain/user.entity';
 import { userPermissions } from '@module/iam/user/domain/user.permission';
+import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
 import { UserPostgresRepository } from '@module/iam/user/infrastructure/database/user.postgres.repository';
-import { UserSchema } from '@module/iam/user/infrastructure/database/user.schema';
 import { UserController } from '@module/iam/user/interface/user.controller';
 
 const policyHandlersProviders = [ReadUserPolicyHandler];
@@ -22,7 +22,7 @@ const userRepositoryProvider: Provider = {
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserSchema]),
+    TypeOrmModule.forFeature([UserEntity]),
     AuthorizationModule.forFeature(),
   ],
   controllers: [UserController],

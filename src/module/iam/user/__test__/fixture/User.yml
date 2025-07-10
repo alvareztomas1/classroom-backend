@@ -1,4 +1,4 @@
-entity: User
+entity: user
 items:
   super-admin-user:
     firstName: super-admin-name
