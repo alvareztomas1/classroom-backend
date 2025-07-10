@@ -1,4 +1,4 @@
-entity: Course
+entity: course
 items:
   course1:
     id: '22f38dae-00f1-49ff-8f3f-0dd6539af032'
