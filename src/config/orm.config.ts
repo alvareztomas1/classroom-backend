@@ -46,7 +46,7 @@ const automatedTests: DataSourceOptions = {
   database: `./data/sqlite/test.${Math.random()}.db`,
   synchronize: true,
   dropSchema: false,
-  entities: ['./src/**/infrastructure/database/**/*.schema.ts'],
+  entities: ['./src/**/infrastructure/database/**/*.entity.ts'],
   namingStrategy: new SnakeNamingStrategy(),
 };
 
@@ -74,6 +74,6 @@ export const datasourceOptions: DataSourceOptions = ((): DataSourceOptions => {
 
 export default new DataSource({
   ...datasourceOptions,
-  entities: [join(__dirname, '../**/infrastructure/database/**/*.schema.ts')],
+  entities: [join(__dirname, '../**/infrastructure/database/**/*.entity.ts')],
   migrations: [join(__dirname, '../../data/migrations/*.ts')],
 });
