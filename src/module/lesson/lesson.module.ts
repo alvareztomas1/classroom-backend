@@ -11,8 +11,8 @@ import { LESSON_REPOSITORY_KEY } from '@module/lesson/application/repository/les
 import { LessonService } from '@module/lesson/application/service/lesson.service';
 import { Lesson } from '@module/lesson/domain/lesson.entity';
 import { lessonPermissions } from '@module/lesson/domain/lesson.permissions';
+import { LessonEntity } from '@module/lesson/infrastructure/database/lesson.entity';
 import { LessonPostgresRepository } from '@module/lesson/infrastructure/database/lesson.postgres.repository';
-import { LessonSchema } from '@module/lesson/infrastructure/database/lesson.schema';
 import { LessonController } from '@module/lesson/interface/lesson.controller';
 import { SectionModule } from '@module/section/section.module';
 
@@ -29,7 +29,7 @@ const policyHandlersProvider = [
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([LessonSchema]),
+    TypeOrmModule.forFeature([LessonEntity]),
     AuthorizationModule.forFeature(),
     SectionModule,
   ],
