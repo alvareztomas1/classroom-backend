@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+import { PaymentMethodDtoMapper } from '@module/payment-method/application/mapper/payment-method-dto.mapper';
 import { PaymentMethodMapper } from '@module/payment-method/application/mapper/payment-method.mapper';
 import { CreatePaymentMethodPolicyHandler } from '@module/payment-method/application/policy/create-payment-method-policy.handler';
 import { DeletePaymentMethodPolicyHandler } from '@module/payment-method/application/policy/delete-payment-method-policy.handler';
@@ -33,6 +34,7 @@ const policyHandlersProviders = [
   ],
   providers: [
     PaymentMethodCRUDService,
+    PaymentMethodDtoMapper,
     PaymentMethodMapper,
     paymentMethodRepositoryProvider,
     ...policyHandlersProviders,
