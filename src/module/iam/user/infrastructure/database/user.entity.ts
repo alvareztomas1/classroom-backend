@@ -4,28 +4,23 @@ import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 import { ArrayTransformer } from '@common/transformers/array.transformer';
 
 import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
-import { User } from '@module/iam/user/domain/user.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
-  static override get domainClass(): typeof User {
-    return User;
-  }
-
   @Column({ type: 'varchar', unique: true })
-  email!: string;
+  email: string;
+
+  @Column({ type: 'varchar' })
+  firstName: string;
+
+  @Column({ type: 'varchar' })
+  lastName: string;
+
+  @Column({ type: 'varchar', transformer: new ArrayTransformer() })
+  roles: string[];
 
   @Column({ type: 'varchar', unique: true, nullable: true })
   externalId?: string;
-
-  @Column({ type: 'varchar' })
-  firstName!: string;
-
-  @Column({ type: 'varchar' })
-  lastName!: string;
-
-  @Column({ type: 'varchar', transformer: new ArrayTransformer() })
-  roles!: string[];
 
   @Column({ type: 'boolean', default: false })
   isVerified?: boolean;
@@ -35,4 +30,25 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => CourseEntity, (course) => course.instructor)
   courses?: CourseEntity[];
+
+  constructor(
+    email: string,
+    firstName: string,
+    lastName: string,
+    roles: string[],
+    id?: string,
+    externalId?: string,
+    avatarUrl?: string,
+    isVerified?: boolean,
+  ) {
+    super(id);
+
+    this.email = email;
+    this.externalId = externalId;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.roles = roles;
+    this.isVerified = isVerified;
+    this.avatarUrl = avatarUrl;
+  }
 }
