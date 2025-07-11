@@ -5,8 +5,6 @@ import {
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
-import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
-
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 import { AppAbility } from '@module/iam/authorization/infrastructure/casl/type/app-ability.type';
 import { AppSubjects } from '@module/iam/authorization/infrastructure/casl/type/app-subjects.type';
@@ -30,25 +28,18 @@ export class CaslAbilityFactory {
     this.applyPermissions(user, permissions, builder);
 
     return builder.build({
-      detectSubjectType: () => subjectType,
+      detectSubjectType: (subject) => this.getSubjectConstructor(subject),
     });
   }
 
   private resolveSubjectType(
     subject: AppSubjects,
   ): ExtractSubjectType<AppSubjects> {
-    const type =
-      typeof subject === 'function' ? subject : (subject as object).constructor;
-
-    if (
-      'domainClass' in type &&
-      typeof (type as typeof BaseEntity).domainClass === 'function'
-    ) {
-      return (type as typeof BaseEntity)
-        .domainClass as ExtractSubjectType<AppSubjects>;
+    if (typeof subject === 'function') {
+      return subject;
     }
 
-    return type as ExtractSubjectType<AppSubjects>;
+    return subject.constructor as ExtractSubjectType<AppSubjects>;
   }
 
   private applyPermissions(
@@ -59,5 +50,11 @@ export class CaslAbilityFactory {
     for (const role of user.roles) {
       permissions[role]?.(user, builder);
     }
+  }
+
+  private getSubjectConstructor(
+    subject: unknown,
+  ): ExtractSubjectType<AppSubjects> {
+    return (subject as object).constructor as ExtractSubjectType<AppSubjects>;
   }
 }
