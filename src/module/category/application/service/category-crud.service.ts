@@ -6,16 +6,18 @@ import { BaseCRUDService } from '@common/base/application/service/base-crud.serv
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
-import { CategoryMapper } from '@module/category/application/mapper/category.mapper';
+import { CategoryDtoMapper } from '@module/category/application/mapper/category-dto.mapper';
 import {
   CATEGORY_REPOSITORY_KEY,
   ICategoryRepository,
 } from '@module/category/application/repository/category.repository.interface';
 import { Category } from '@module/category/domain/category.entity';
+import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
 
 @Injectable()
 export class CategoryCRUDService extends BaseCRUDService<
   Category,
+  CategoryEntity,
   CreateCategoryDto,
   UpdateCategoryDto,
   CategoryResponseDto
@@ -23,9 +25,9 @@ export class CategoryCRUDService extends BaseCRUDService<
   constructor(
     @Inject(CATEGORY_REPOSITORY_KEY)
     private readonly categoryRepository: ICategoryRepository,
-    private readonly categoryMapper: CategoryMapper,
+    private readonly categoryDtoMapper: CategoryDtoMapper,
   ) {
-    super(categoryRepository, categoryMapper, Category.getEntityName());
+    super(categoryRepository, categoryDtoMapper, Category.getEntityName());
   }
 
   async getCategoriesRoot(): Promise<CollectionDto<CategoryResponseDto>> {
@@ -33,7 +35,7 @@ export class CategoryCRUDService extends BaseCRUDService<
 
     return new CollectionDto({
       data: categories.data.map((category) =>
-        this.categoryMapper.fromEntityToResponseDto(category),
+        this.categoryDtoMapper.fromEntityToResponseDto(category),
       ),
     });
   }
@@ -41,7 +43,7 @@ export class CategoryCRUDService extends BaseCRUDService<
   async getChildrenByIdOrFail(id: string): Promise<CategoryResponseDto> {
     const category = await this.categoryRepository.getChildrenByIdOrFail(id);
     const categoryResponseDto =
-      this.categoryMapper.fromEntityToResponseDto(category);
+      this.categoryDtoMapper.fromEntityToResponseDto(category);
 
     return categoryResponseDto;
   }
