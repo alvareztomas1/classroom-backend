@@ -24,6 +24,7 @@ export class Lesson extends Base {
     description?: string,
     url?: string,
     lessonType?: LessonType,
+    section?: Section,
   ) {
     super(id);
     this.courseId = courseId;
@@ -32,5 +33,6 @@ export class Lesson extends Base {
     this.description = description;
     this.url = url;
     this.lessonType = lessonType;
+    this.section = section;
   }
 }

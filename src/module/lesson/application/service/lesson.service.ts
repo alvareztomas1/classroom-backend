@@ -7,24 +7,26 @@ import { FileStorageService } from '@module/cloud/application/service/file-stora
 import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
 import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
-import { LessonMapper } from '@module/lesson/application/mapper/lesson.mapper';
+import { LessonDtoMapper } from '@module/lesson/application/mapper/lesson-dto.mapper';
 import {
   ILessonRepository,
   LESSON_REPOSITORY_KEY,
 } from '@module/lesson/application/repository/lesson.repository.interface';
 import { Lesson } from '@module/lesson/domain/lesson.entity';
 import { LessonType } from '@module/lesson/domain/lesson.type';
+import { LessonEntity } from '@module/lesson/infrastructure/database/lesson.entity';
 
 @Injectable()
 export class LessonService extends BaseCRUDService<
   Lesson,
+  LessonEntity,
   CreateLessonDto,
   UpdateLessonDto,
   LessonResponseDto
 > {
   constructor(
     @Inject(LESSON_REPOSITORY_KEY) lessonRepository: ILessonRepository,
-    private readonly lessonMapper: LessonMapper,
+    private readonly lessonMapper: LessonDtoMapper,
     private readonly fileStorageService: FileStorageService,
   ) {
     super(lessonRepository, lessonMapper, Lesson.getEntityName());

@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+import { LessonDtoMapper } from '@module/lesson/application/mapper/lesson-dto.mapper';
 import { LessonMapper } from '@module/lesson/application/mapper/lesson.mapper';
 import { CreateLessonPolicyHandler } from '@module/lesson/application/policy/create-lesson-policy.handler';
 import { DeleteLessonPolicyHandler } from '@module/lesson/application/policy/delete-lession-policy.handler';
@@ -36,6 +37,7 @@ const policyHandlersProvider = [
   providers: [
     LessonService,
     LessonMapper,
+    LessonDtoMapper,
     lessonRepositoryProvider,
     ...policyHandlersProvider,
   ],
