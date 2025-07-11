@@ -12,30 +12,46 @@ import {
 } from '@common/base/application/constant/base.constants';
 import { ICollection } from '@common/base/application/dto/collection.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
-import IEntity from '@common/base/domain/entity.interface';
+import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
+import { Base } from '@common/base/domain/base.entity';
+import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 import { IRepository } from '@common/base/infrastructure/database/repository.interface';
 import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
-abstract class BaseRepository<T extends IEntity> implements IRepository<T> {
-  protected readonly repository: Repository<T>;
+abstract class BaseRepository<
+  DomainEntity extends Base,
+  PersistenceEntity extends BaseEntity,
+> implements IRepository<DomainEntity>
+{
+  protected readonly repository: Repository<PersistenceEntity>;
+  protected readonly entityMapper: IEntityMapper<
+    DomainEntity,
+    PersistenceEntity
+  >;
 
-  constructor(repository: Repository<T>) {
+  constructor(
+    repository: Repository<PersistenceEntity>,
+    entityMapper: IEntityMapper<DomainEntity, PersistenceEntity>,
+  ) {
     this.repository = repository;
+    this.entityMapper = entityMapper;
   }
 
-  async getAll(options: IGetAllOptions<T>): Promise<ICollection<T>> {
+  async getAll(
+    options: IGetAllOptions<DomainEntity>,
+  ): Promise<ICollection<DomainEntity>> {
     const { filter, page, sort, fields, include } = options || {};
     const [items, itemCount] = await this.repository.findAndCount({
-      where: filter as FindOptionsWhere<T>,
-      order: sort as FindOptionsOrder<T>,
+      where: filter as FindOptionsWhere<DomainEntity>,
+      order: sort as FindOptionsOrder<DomainEntity>,
       select: fields,
       take: page?.size,
       skip: page?.offset,
       relations: include,
-    } as FindManyOptions<T>);
+    } as FindManyOptions<PersistenceEntity>);
 
     return {
-      data: items,
+      data: items.map((item) => this.entityMapper.toDomainEntity(item)),
       pageNumber: page?.number || DEFAULT_PAGE_NUMBER,
       pageSize: page?.size || DEFAULT_PAGE_NUMBER,
       pageCount: Math.ceil(itemCount / (page?.size || DEFAULT_PAGE_SIZE)),
@@ -43,14 +59,24 @@ abstract class BaseRepository<T extends IEntity> implements IRepository<T> {
     };
   }
 
-  async getOneById(id: string, include?: (keyof T)[]): Promise<T | null> {
-    return await this.repository.findOne({
+  async getOneById(
+    id: string,
+    include?: (keyof DomainEntity)[],
+  ): Promise<DomainEntity | null> {
+    const persistenceEntity = await this.repository.findOne({
       where: { id },
       relations: include,
-    } as FindOneOptions<T>);
+    } as FindOneOptions<PersistenceEntity>);
+
+    return persistenceEntity
+      ? this.entityMapper.toDomainEntity(persistenceEntity)
+      : null;
   }
 
-  async getOneByIdOrFail(id: string, include?: (keyof T)[]): Promise<T> {
+  async getOneByIdOrFail(
+    id: string,
+    include?: (keyof DomainEntity)[],
+  ): Promise<DomainEntity> {
     const entity = await this.getOneById(id, include);
 
     if (!entity) {
@@ -60,20 +86,25 @@ abstract class BaseRepository<T extends IEntity> implements IRepository<T> {
     return entity;
   }
 
-  async saveOne(entity: T): Promise<T> {
-    return this.repository.save(entity);
+  async saveOne(entity: DomainEntity): Promise<DomainEntity> {
+    const persistenceEntity = await this.repository.save(
+      this.entityMapper.toPersistenceEntity(entity),
+    );
+    return this.entityMapper.toDomainEntity(persistenceEntity);
   }
 
   async deleteOneByIdOrFail(id: string): Promise<void> {
     const entityToDelete = await this.repository.findOne({
       where: { id },
-    } as FindOneOptions<T>);
+    } as FindOneOptions<PersistenceEntity>);
 
     if (!entityToDelete) {
       throw new EntityNotFoundException(id);
     }
 
-    await this.repository.softDelete({ id } as FindOptionsWhere<T>);
+    await this.repository.softDelete({
+      id,
+    } as FindOptionsWhere<PersistenceEntity>);
   }
 }
 

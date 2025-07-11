@@ -6,6 +6,7 @@ import { ICollection } from '@common/base/application/dto/collection.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
+import { CategoryMapper } from '@module/category/application/mapper/category.mapper';
 import {
   CATEGORY_TREE_REPOSITORY_KEY,
   CategoryWithAncestors,
@@ -18,23 +19,26 @@ import { CategoryAlreadyExistsException } from '@module/category/infrastructure/
 
 @Injectable()
 export class CategoryPostgresRepository
-  extends BaseRepository<Category>
+  extends BaseRepository<Category, CategoryEntity>
   implements ICategoryRepository
 {
   constructor(
     @InjectRepository(CategoryEntity)
-    private readonly categoryRepository: Repository<Category>,
+    private readonly categoryRepository: Repository<CategoryEntity>,
     @Inject(CATEGORY_TREE_REPOSITORY_KEY)
-    private readonly treeRepository: TreeRepository<Category>,
+    private readonly treeRepository: TreeRepository<CategoryEntity>,
+    private readonly categoryMapper: CategoryMapper,
   ) {
-    super(categoryRepository);
+    super(categoryRepository, categoryMapper);
   }
 
   async getCategoriesRoot(): Promise<ICollection<Category>> {
     const categories = await this.treeRepository.findRoots();
 
     return {
-      data: categories,
+      data: categories.map((category) =>
+        this.categoryMapper.toDomainEntity(category),
+      ),
     };
   }
 
@@ -54,13 +58,15 @@ export class CategoryPostgresRepository
   }
 
   async getOneById(id: string): Promise<Category | null> {
-    return await this.treeRepository.findOne({
+    const category = await this.treeRepository.findOne({
       where: { id },
     });
+
+    return category ? this.categoryMapper.toDomainEntity(category) : null;
   }
 
   async getOneByIdOrFail(id: string): Promise<CategoryWithAncestors> {
-    const category = await this.getOneById(id);
+    const category = await this.getOneEntityById(id);
 
     if (!category) {
       throw new EntityNotFoundException(id);
@@ -70,8 +76,10 @@ export class CategoryPostgresRepository
       await this.treeRepository.findAncestorsTree(category);
 
     return {
-      ...category,
-      ancestors: this.buildPathFromTree(categoryWithAncestors),
+      ...this.categoryMapper.toDomainEntity(category),
+      ancestors: this.buildPathFromTree(
+        this.categoryMapper.toDomainEntity(categoryWithAncestors),
+      ),
     };
   }
 
@@ -107,17 +115,23 @@ export class CategoryPostgresRepository
     await this.repository.softRemove(categoryWithDescendants);
   }
 
+  async getOneEntityById(id: string): Promise<CategoryEntity | null> {
+    return await this.treeRepository.findOne({ where: { id } });
+  }
+
   private async findExistingCategory(
     name: string,
     parentId?: string,
   ): Promise<Category | null> {
-    return this.categoryRepository.findOne({
+    const category = await this.categoryRepository.findOne({
       where: {
         name,
         parent: parentId ? { id: parentId } : IsNull(),
       },
       relations: ['parent'],
     });
+
+    return category ? this.categoryMapper.toDomainEntity(category) : null;
   }
 
   private buildPathFromTree(node: Category): Category[] {
@@ -133,8 +147,12 @@ export class CategoryPostgresRepository
   }
 
   private async findChildren(parentId: string): Promise<Category[]> {
-    return await this.categoryRepository.find({
+    const categories = await this.categoryRepository.find({
       where: { parent: { id: parentId } },
     });
+
+    return categories.map((category) =>
+      this.categoryMapper.toDomainEntity(category),
+    );
   }
 }

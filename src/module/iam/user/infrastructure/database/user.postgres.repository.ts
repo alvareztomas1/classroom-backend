@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 import {
   DEFAULT_PAGE_NUMBER,
@@ -10,6 +10,7 @@ import { ICollection } from '@common/base/application/dto/collection.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
 
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
+import { UserMapper } from '@module/iam/user/application/mapper/user.mapper';
 import { IUserRepository } from '@module/iam/user/application/repository/user.repository.interface';
 import { User } from '@module/iam/user/domain/user.entity';
 import { EmailNotFoundException } from '@module/iam/user/infrastructure/database/exception/email-not-found.exception';
@@ -20,7 +21,8 @@ import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity
 export class UserPostgresRepository implements IUserRepository {
   constructor(
     @InjectRepository(UserEntity)
-    private readonly repository: Repository<User>,
+    private readonly repository: Repository<UserEntity>,
+    private readonly userMapper: UserMapper,
   ) {}
 
   async getAll(options: IGetAllOptions<User>): Promise<ICollection<User>> {
@@ -30,7 +32,7 @@ export class UserPostgresRepository implements IUserRepository {
       where: {
         ...filter,
         roles: filter?.roles as unknown as AppRole,
-      },
+      } as FindOptionsWhere<UserEntity>,
       order: sort,
       select: fields as (keyof User)[],
       take: page?.size,
@@ -38,7 +40,7 @@ export class UserPostgresRepository implements IUserRepository {
     });
 
     return {
-      data: items,
+      data: items.map((item) => this.userMapper.toDomainEntity(item)),
       pageNumber: page?.number || DEFAULT_PAGE_NUMBER,
       pageSize: page?.size || DEFAULT_PAGE_SIZE,
       pageCount: Math.ceil(itemCount / (page?.size || DEFAULT_PAGE_SIZE)),
@@ -47,21 +49,23 @@ export class UserPostgresRepository implements IUserRepository {
   }
 
   async getOneByEmail(email: string): Promise<User | null> {
-    return this.repository.findOne({
-      where: { email },
-    });
-  }
-
-  async getOneByExternalId(externalId: string): Promise<User | null> {
-    return this.repository.findOne({
-      where: { externalId },
-    });
-  }
-
-  async getOneByEmailOrFail(email: string): Promise<User> {
     const user = await this.repository.findOne({
       where: { email },
     });
+
+    return user ? this.userMapper.toDomainEntity(user) : null;
+  }
+
+  async getOneByExternalId(externalId: string): Promise<User | null> {
+    const user = await this.repository.findOne({
+      where: { externalId },
+    });
+
+    return user ? this.userMapper.toDomainEntity(user) : null;
+  }
+
+  async getOneByEmailOrFail(email: string): Promise<User> {
+    const user = await this.getOneByEmail(email);
 
     if (!user) {
       throw new EmailNotFoundException({
@@ -91,6 +95,8 @@ export class UserPostgresRepository implements IUserRepository {
       });
     }
 
-    return this.repository.save(userToUpdate);
+    return this.userMapper.toDomainEntity(
+      await this.repository.save(userToUpdate),
+    );
   }
 }

@@ -1,40 +1,20 @@
-import { IDtoMapper } from '@common/base/application/dto/dto.interface';
-import { StringTransformer } from '@common/transformers/string.transformer';
+import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
-import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
-import { UpdatePaymentMethodDto } from '@module/payment-method/application/dto/update-payment-method.dto';
 import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
+import { PaymentMethodEntity } from '@module/payment-method/infrastructure/database/payment-method.entity';
 
 export class PaymentMethodMapper
-  implements
-    IDtoMapper<
-      PaymentMethod,
-      CreatePaymentMethodDto,
-      UpdatePaymentMethodDto,
-      PaymentMethodResponseDto
-    >
+  implements IEntityMapper<PaymentMethod, PaymentMethodEntity>
 {
-  fromCreateDtoToEntity(dto: CreatePaymentMethodDto): PaymentMethod {
-    const { id, name } = dto;
+  toDomainEntity(entity: PaymentMethodEntity): PaymentMethod {
+    const { name, id } = entity;
 
     return new PaymentMethod(name, id);
   }
 
-  fromEntityToResponseDto(entity: PaymentMethod): PaymentMethodResponseDto {
-    const { name, id } = entity;
+  toPersistenceEntity(domain: PaymentMethod): PaymentMethodEntity {
+    const { id, name } = domain;
 
-    return new PaymentMethodResponseDto(
-      StringTransformer.toKebabCase(PaymentMethod.name),
-      name,
-      id,
-    );
-  }
-
-  fromUpdateDtoToEntity(
-    entity: PaymentMethod,
-    dto: UpdatePaymentMethodDto,
-  ): PaymentMethod {
-    return new PaymentMethod(dto.name ?? entity.name, dto.id ?? entity.id);
+    return new PaymentMethodEntity(name, id);
   }
 }

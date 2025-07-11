@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+import { UserDtoMapper } from '@module/iam/user/application/mapper/user-dto.mapper';
 import { UserMapper } from '@module/iam/user/application/mapper/user.mapper';
 import { ReadUserPolicyHandler } from '@module/iam/user/application/policy/read-user-policy.handler';
 import { USER_REPOSITORY_KEY } from '@module/iam/user/application/repository/user.repository.interface';
@@ -28,11 +29,12 @@ const userRepositoryProvider: Provider = {
   controllers: [UserController],
   providers: [
     userRepositoryProvider,
+    UserDtoMapper,
     UserMapper,
     UserService,
     ...policyHandlersProviders,
   ],
-  exports: [userRepositoryProvider, UserMapper],
+  exports: [userRepositoryProvider, UserDtoMapper],
 })
 export class UserModule implements OnModuleInit {
   constructor(private readonly registry: AppSubjectPermissionStorage) {}

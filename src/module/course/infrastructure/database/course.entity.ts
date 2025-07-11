@@ -3,15 +3,13 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
-import { Course } from '@module/course/domain/course.entity';
 import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
 import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
 @Entity('course')
 export class CourseEntity extends BaseEntity {
-  static override get domainClass(): typeof Course {
-    return Course;
-  }
+  @Column({ type: 'uuid' })
+  instructorId: string;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   title?: string;
@@ -46,9 +44,6 @@ export class CourseEntity extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   difficulty?: string;
 
-  @Column({ type: 'uuid' })
-  instructorId!: string;
-
   @ManyToOne(() => UserEntity, (user) => user.courses)
   instructor?: UserEntity;
 
@@ -56,4 +51,31 @@ export class CourseEntity extends BaseEntity {
     cascade: ['soft-remove'],
   })
   sections?: SectionEntity[];
+
+  constructor(
+    instructorId: string,
+    id?: string,
+    title?: string,
+    description?: string,
+    price?: number,
+    imageUrl?: string,
+    status?: PublishStatus,
+    slug?: string,
+    difficulty?: string,
+    instructor?: UserEntity,
+    sections?: SectionEntity[],
+  ) {
+    super(id);
+
+    this.instructorId = instructorId;
+    this.title = title;
+    this.description = description;
+    this.price = price;
+    this.imageUrl = imageUrl;
+    this.status = status;
+    this.slug = slug;
+    this.difficulty = difficulty;
+    this.instructor = instructor;
+    this.sections = sections;
+  }
 }

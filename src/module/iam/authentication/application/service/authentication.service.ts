@@ -27,7 +27,7 @@ import {
 import { AUTHENTICATION_NAME } from '@module/iam/authentication/domain/authentication.name';
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
-import { UserMapper } from '@module/iam/user/application/mapper/user.mapper';
+import { UserDtoMapper } from '@module/iam/user/application/mapper/user-dto.mapper';
 import {
   IUserRepository,
   USER_REPOSITORY_KEY,
@@ -41,7 +41,7 @@ export class AuthenticationService {
     private readonly identityProviderService: IIdentityProviderService,
     @Inject(USER_REPOSITORY_KEY)
     private readonly userRepository: IUserRepository,
-    private readonly userMapper: UserMapper,
+    private readonly userMapper: UserDtoMapper,
     private readonly fileSTorageService: FileStorageService,
   ) {}
 

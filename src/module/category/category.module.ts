@@ -2,6 +2,7 @@ import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
+import { CategoryDtoMapper } from '@module/category/application/mapper/category-dto.mapper';
 import { CategoryMapper } from '@module/category/application/mapper/category.mapper';
 import { CreateCategoryPolicyHandler } from '@module/category/application/policy/create-category-policy.handler';
 import { DeleteCategoryPolicyHandler } from '@module/category/application/policy/delete-category-policy.handler';
@@ -44,6 +45,7 @@ const policyHandlersProviders = [
   ],
   providers: [
     CategoryCRUDService,
+    CategoryDtoMapper,
     CategoryMapper,
     categoryRepositoryProvider,
     ...policyHandlersProviders,

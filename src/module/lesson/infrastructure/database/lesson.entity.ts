@@ -2,20 +2,15 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
-import { Lesson } from '@module/lesson/domain/lesson.entity';
 import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
 @Entity('lesson')
 export class LessonEntity extends BaseEntity {
-  static override get domainClass(): typeof Lesson {
-    return Lesson;
-  }
+  @Column({ type: 'uuid' })
+  courseId: string;
 
   @Column({ type: 'uuid' })
-  courseId!: string;
-
-  @Column({ type: 'uuid' })
-  sectionId!: string;
+  sectionId: string;
 
   @Column({ type: 'varchar', nullable: true })
   title?: string;
@@ -34,5 +29,26 @@ export class LessonEntity extends BaseEntity {
 
   get instructorId(): string | undefined {
     return this.section?.instructorId;
+  }
+
+  constructor(
+    courseId: string,
+    sectionId: string,
+    id?: string,
+    title?: string,
+    description?: string,
+    url?: string,
+    lessonType?: string,
+    section?: SectionEntity,
+  ) {
+    super(id);
+
+    this.courseId = courseId;
+    this.sectionId = sectionId;
+    this.title = title;
+    this.description = description;
+    this.url = url;
+    this.lessonType = lessonType;
+    this.section = section;
   }
 }

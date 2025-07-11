@@ -6,16 +6,18 @@ import { StringTransformer } from '@common/transformers/string.transformer';
 import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
 import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
 import { UpdatePaymentMethodDto } from '@module/payment-method/application/dto/update-payment-method.dto';
-import { PaymentMethodMapper } from '@module/payment-method/application/mapper/payment-method.mapper';
+import { PaymentMethodDtoMapper } from '@module/payment-method/application/mapper/payment-method-dto.mapper';
 import {
   IPaymentMethodRepository,
   PAYMENT_METHOD_REPOSITORY_KEY,
 } from '@module/payment-method/application/repository/payment-method-repository.interface';
 import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
+import { PaymentMethodEntity } from '@module/payment-method/infrastructure/database/payment-method.entity';
 
 @Injectable()
 export class PaymentMethodCRUDService extends BaseCRUDService<
   PaymentMethod,
+  PaymentMethodEntity,
   CreatePaymentMethodDto,
   UpdatePaymentMethodDto,
   PaymentMethodResponseDto
@@ -23,7 +25,7 @@ export class PaymentMethodCRUDService extends BaseCRUDService<
   constructor(
     @Inject(PAYMENT_METHOD_REPOSITORY_KEY)
     private readonly paymentMethodRepository: IPaymentMethodRepository,
-    private readonly paymentMethodMapper: PaymentMethodMapper,
+    private readonly paymentMethodMapper: PaymentMethodDtoMapper,
   ) {
     super(
       paymentMethodRepository,

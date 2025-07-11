@@ -1,74 +1,39 @@
-import { IDtoMapper } from '@common/base/application/dto/dto.interface';
+import { Difficulty } from '@common/base/application/enum/difficulty.enum';
+import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import {
-  CourseResponseDto,
-  CourseResponseInstructor,
-} from '@module/course/application/dto/course-response.dto';
-import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
-import { UpdateCourseDto } from '@module/course/application/dto/update-course.dto';
 import { Course } from '@module/course/domain/course.entity';
+import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
 import { User } from '@module/iam/user/domain/user.entity';
+import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
 
-export class CourseMapper
-  implements
-    IDtoMapper<Course, CreateCourseDto, UpdateCourseDto, CourseResponseDto>
-{
-  fromCreateDtoToEntity(dto: CreateCourseDto): Course {
+export class CourseMapper implements IEntityMapper<Course, CourseEntity> {
+  toDomainEntity(entity: CourseEntity): Course {
     return new Course(
-      dto.instructorId,
-      dto.id,
-      dto.title,
-      dto.description,
-      dto.price,
-      dto.imageUrl,
-      dto.slug,
-      dto.difficulty,
-      dto.status,
-      dto.instructor,
-    );
-  }
-
-  fromUpdateDtoToEntity(entity: Course, dto: UpdateCourseDto): Course {
-    return new Course(
-      dto.instructorId ?? entity.instructorId,
-      dto.id ?? entity.id,
-      dto.title ?? entity.title,
-      dto.description ?? entity.description,
-      dto.price ?? entity.price,
-      dto.imageUrl ?? entity.imageUrl,
-      dto.slug ?? entity.slug,
-      dto.difficulty ?? entity.difficulty,
-      dto.status ?? entity.status,
-      dto.instructor ?? entity.instructor,
-    );
-  }
-
-  fromEntityToResponseDto(entity: Course): CourseResponseDto {
-    const instructor = entity.instructor
-      ? this.fromInstructorToCourseResponseInstructor(entity.instructor)
-      : undefined;
-    return new CourseResponseDto(
-      Course.getEntityName(),
       entity.instructorId,
+      entity.id,
       entity.title,
       entity.description,
       entity.price,
       entity.imageUrl,
-      entity.status,
       entity.slug,
-      entity.difficulty,
-      instructor,
-      entity.id,
+      entity.difficulty as Difficulty,
+      entity.status,
+      entity.instructor as User,
     );
   }
 
-  private fromInstructorToCourseResponseInstructor(
-    instructor: User,
-  ): CourseResponseInstructor {
-    return {
-      firstName: instructor.firstName,
-      lastName: instructor.lastName,
-      avatarUrl: instructor.avatarUrl,
-    };
+  toPersistenceEntity(domainEntity: Course): CourseEntity {
+    return new CourseEntity(
+      domainEntity.instructorId,
+      domainEntity.id,
+      domainEntity.title,
+      domainEntity.description,
+      domainEntity.price,
+      domainEntity.imageUrl,
+      domainEntity.status,
+      domainEntity.slug,
+      domainEntity.difficulty,
+      domainEntity.instructor as UserEntity,
+    );
   }
 }

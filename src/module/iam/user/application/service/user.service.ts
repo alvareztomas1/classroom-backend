@@ -7,7 +7,7 @@ import { FileStorageService } from '@module/cloud/application/service/file-stora
 import { UpdateUserDto } from '@module/iam/user/application/dto/update-user.dto';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
 import { UserDto } from '@module/iam/user/application/dto/user.dto';
-import { UserMapper } from '@module/iam/user/application/mapper/user.mapper';
+import { UserDtoMapper } from '@module/iam/user/application/mapper/user-dto.mapper';
 import {
   IUserRepository,
   USER_REPOSITORY_KEY,
@@ -19,7 +19,7 @@ export class UserService {
   constructor(
     @Inject(USER_REPOSITORY_KEY)
     private readonly repository: IUserRepository,
-    private readonly mapper: UserMapper,
+    private readonly mapper: UserDtoMapper,
     private readonly fileStorageService: FileStorageService,
   ) {}
 

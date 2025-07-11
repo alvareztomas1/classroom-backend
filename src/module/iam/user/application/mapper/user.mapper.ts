@@ -1,44 +1,33 @@
-import { IDtoMapper } from '@common/base/application/dto/dto.interface';
+import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { UpdateUserDto } from '@module/iam/user/application/dto/update-user.dto';
-import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
-import { UserDto } from '@module/iam/user/application/dto/user.dto';
+import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 import { User } from '@module/iam/user/domain/user.entity';
+import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
 
-export class UserMapper
-  implements
-    Omit<
-      IDtoMapper<User, UserDto, UpdateUserDto, UserResponseDto>,
-      'fromCreateDtoToEntity' | 'fromUpdateDtoToEntity'
-    >
-{
-  fromEntityToResponseDto(entity: User): UserResponseDto {
-    return new UserResponseDto(
-      User.getEntityName(),
+export class UserMapper implements IEntityMapper<User, UserEntity> {
+  toDomainEntity(entity: UserEntity): User {
+    return new User(
       entity.email,
       entity.firstName,
       entity.lastName,
-      entity.roles,
+      entity.roles as AppRole[],
       entity.avatarUrl,
-      entity.externalId,
       entity.id,
+      entity.externalId,
       entity.isVerified,
     );
   }
 
-  fromUpdateDtoToEntity(dto: UpdateUserDto, currentUser: User): User {
-    return new User(
-      currentUser.email,
-      dto.firstName ?? currentUser.firstName,
-      dto.lastName ?? currentUser.lastName,
-      currentUser.roles,
-      dto.avatarUrl ?? currentUser.avatarUrl,
-      currentUser.id,
-      currentUser.externalId,
-      currentUser.createdAt,
-      currentUser.updatedAt,
-      currentUser.deletedAt,
-      currentUser.isVerified,
+  toPersistenceEntity(domain: User): UserEntity {
+    return new UserEntity(
+      domain.email,
+      domain.firstName,
+      domain.lastName,
+      domain.roles,
+      domain.id,
+      domain.externalId,
+      domain.avatarUrl,
+      domain.isVerified,
     );
   }
 }
