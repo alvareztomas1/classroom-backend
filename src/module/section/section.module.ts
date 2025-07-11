@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CourseModule } from '@module/course/course.module';
 import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+import { SectionDtoMapper } from '@module/section/application/mapper/section-dto.mapper';
 import { SectionMapper } from '@module/section/application/mapper/section.mapper';
 import { CreateSectionPolicyHandler } from '@module/section/application/policy/create-section-policy.handler';
 import { DeleteSectionPolicyHandler } from '@module/section/application/policy/delete-section-policy.handler';
@@ -37,6 +38,7 @@ const policyHandlersProviders = [
     CourseModule,
     SectionService,
     sectionRepositoryProvider,
+    SectionDtoMapper,
     SectionMapper,
     ...policyHandlersProviders,
   ],

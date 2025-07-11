@@ -4,13 +4,11 @@ import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
 import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
 import { LessonEntity } from '@module/lesson/infrastructure/database/lesson.entity';
-import { Section } from '@module/section/domain/section.entity';
 
 @Entity('section')
 export class SectionEntity extends BaseEntity {
-  static override get domainClass(): typeof Section {
-    return Section;
-  }
+  @Column({ type: 'uuid' })
+  courseId: string;
 
   @Column({ type: 'varchar', nullable: true })
   title?: string;
@@ -20,9 +18,6 @@ export class SectionEntity extends BaseEntity {
 
   @Column({ type: 'int', nullable: true })
   position?: number;
-
-  @Column({ type: 'uuid' })
-  courseId!: string;
 
   @ManyToOne(() => CourseEntity, (course) => course.sections)
   course?: CourseEntity;
@@ -34,5 +29,24 @@ export class SectionEntity extends BaseEntity {
 
   get instructorId(): string | undefined {
     return this.course?.instructorId;
+  }
+
+  constructor(
+    courseId: string,
+    id?: string,
+    title?: string,
+    description?: string,
+    position?: number,
+    course?: CourseEntity,
+    lessons?: LessonEntity[],
+  ) {
+    super(id);
+
+    this.courseId = courseId;
+    this.title = title;
+    this.description = description;
+    this.position = position;
+    this.course = course;
+    this.lessons = lessons;
   }
 }

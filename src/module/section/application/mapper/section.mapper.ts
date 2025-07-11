@@ -1,42 +1,34 @@
-import { IDtoMapper } from '@common/base/application/dto/dto.interface';
+import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { CreateSectionDto } from '@module/section/application/dto/create.section.dto';
-import { SectionResponseDto } from '@module/section/application/dto/section.response.dto';
-import { UpdateSectionDto } from '@module/section/application/dto/update.section.dto';
+import { Course } from '@module/course/domain/course.entity';
+import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
+import { Lesson } from '@module/lesson/domain/lesson.entity';
+import { LessonEntity } from '@module/lesson/infrastructure/database/lesson.entity';
 import { Section } from '@module/section/domain/section.entity';
+import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
-export class SectionMapper
-  implements
-    IDtoMapper<Section, CreateSectionDto, UpdateSectionDto, SectionResponseDto>
-{
-  fromCreateDtoToEntity(dto: CreateSectionDto): Section {
+export class SectionMapper implements IEntityMapper<Section, SectionEntity> {
+  toDomainEntity(entity: SectionEntity): Section {
     return new Section(
-      dto.courseId,
-      dto.title,
-      dto.description,
-      dto.position,
-      dto.id,
-    );
-  }
-
-  fromUpdateDtoToEntity(entity: Section, dto: UpdateSectionDto): Section {
-    return new Section(
-      dto.courseId ?? entity.courseId,
-      dto.title ?? entity.title,
-      dto.description ?? entity.description,
-      dto.position ?? entity.position,
-      dto.id ?? entity.id,
-    );
-  }
-
-  fromEntityToResponseDto(entity: Section): SectionResponseDto {
-    return new SectionResponseDto(
-      Section.getEntityName(),
       entity.courseId,
       entity.title,
       entity.description,
       entity.position,
       entity.id,
+      entity.course as Course,
+      entity.lessons as Lesson[],
+    );
+  }
+
+  toPersistenceEntity(entity: Section): SectionEntity {
+    return new SectionEntity(
+      entity.courseId,
+      entity.id,
+      entity.title,
+      entity.description,
+      entity.position,
+      entity.course as CourseEntity,
+      entity.lessons as LessonEntity[],
     );
   }
 }

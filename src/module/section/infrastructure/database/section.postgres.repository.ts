@@ -5,19 +5,21 @@ import { Repository } from 'typeorm';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
+import { SectionMapper } from '@module/section/application/mapper/section.mapper';
 import { ISectionRepository } from '@module/section/application/repository/section.repository.interface';
 import { Section } from '@module/section/domain/section.entity';
 import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
 @Injectable()
 export class SectionPostgresRepository
-  extends BaseRepository<Section>
+  extends BaseRepository<Section, SectionEntity>
   implements ISectionRepository
 {
   constructor(
-    @InjectRepository(SectionEntity) repository: Repository<Section>,
+    @InjectRepository(SectionEntity) repository: Repository<SectionEntity>,
+    private readonly sectionMapper: SectionMapper,
   ) {
-    super(repository);
+    super(repository, sectionMapper);
   }
 
   async deleteOneByIdOrFail(id: string): Promise<void> {
