@@ -1,6 +1,7 @@
 import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CourseDtoMapper } from '@module/course/application/mapper/course-dto.mapper';
 import { CourseMapper } from '@module/course/application/mapper/course.mapper';
 import { CreateCoursePolicyHandler } from '@module/course/application/policy/create-course-policy-handler';
 import { DeleteCoursePolicyHandler } from '@module/course/application/policy/delete-course-policy-handler';
@@ -34,6 +35,7 @@ const policyHandlersProviders = [
   providers: [
     CourseService,
     courseRepositoryProvider,
+    CourseDtoMapper,
     CourseMapper,
     ...policyHandlersProviders,
   ],

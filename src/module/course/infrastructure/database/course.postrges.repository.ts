@@ -5,17 +5,21 @@ import { Repository } from 'typeorm';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
+import { CourseMapper } from '@module/course/application/mapper/course.mapper';
 import { ICourseRepository } from '@module/course/application/repository/repository.interface';
 import { Course } from '@module/course/domain/course.entity';
 import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
 
 @Injectable()
 export class CoursePostgresRepository
-  extends BaseRepository<Course>
+  extends BaseRepository<Course, CourseEntity>
   implements ICourseRepository
 {
-  constructor(@InjectRepository(CourseEntity) repository: Repository<Course>) {
-    super(repository);
+  constructor(
+    @InjectRepository(CourseEntity) repository: Repository<CourseEntity>,
+    private readonly courseMapper: CourseMapper,
+  ) {
+    super(repository, courseMapper);
   }
 
   async getSlugsStartingWith(slug: string): Promise<string[]> {
