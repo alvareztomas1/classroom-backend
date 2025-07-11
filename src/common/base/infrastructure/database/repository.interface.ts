@@ -1,11 +1,13 @@
 import { ICollection } from '@common/base/application/dto/collection.interface';
 import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
-import IEntity from '@common/base/domain/entity.interface';
+import { Base } from '@common/base/domain/base.entity';
 
-export interface IRepository<T extends IEntity> {
-  getAll(options: IGetAllOptions<T>): Promise<ICollection<T>>;
-  saveOne(entity: T): Promise<T>;
-  getOneById(id: string): Promise<T | null>;
-  getOneByIdOrFail(id: string): Promise<T>;
+export interface IRepository<DomainEntity extends Base> {
+  getAll(
+    options: IGetAllOptions<DomainEntity>,
+  ): Promise<ICollection<DomainEntity>>;
+  saveOne(entity: DomainEntity): Promise<DomainEntity>;
+  getOneById(id: string): Promise<DomainEntity | null>;
+  getOneByIdOrFail(id: string): Promise<DomainEntity>;
   deleteOneByIdOrFail(id: string): Promise<void>;
 }

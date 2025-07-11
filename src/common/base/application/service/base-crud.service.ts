@@ -1,9 +1,6 @@
+import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
-import {
-  IDto,
-  IDtoMapper,
-  IResponseDto,
-} from '@common/base/application/dto/dto.interface';
+import { IDto } from '@common/base/application/dto/dto.interface';
 import {
   EntityRelations,
   IGetAllOptions,
@@ -12,21 +9,27 @@ import {
   OPERATION_RESPONSE_TYPE,
   SuccessOperationResponseDto,
 } from '@common/base/application/dto/success-operation-response.dto';
+import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 import { ICRUDService } from '@common/base/application/service/crud-service.interface';
-import IEntity from '@common/base/domain/entity.interface';
+import { Base } from '@common/base/domain/base.entity';
+import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 
 export class BaseCRUDService<
-  Entity extends IEntity,
+  DomainEntity extends Base,
+  PersistenceEntity extends BaseEntity,
   CreateDto extends IDto,
   UpdateDto extends IDto,
-  ResponseDto extends IResponseDto,
-> implements ICRUDService<Entity, ResponseDto, CreateDto, UpdateDto>
+  ResponseDto extends BaseResponseDto,
+> implements ICRUDService<DomainEntity, ResponseDto, CreateDto, UpdateDto>
 {
   constructor(
-    protected readonly repository: BaseRepository<Entity>,
+    protected readonly repository: BaseRepository<
+      DomainEntity,
+      PersistenceEntity
+    >,
     protected readonly mapper: IDtoMapper<
-      Entity,
+      DomainEntity,
       CreateDto,
       UpdateDto,
       ResponseDto
@@ -35,7 +38,7 @@ export class BaseCRUDService<
   ) {}
 
   async getAll(
-    options: Partial<IGetAllOptions<Entity>>,
+    options: Partial<IGetAllOptions<DomainEntity>>,
   ): Promise<CollectionDto<ResponseDto>> {
     const entities = await this.repository.getAll(options);
     const collection = new CollectionDto<ResponseDto>({
@@ -53,7 +56,7 @@ export class BaseCRUDService<
 
   async getOneByIdOrFail(
     id: string,
-    include?: EntityRelations<Entity>,
+    include?: EntityRelations<DomainEntity>,
   ): Promise<ResponseDto> {
     const entity = await this.repository.getOneByIdOrFail(id, include);
     const responseDto = this.mapper.fromEntityToResponseDto(entity);

@@ -4,21 +4,30 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IEntity } from 'typeorm-fixtures-cli';
 
-export abstract class BaseEntity {
-  static get domainClass(): unknown {
-    throw new Error('Not implemented');
-  }
-
+export abstract class BaseEntity implements IEntity {
   @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  id?: string;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt?: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updatedAt?: Date;
 
   @DeleteDateColumn()
-  deletedAt!: Date;
+  deletedAt?: Date;
+
+  constructor(
+    id?: string,
+    createdAt?: Date,
+    updatedAt?: Date,
+    deletedAt?: Date,
+  ) {
+    this.id = id;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.deletedAt = deletedAt;
+  }
 }
