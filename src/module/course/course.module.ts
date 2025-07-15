@@ -1,6 +1,8 @@
 import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CategoryModule } from '@module/category/category.module';
+import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
 import { CourseDtoMapper } from '@module/course/application/mapper/course-dto.mapper';
 import { CourseMapper } from '@module/course/application/mapper/course.mapper';
 import { CreateCoursePolicyHandler } from '@module/course/application/policy/create-course-policy-handler';
@@ -29,8 +31,9 @@ const policyHandlersProviders = [
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CourseEntity]),
+    TypeOrmModule.forFeature([CourseEntity, CategoryEntity]),
     AuthorizationModule.forFeature(),
+    CategoryModule,
   ],
   providers: [
     CourseService,
