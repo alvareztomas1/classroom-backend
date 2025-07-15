@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
-import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
+import { IGetAllOptions } from '@common/base/application/dto/query-params/get-all-options.interface';
 
 import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 import { UpdateUserDto } from '@module/iam/user/application/dto/update-user.dto';
@@ -32,6 +32,7 @@ export class UserService {
       data: collection.data.map((user) =>
         this.mapper.fromEntityToResponseDto(user),
       ),
+      meta: collection.meta,
     });
 
     return collectionDto;

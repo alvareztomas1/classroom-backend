@@ -11,7 +11,7 @@ import {
   DEFAULT_PAGE_SIZE,
 } from '@common/base/application/constant/base.constants';
 import { ICollection } from '@common/base/application/dto/collection.interface';
-import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
+import { IGetAllOptions } from '@common/base/application/dto/query-params/get-all-options.interface';
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 import { Base } from '@common/base/domain/base.entity';
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
@@ -52,10 +52,12 @@ abstract class BaseRepository<
 
     return {
       data: items.map((item) => this.entityMapper.toDomainEntity(item)),
-      pageNumber: page?.number || DEFAULT_PAGE_NUMBER,
-      pageSize: page?.size || DEFAULT_PAGE_NUMBER,
-      pageCount: Math.ceil(itemCount / (page?.size || DEFAULT_PAGE_SIZE)),
-      itemCount,
+      meta: {
+        pageNumber: page?.number || DEFAULT_PAGE_NUMBER,
+        pageSize: page?.size || DEFAULT_PAGE_NUMBER,
+        pageCount: Math.ceil(itemCount / (page?.size || DEFAULT_PAGE_SIZE)),
+        itemCount,
+      },
     };
   }
 

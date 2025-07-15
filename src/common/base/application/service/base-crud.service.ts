@@ -4,7 +4,7 @@ import { IDto } from '@common/base/application/dto/dto.interface';
 import {
   EntityRelations,
   IGetAllOptions,
-} from '@common/base/application/dto/get-all-options.interface';
+} from '@common/base/application/dto/query-params/get-all-options.interface';
 import {
   OPERATION_RESPONSE_TYPE,
   SuccessOperationResponseDto,
@@ -45,10 +45,7 @@ export class BaseCRUDService<
       data: entities.data.map((entity) =>
         this.mapper.fromEntityToResponseDto(entity),
       ),
-      itemCount: entities.itemCount,
-      pageCount: entities.pageCount,
-      pageNumber: entities.pageNumber,
-      pageSize: entities.pageSize,
+      meta: entities.meta,
     });
 
     return collection;
