@@ -3,10 +3,7 @@ import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
-import {
-  CategoryWithAncestors,
-  CategoryWithChildren,
-} from '@module/category/application/repository/category.repository.interface';
+import { CategoryWithChildren } from '@module/category/application/repository/category.repository.interface';
 import { Category } from '@module/category/domain/category.entity';
 
 export class CategoryDtoMapper
@@ -34,20 +31,29 @@ export class CategoryDtoMapper
   }
 
   fromEntityToResponseDto(
-    entity: CategoryWithAncestors | CategoryWithChildren,
+    entity: Category | CategoryWithChildren,
   ): CategoryResponseDto {
-    const { name, id } = entity;
-
-    const hasChildren = 'children' in entity && Array.isArray(entity.children);
-    const hasAncestors =
-      'ancestors' in entity && Array.isArray(entity.ancestors);
+    const { name, id, parent, children } = entity;
 
     return new CategoryResponseDto(
       Category.getEntityName(),
       name,
       id,
-      hasAncestors ? entity.ancestors : undefined,
-      hasChildren ? entity.children : undefined,
+      parent ? this.buildCategoryPath(parent) : undefined,
+      children,
     );
+  }
+
+  private buildCategoryPath(category: Category): Category {
+    const categoryPath = {
+      id: category.id,
+      name: category.name,
+    } as Category;
+
+    if (category.parent) {
+      categoryPath.parent = this.buildCategoryPath(category.parent);
+    }
+
+    return categoryPath;
   }
 }

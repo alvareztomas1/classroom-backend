@@ -6,23 +6,20 @@ export type RelatedCategory = Pick<Category, 'name' | 'id'>;
 
 export class CategoryResponseDto extends BaseResponseDto {
   name: string;
-  path?: RelatedCategory[];
-  children?: RelatedCategory[];
+  parent?: Category;
+  children?: Category[];
 
   constructor(
     type: string,
     name: string,
     id?: string,
-    ancestors?: Category[],
+    parent?: Category,
     children?: Category[],
   ) {
     super(type, id);
 
     this.name = name;
-    this.path = ancestors?.map((cat) => ({
-      id: cat.id,
-      name: cat.name,
-    }));
+    this.parent = parent;
     this.children = children?.map((cat) => ({
       id: cat.id,
       name: cat.name,

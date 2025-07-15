@@ -9,7 +9,6 @@ import EntityNotFoundException from '@common/base/infrastructure/exception/not.f
 import { CategoryMapper } from '@module/category/application/mapper/category.mapper';
 import {
   CATEGORY_TREE_REPOSITORY_KEY,
-  CategoryWithAncestors,
   CategoryWithChildren,
   ICategoryRepository,
 } from '@module/category/application/repository/category.repository.interface';
@@ -65,7 +64,7 @@ export class CategoryPostgresRepository
     return category ? this.categoryMapper.toDomainEntity(category) : null;
   }
 
-  async getOneByIdOrFail(id: string): Promise<CategoryWithAncestors> {
+  async getOneByIdOrFail(id: string): Promise<Category> {
     const category = await this.getOneEntityById(id);
 
     if (!category) {
@@ -75,12 +74,7 @@ export class CategoryPostgresRepository
     const categoryWithAncestors =
       await this.treeRepository.findAncestorsTree(category);
 
-    return {
-      ...this.categoryMapper.toDomainEntity(category),
-      ancestors: this.buildPathFromTree(
-        this.categoryMapper.toDomainEntity(categoryWithAncestors),
-      ),
-    };
+    return this.categoryMapper.toDomainEntity(categoryWithAncestors);
   }
 
   async saveOne(entity: Category): Promise<Category> {
@@ -132,18 +126,6 @@ export class CategoryPostgresRepository
     });
 
     return category ? this.categoryMapper.toDomainEntity(category) : null;
-  }
-
-  private buildPathFromTree(node: Category): Category[] {
-    const path: Category[] = [];
-    let current: Category | null | undefined = node;
-
-    while (current) {
-      path.unshift(current);
-      current = current.parent;
-    }
-
-    return path;
   }
 
   private async findChildren(parentId: string): Promise<Category[]> {
