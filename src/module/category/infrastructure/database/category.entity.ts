@@ -1,8 +1,16 @@
-import { Column, Entity, Tree, TreeChildren, TreeParent } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  Tree,
+  TreeChildren,
+  TreeParent,
+} from 'typeorm';
 
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
 import { Category } from '@module/category/domain/category.entity';
+import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
 
 @Entity('category')
 @Tree('closure-table')
@@ -17,6 +25,9 @@ export class CategoryEntity extends BaseEntity {
     cascade: ['soft-remove'],
   })
   children?: Category[];
+
+  @OneToMany(() => CourseEntity, (course) => course.category)
+  courses?: CourseEntity[];
 
   constructor(
     name: string,
