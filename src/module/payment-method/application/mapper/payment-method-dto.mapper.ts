@@ -1,5 +1,5 @@
+import { fromStringToKebabCase } from '@common/base/application/mapper/base.mapper';
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
-import { StringTransformer } from '@common/transformers/string.transformer';
 
 import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
 import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
@@ -25,7 +25,7 @@ export class PaymentMethodDtoMapper
     const { name, id } = entity;
 
     return new PaymentMethodResponseDto(
-      StringTransformer.toKebabCase(PaymentMethod.name),
+      fromStringToKebabCase(PaymentMethod.name),
       name,
       id,
     );

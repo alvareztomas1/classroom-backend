@@ -10,7 +10,7 @@ import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant'
 import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
 import { FileFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
-import { MBTransformer } from '@common/transformers/mb.transformer';
+import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
 import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
@@ -366,7 +366,7 @@ describe('Lesson Module', () => {
               source: expect.objectContaining({
                 pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson`,
               }),
-              detail: `File "large.pdf" exceeds the maximum size of ${MBTransformer.toMB(MAX_FILE_SIZES[FileFormat.PDF]).toFixed(1)} MB.`,
+              detail: `File "large.pdf" exceeds the maximum size of ${fromBytesToMB(MAX_FILE_SIZES[FileFormat.PDF]).toFixed(1)} MB.`,
             }),
           });
 
