@@ -16,7 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
-import { PageQueryParamsDto } from '@common/base/application/dto/page-query-params';
+import { PageQueryParamsDto } from '@common/base/application/dto/query-params/page-query-params';
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';

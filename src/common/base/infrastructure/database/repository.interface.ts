@@ -1,5 +1,5 @@
 import { ICollection } from '@common/base/application/dto/collection.interface';
-import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
+import { IGetAllOptions } from '@common/base/application/dto/query-params/get-all-options.interface';
 import { Base } from '@common/base/domain/base.entity';
 
 export interface IRepository<DomainEntity extends Base> {
