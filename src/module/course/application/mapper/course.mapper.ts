@@ -1,7 +1,7 @@
 import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { CategoryWithAncestors } from '@module/category/application/repository/category.repository.interface';
+import { Category } from '@module/category/domain/category.entity';
 import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
 import { Course } from '@module/course/domain/course.entity';
 import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
@@ -24,7 +24,7 @@ export class CourseMapper implements IEntityMapper<Course, CourseEntity> {
       entity.status,
       entity.instructor as User,
       entity.sections as Section[],
-      entity.category as CategoryWithAncestors,
+      entity.category as Category,
     );
   }
 

@@ -1,7 +1,7 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { IsOptional, IsUUID } from 'class-validator';
 
-import { CategoryWithAncestors } from '@module/category/application/repository/category.repository.interface';
+import { Category } from '@module/category/domain/category.entity';
 import { CourseDto } from '@module/course/application/dto/course.dto';
 
 export class CreateCourseDto extends CourseDto {
@@ -9,7 +9,7 @@ export class CreateCourseDto extends CourseDto {
   @IsOptional()
   categoryId?: string;
 
-  category?: CategoryWithAncestors;
+  category?: Category;
 }
 
 export class CreateCourseRequestDto extends OmitType(CreateCourseDto, [

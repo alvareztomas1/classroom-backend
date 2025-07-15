@@ -342,20 +342,14 @@ describe('Category Module', () => {
               id: categoryId,
               attributes: expect.objectContaining({
                 name: 'Category 3',
-                path: expect.arrayContaining([
-                  expect.objectContaining({
-                    id: expect.any(String),
+                parent: expect.objectContaining({
+                  id: '5fb9c427-2551-4787-81c4-b6c603175f45',
+                  name: 'Category 2',
+                  parent: expect.objectContaining({
+                    id: '2d915994-8c06-425c-9a64-23a7b2b8603e',
                     name: 'Category 1',
                   }),
-                  expect.objectContaining({
-                    id: expect.any(String),
-                    name: 'Category 2',
-                  }),
-                  expect.objectContaining({
-                    id: expect.any(String),
-                    name: 'Category 3',
-                  }),
-                ]),
+                }),
               }),
             }),
             links: expect.arrayContaining([
