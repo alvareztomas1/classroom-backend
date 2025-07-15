@@ -2,6 +2,7 @@ import { BaseResponseDto } from '@common/base/application/dto/base.response.dto'
 import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 
+import { Category } from '@module/category/domain/category.entity';
 import { User } from '@module/iam/user/domain/user.entity';
 
 export type CourseResponseInstructor = Pick<
@@ -19,6 +20,8 @@ export class CourseResponseDto extends BaseResponseDto {
   slug?: string;
   difficulty?: Difficulty;
   instructor?: CourseResponseInstructor;
+  category?: Category;
+
   constructor(
     type: string,
     instructorId: string,
@@ -31,6 +34,7 @@ export class CourseResponseDto extends BaseResponseDto {
     difficulty?: Difficulty,
     instructor?: CourseResponseInstructor,
     id?: string,
+    category?: Category,
   ) {
     super(type, id);
 
@@ -45,5 +49,6 @@ export class CourseResponseDto extends BaseResponseDto {
     if (instructor) {
       this.instructor = instructor;
     }
+    this.category = category;
   }
 }

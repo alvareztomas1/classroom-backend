@@ -1,5 +1,6 @@
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
+import { Category } from '@module/category/domain/category.entity';
 import {
   CourseResponseDto,
   CourseResponseInstructor,
@@ -25,6 +26,8 @@ export class CourseDtoMapper
       dto.difficulty,
       dto.status,
       dto.instructor,
+      dto.sections,
+      dto.category,
     );
   }
 
@@ -40,6 +43,8 @@ export class CourseDtoMapper
       dto.difficulty ?? entity.difficulty,
       dto.status ?? entity.status,
       dto.instructor ?? entity.instructor,
+      dto.sections ?? entity.sections,
+      dto.category ?? entity.category,
     );
   }
 
@@ -47,6 +52,7 @@ export class CourseDtoMapper
     const instructor = entity.instructor
       ? this.fromInstructorToCourseResponseInstructor(entity.instructor)
       : undefined;
+
     return new CourseResponseDto(
       Course.getEntityName(),
       entity.instructorId,
@@ -59,6 +65,7 @@ export class CourseDtoMapper
       entity.difficulty,
       instructor,
       entity.id,
+      entity.category ? this.buildCategoryPath(entity.category) : undefined,
     );
   }
 
@@ -70,5 +77,18 @@ export class CourseDtoMapper
       lastName: instructor.lastName,
       avatarUrl: instructor.avatarUrl,
     };
+  }
+
+  private buildCategoryPath(category: Category): Category {
+    const categoryPath = {
+      id: category.id,
+      name: category.name,
+    } as Category;
+
+    if (category.parent) {
+      categoryPath.parent = this.buildCategoryPath(category.parent);
+    }
+
+    return categoryPath;
   }
 }

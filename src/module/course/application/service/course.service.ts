@@ -9,6 +9,10 @@ import { PublishStatus } from '@common/base/application/enum/publish-status.enum
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
 import { SlugService } from '@module/app/application/service/slug.service';
+import {
+  CATEGORY_REPOSITORY_KEY,
+  ICategoryRepository,
+} from '@module/category/application/repository/category.repository.interface';
 import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 import { CourseResponseDto } from '@module/course/application/dto/course-response.dto';
 import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
@@ -30,10 +34,13 @@ export class CourseService extends BaseCRUDService<
   CourseResponseDto
 > {
   constructor(
-    @Inject(COURSE_REPOSITORY_KEY) repository: ICourseRepository,
+    @Inject(COURSE_REPOSITORY_KEY)
+    protected readonly repository: ICourseRepository,
     protected readonly mapper: CourseDtoMapper,
     private readonly fileStorageService: FileStorageService,
     private readonly slugService: SlugService,
+    @Inject(CATEGORY_REPOSITORY_KEY)
+    private readonly categoryRepository: ICategoryRepository,
   ) {
     super(repository, mapper, Course.getEntityName());
   }
@@ -42,18 +49,20 @@ export class CourseService extends BaseCRUDService<
     createDto: CreateCourseDto,
     image?: Express.Multer.File,
   ): Promise<CourseResponseDto> {
-    const courseId = uuidv4();
-    createDto.id = courseId;
+    createDto.id = uuidv4();
+    const { id, title, categoryId } = createDto;
     createDto.imageUrl = image
       ? await this.fileStorageService.uploadFile(
           image,
-          this.buildFileFolder(createDto.id),
+          this.buildFileFolder(id),
         )
       : undefined;
 
-    createDto.slug = createDto.title
-      ? await this.buildUniqueSlug(createDto.title)
+    createDto.category = categoryId
+      ? await this.categoryRepository.getOneByIdOrFail(categoryId)
       : undefined;
+
+    createDto.slug = title ? await this.buildUniqueSlug(title) : undefined;
 
     return super.saveOne(createDto);
   }
@@ -63,9 +72,12 @@ export class CourseService extends BaseCRUDService<
     updateDto: UpdateCourseDto,
     image?: Express.Multer.File,
   ): Promise<CourseResponseDto> {
-    const course = await (
-      this.repository as ICourseRepository
-    ).getOneByIdOrFail(id);
+    const { categoryId } = updateDto;
+    updateDto.category = categoryId
+      ? await this.categoryRepository.getOneByIdOrFail(categoryId)
+      : undefined;
+
+    const course = await this.repository.getOneByIdOrFail(id);
 
     if (
       updateDto.status === PublishStatus.published &&
@@ -106,9 +118,7 @@ export class CourseService extends BaseCRUDService<
     const baseSlug = this.slugService.buildSlug(title);
     let uniqueSlug = baseSlug;
 
-    const existingSlugs = await (
-      this.repository as ICourseRepository
-    ).getSlugsStartingWith(baseSlug);
+    const existingSlugs = await this.repository.getSlugsStartingWith(baseSlug);
 
     if (existingSlugs.includes(baseSlug)) {
       uniqueSlug = this.slugService.buildUniqueSlug(baseSlug, existingSlugs);
@@ -131,6 +141,7 @@ export class CourseService extends BaseCRUDService<
       'price',
       'imageUrl',
       'difficulty',
+      'category',
     ];
 
     const missingFields = requiredFields.filter(

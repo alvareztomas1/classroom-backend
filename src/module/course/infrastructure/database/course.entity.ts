@@ -3,6 +3,7 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
+import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
 import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
 import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
@@ -52,6 +53,9 @@ export class CourseEntity extends BaseEntity {
   })
   sections?: SectionEntity[];
 
+  @ManyToOne(() => CategoryEntity, (category) => category.courses)
+  category?: CategoryEntity;
+
   constructor(
     instructorId: string,
     id?: string,
@@ -64,6 +68,7 @@ export class CourseEntity extends BaseEntity {
     difficulty?: string,
     instructor?: UserEntity,
     sections?: SectionEntity[],
+    category?: CategoryEntity,
   ) {
     super(id);
 
@@ -77,5 +82,6 @@ export class CourseEntity extends BaseEntity {
     this.difficulty = difficulty;
     this.instructor = instructor;
     this.sections = sections;
+    this.category = category;
   }
 }
