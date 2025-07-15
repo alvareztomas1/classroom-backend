@@ -63,7 +63,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((responseData: BaseResponseDto | CollectionDto<IResponseDto>) => {
         if (responseData instanceof CollectionDto) {
-          const meta = this.buildPagingData(responseData);
+          const { meta } = responseData;
 
           return meta
             ? this.buildPaginatedSerializedCollection(
@@ -218,18 +218,5 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     subject: AppSubjects,
   ): boolean {
     return this.authorizationService.isAllowed(user, action, subject);
-  }
-
-  private buildPagingData(
-    collection: CollectionDto<IResponseDto>,
-  ): IPagingCollectionData | undefined {
-    const { itemCount, pageCount, pageNumber, pageSize } = collection;
-
-    return itemCount !== undefined &&
-      pageCount !== undefined &&
-      pageNumber !== undefined &&
-      pageSize !== undefined
-      ? { itemCount, pageCount, pageNumber, pageSize }
-      : undefined;
   }
 }

@@ -7,7 +7,7 @@ import {
   DEFAULT_PAGE_SIZE,
 } from '@common/base/application/constant/base.constants';
 import { ICollection } from '@common/base/application/dto/collection.interface';
-import { IGetAllOptions } from '@common/base/application/dto/get-all-options.interface';
+import { IGetAllOptions } from '@common/base/application/dto/query-params/get-all-options.interface';
 
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 import { UserMapper } from '@module/iam/user/application/mapper/user.mapper';
@@ -41,10 +41,12 @@ export class UserPostgresRepository implements IUserRepository {
 
     return {
       data: items.map((item) => this.userMapper.toDomainEntity(item)),
-      pageNumber: page?.number || DEFAULT_PAGE_NUMBER,
-      pageSize: page?.size || DEFAULT_PAGE_SIZE,
-      pageCount: Math.ceil(itemCount / (page?.size || DEFAULT_PAGE_SIZE)),
-      itemCount,
+      meta: {
+        pageNumber: page?.number || DEFAULT_PAGE_NUMBER,
+        pageSize: page?.size || DEFAULT_PAGE_SIZE,
+        pageCount: Math.ceil(itemCount / (page?.size || DEFAULT_PAGE_SIZE)),
+        itemCount,
+      },
     };
   }
 

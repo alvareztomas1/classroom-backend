@@ -1,30 +1,17 @@
-import { ICollection } from '@common/base/application/dto/collection.interface';
+import {
+  ICollection,
+  IPagingCollectionData,
+} from '@common/base/application/dto/collection.interface';
 import { IResponseDto } from '@common/base/application/dto/dto.interface';
 
 export class CollectionDto<Data extends IResponseDto>
   implements ICollection<Data>
 {
-  readonly data: Data[];
+  data: Data[];
+  meta?: IPagingCollectionData;
 
-  readonly pageNumber?: number;
-
-  readonly pageSize?: number;
-
-  readonly pageCount?: number;
-
-  readonly itemCount?: number;
-
-  constructor({
-    data,
-    pageNumber,
-    pageSize,
-    pageCount,
-    itemCount,
-  }: ICollection<Data>) {
+  constructor({ data, meta }: ICollection<Data>) {
     this.data = data;
-    this.pageNumber = pageNumber;
-    this.pageSize = pageSize;
-    this.pageCount = pageCount;
-    this.itemCount = itemCount;
+    this.meta = meta;
   }
 }
