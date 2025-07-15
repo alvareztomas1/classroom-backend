@@ -17,7 +17,7 @@ import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
-import { MBTransformer } from '@common/transformers/mb.transformer';
+import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
 import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
@@ -692,7 +692,7 @@ describe('Course Module', () => {
               source: expect.objectContaining({
                 pointer: endpoint,
               }),
-              detail: `File "image.jpg" exceeds the maximum size of ${MBTransformer.toMB(MAX_FILE_SIZES[ImageFormat.JPG as keyof typeof MAX_FILE_SIZES]).toFixed(1)} MB.`,
+              detail: `File "image.jpg" exceeds the maximum size of ${fromBytesToMB(MAX_FILE_SIZES[ImageFormat.JPG as keyof typeof MAX_FILE_SIZES]).toFixed(1)} MB.`,
             }),
           });
 

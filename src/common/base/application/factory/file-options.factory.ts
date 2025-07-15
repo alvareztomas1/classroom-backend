@@ -12,7 +12,7 @@ import {
 } from '@common/base/application/enum/file-format.enum';
 import { FileTooLargeException } from '@common/base/application/factory/exception/file-to-large.exception';
 import { WrongFormatException } from '@common/base/application/factory/exception/wrong-format.exception';
-import { MBTransformer } from '@common/transformers/mb.transformer';
+import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
 type AllowedFormat = ImageFormat | FileFormat;
 
@@ -59,7 +59,7 @@ export class FileOptionsFactory implements MulterOptions {
         if (fileSize > maxSize) {
           return cb(
             new FileTooLargeException({
-              message: `File "${file.originalname}" exceeds the maximum size of ${MBTransformer.toMB(maxSize).toFixed(1)} MB.`,
+              message: `File "${file.originalname}" exceeds the maximum size of ${fromBytesToMB(maxSize).toFixed(1)} MB.`,
             }),
             false,
           );

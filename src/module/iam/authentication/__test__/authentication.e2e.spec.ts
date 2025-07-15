@@ -10,7 +10,7 @@ import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant'
 import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { IAppErrorResponse } from '@common/base/application/exception/app-error-response.interface';
-import { MBTransformer } from '@common/transformers/mb.transformer';
+import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
 import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
@@ -416,7 +416,7 @@ describe('Authentication Module', () => {
                 source: expect.objectContaining({
                   pointer: '/api/v1/auth/sign-up',
                 }),
-                detail: `File "avatar.jpg" exceeds the maximum size of ${MBTransformer.toMB(MAX_FILE_SIZES[ImageFormat.JPG as keyof typeof MAX_FILE_SIZES]).toFixed(1)} MB.`,
+                detail: `File "avatar.jpg" exceeds the maximum size of ${fromBytesToMB(MAX_FILE_SIZES[ImageFormat.JPG as keyof typeof MAX_FILE_SIZES]).toFixed(1)} MB.`,
               }),
             });
             expect(body).toEqual(expectedResponse);

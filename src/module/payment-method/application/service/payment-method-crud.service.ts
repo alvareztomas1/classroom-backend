@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { fromStringToSeparatedWords } from '@common/base/application/mapper/base.mapper';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
-import { StringTransformer } from '@common/transformers/string.transformer';
 
 import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
 import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
@@ -30,7 +30,7 @@ export class PaymentMethodCRUDService extends BaseCRUDService<
     super(
       paymentMethodRepository,
       paymentMethodMapper,
-      StringTransformer.toSeparatedWords(PaymentMethod.name),
+      fromStringToSeparatedWords(PaymentMethod.name),
     );
   }
 }
