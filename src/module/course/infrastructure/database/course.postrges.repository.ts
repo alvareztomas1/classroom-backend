@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, TreeRepository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
+import { CATEGORY_TREE_REPOSITORY_KEY } from '@module/category/application/repository/category.repository.interface';
+import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
 import { CourseMapper } from '@module/course/application/mapper/course.mapper';
 import { ICourseRepository } from '@module/course/application/repository/repository.interface';
 import { Course } from '@module/course/domain/course.entity';
@@ -18,8 +20,43 @@ export class CoursePostgresRepository
   constructor(
     @InjectRepository(CourseEntity) repository: Repository<CourseEntity>,
     private readonly courseMapper: CourseMapper,
+    @Inject(CATEGORY_TREE_REPOSITORY_KEY)
+    private readonly categoryTreeRepository: TreeRepository<CategoryEntity>,
   ) {
     super(repository, courseMapper);
+  }
+
+  async getOneById(
+    id: string,
+    include?: (keyof Course)[],
+  ): Promise<Course | null> {
+    const courseEntity = await this.repository.findOne({
+      where: { id },
+      relations: include,
+    });
+
+    if (courseEntity?.category) {
+      const categoryWithAncestors =
+        await this.categoryTreeRepository.findAncestorsTree(
+          courseEntity.category,
+        );
+      courseEntity.category = categoryWithAncestors;
+    }
+
+    return courseEntity ? this.courseMapper.toDomainEntity(courseEntity) : null;
+  }
+
+  async getOneByIdOrFail(
+    id: string,
+    include?: (keyof Course)[],
+  ): Promise<Course> {
+    const entity = await this.getOneById(id, include);
+
+    if (!entity) {
+      throw new EntityNotFoundException(id);
+    }
+
+    return entity;
   }
 
   async getSlugsStartingWith(slug: string): Promise<string[]> {

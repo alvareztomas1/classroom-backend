@@ -52,7 +52,7 @@ const policyHandlersProviders = [
     categoryTreeRepositoryProvider,
   ],
   controllers: [CategoryController],
-  exports: [categoryRepositoryProvider],
+  exports: [categoryRepositoryProvider, categoryTreeRepositoryProvider],
 })
 export class CategoryModule implements OnModuleInit {
   constructor(private readonly registry: AppSubjectPermissionStorage) {}
