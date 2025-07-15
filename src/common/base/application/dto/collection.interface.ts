@@ -1,3 +1,5 @@
+import { Base } from '@common/base/domain/base.entity';
+
 export interface IPagingCollectionData {
   pageNumber: number;
   pageSize: number;
@@ -5,7 +7,7 @@ export interface IPagingCollectionData {
   itemCount: number;
 }
 
-export interface ICollection<Entity extends object> {
-  data: Entity[];
+export interface ICollection<ResponseDto extends Base> {
+  data: ResponseDto[];
   meta?: IPagingCollectionData;
 }

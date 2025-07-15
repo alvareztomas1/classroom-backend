@@ -1,5 +1,5 @@
+import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
-import { IDto } from '@common/base/application/dto/dto.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 export interface ILink {
@@ -12,27 +12,18 @@ export type IResponseDtoLinks = ILink[];
 
 export type ICollectionLinks = ILink[];
 
-export interface ISerializedCollection<Entity extends object> {
+export interface ISerializedCollection<Entity extends BaseResponseDto> {
   data: Entity[];
   links: ICollectionLinks;
   meta: IPagingCollectionData;
 }
 
-export type INonPaginatedSerializedCollection<Entity extends object> = Omit<
-  ISerializedCollection<Entity>,
-  'meta'
->;
+export type INonPaginatedSerializedCollection<Entity extends BaseResponseDto> =
+  Omit<ISerializedCollection<Entity>, 'meta'>;
 
-export interface ISerializedResponseData<ResponseDto extends IDto> {
+export interface ISerializedResponseData<ResponseDto extends BaseResponseDto> {
   type: string;
   id?: string;
   attributes: ResponseDto;
   links?: IResponseDtoLinks;
-}
-export interface ISerializeResponseDtoParams<ResponseDto extends IDto> {
-  responseDto: ResponseDto;
-  entityName: string;
-  id?: string;
-  hasUpdate?: boolean;
-  hasDelete?: boolean;
 }

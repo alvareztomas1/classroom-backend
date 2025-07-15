@@ -191,7 +191,11 @@ describe('User Module', () => {
         .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(
-          ({ body }: { body: SerializedResponseDtoCollection<UserDto> }) => {
+          ({
+            body,
+          }: {
+            body: SerializedResponseDtoCollection<UserResponseDto>;
+          }) => {
             const resourceAttributes = body.data[0].attributes;
             expect(Object.keys(resourceAttributes).length).toBe(
               attributes.length,
@@ -211,7 +215,11 @@ describe('User Module', () => {
         .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(
-          ({ body }: { body: SerializedResponseDtoCollection<UserDto> }) => {
+          ({
+            body,
+          }: {
+            body: SerializedResponseDtoCollection<UserResponseDto>;
+          }) => {
             expect(body.data).toHaveLength(1);
             const resourceAttributes = body.data[0].attributes;
             expect(resourceAttributes.roles).toEqual(
@@ -225,7 +233,11 @@ describe('User Module', () => {
         .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(
-          ({ body }: { body: SerializedResponseDtoCollection<UserDto> }) => {
+          ({
+            body,
+          }: {
+            body: SerializedResponseDtoCollection<UserResponseDto>;
+          }) => {
             const { data } = body;
             data.forEach((user) => {
               expect(user.attributes.roles).toEqual(

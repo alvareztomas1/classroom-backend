@@ -99,10 +99,8 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     currentRequestUrl: string,
     currentRequestMethod: HttpMethod,
     meta: IPagingCollectionData,
-  ): SerializedResponseDtoCollection<Omit<BaseResponseDto, 'type'>> {
-    const serializedCollectionData: ISerializedResponseData<
-      Omit<BaseResponseDto, 'type'>
-    >[] = collection.data.map((responseDto) =>
+  ): SerializedResponseDtoCollection<BaseResponseDto> {
+    const serializedCollectionData = collection.data.map((responseDto) =>
       this.buildSerializedResponseData(responseDto),
     );
 
@@ -126,7 +124,7 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     baseAppUrl: string,
     linksMetadata: ILinkMetadata[],
     params: Record<string, string>,
-  ): SerializedResponseDto<Omit<BaseResponseDto, 'type'>> {
+  ): SerializedResponseDto<BaseResponseDto> {
     const links = this.linkBuilderService.buildSingleEntityLinks(
       currentRequestUrl,
       currentRequestMethod,
@@ -148,10 +146,8 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
     baseAppUrl: string,
     linksMetadata: ILinkMetadata[],
     params: Record<string, string>,
-  ): INonPaginatedSerializedCollection<Omit<BaseResponseDto, 'type'>> {
-    const serializedCollectionData: ISerializedResponseData<
-      Omit<BaseResponseDto, 'type'>
-    >[] = collection.data.map((responseDto) =>
+  ): INonPaginatedSerializedCollection<BaseResponseDto> {
+    const serializedCollectionData = collection.data.map((responseDto) =>
       this.buildSerializedResponseData(responseDto),
     );
 
@@ -182,15 +178,13 @@ export class ResponseFormatterInterceptor implements NestInterceptor {
 
   private buildSerializedResponseData(
     responseDto: BaseResponseDto,
-  ): ISerializedResponseData<Omit<BaseResponseDto, 'type'>> {
+  ): ISerializedResponseData<BaseResponseDto> {
     const { id, type, ...attributes } = responseDto;
-    const serializedResponseData: ISerializedResponseData<
-      Omit<BaseResponseDto, 'type'>
-    > = {
+    const serializedResponseData = {
       type,
       id,
       attributes,
-    };
+    } as ISerializedResponseData<BaseResponseDto>;
 
     return serializedResponseData;
   }
