@@ -1,0 +1,15 @@
+entity: category
+items:
+  category1:
+    id: '2d915994-8c06-425c-9a64-23a7b2b8603e'
+    name: 'Category 1'
+  category2:
+    id: '5fb9c427-2551-4787-81c4-b6c603175f45'
+    name: 'Category 2'
+    parent: '@category1'
+  category3:
+    id: '143ce6ee-b7c0-4d25-9463-76d0f7a14663'
+    name: 'Category 3'
+    parent: '@category2'
+  category{4..23}:
+    name: '{{person.firstName}}'

@@ -241,6 +241,28 @@ describe('Course Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should include category ancestors when fetching for a course with category', async () => {
+      await request(app.getHttpServer())
+        .get(`${endpoint}?include[target]=category`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.arrayContaining([
+              expect.objectContaining({
+                attributes: expect.objectContaining({
+                  category: expect.objectContaining({
+                    id: '143ce6ee-b7c0-4d25-9463-76d0f7a14663',
+                    name: 'Category 3',
+                  }),
+                }),
+              }),
+            ]),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 
   describe('GET - /course/:id', () => {
@@ -369,6 +391,73 @@ describe('Course Module', () => {
           },
         );
     });
+
+    it('Should include category ancestors when fetching for a course with category', async () => {
+      const courseId = '22f38dae-00f1-49ff-8f3f-0dd6539af032';
+      await request(app.getHttpServer())
+        .get(`${endpoint}/${courseId}?include[target]=category`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.objectContaining({
+              type: 'course',
+              id: courseId,
+              attributes: expect.objectContaining({
+                instructorId: expect.any(String),
+                title: 'Introduction to Programming',
+                description: 'Learn the basics of programming with JavaScript',
+                price: 49.99,
+                imageUrl: expect.stringContaining('intro-programming.jpg'),
+                status: 'published',
+                slug: 'introduction-to-programming',
+                difficulty: Difficulty.BEGINNER,
+                category: expect.objectContaining({
+                  id: '143ce6ee-b7c0-4d25-9463-76d0f7a14663',
+                  name: 'Category 3',
+                  parent: expect.objectContaining({
+                    id: '5fb9c427-2551-4787-81c4-b6c603175f45',
+                    name: 'Category 2',
+                    parent: expect.objectContaining({
+                      id: '2d915994-8c06-425c-9a64-23a7b2b8603e',
+                      name: 'Category 1',
+                    }),
+                  }),
+                }),
+              }),
+            }),
+            links: expect.arrayContaining([
+              expect.objectContaining({
+                rel: 'self',
+                href: expect.stringContaining(`${endpoint}/${courseId}`),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'get-all',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'create',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                rel: 'update',
+                href: expect.stringContaining(`${endpoint}/${courseId}`),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'delete',
+                href: expect.stringContaining(`${endpoint}/${courseId}`),
+                method: HttpMethod.DELETE,
+              }),
+            ]),
+          });
+
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 
   describe('POST - /course', () => {
@@ -379,6 +468,7 @@ describe('Course Module', () => {
         price: 49.99,
         status: PublishStatus.drafted,
         difficulty: Difficulty.BEGINNER,
+        categoryId: '143ce6ee-b7c0-4d25-9463-76d0f7a14663',
       } as CreateCourseDto;
 
       await request(app.getHttpServer())
@@ -389,6 +479,7 @@ describe('Course Module', () => {
         .field('price', createCourseDto.price as number)
         .field('status', createCourseDto.status as PublishStatus)
         .field('difficulty', createCourseDto.difficulty as Difficulty)
+        .field('categoryId', createCourseDto.categoryId as string)
         .attach('image', imageMock)
         .expect(HttpStatus.CREATED)
         .then(
@@ -408,6 +499,18 @@ describe('Course Module', () => {
                   status: createCourseDto.status,
                   slug: 'introduction-to-programming-2',
                   difficulty: Difficulty.BEGINNER,
+                  category: expect.objectContaining({
+                    id: createCourseDto.categoryId,
+                    name: 'Category 3',
+                    parent: expect.objectContaining({
+                      id: '5fb9c427-2551-4787-81c4-b6c603175f45',
+                      name: 'Category 2',
+                      parent: expect.objectContaining({
+                        id: '2d915994-8c06-425c-9a64-23a7b2b8603e',
+                        name: 'Category 1',
+                      }),
+                    }),
+                  }),
                 }),
               }),
               links: expect.arrayContaining([
@@ -650,6 +753,7 @@ describe('Course Module', () => {
         price: 49.99,
         status: PublishStatus.published,
         difficulty: Difficulty.BEGINNER,
+        categoryId: '143ce6ee-b7c0-4d25-9463-76d0f7a14663',
       } as UpdateCourseDto;
 
       let courseId: string = '';
@@ -718,6 +822,7 @@ describe('Course Module', () => {
         .field('price', updateCourseDto.price as number)
         .field('status', updateCourseDto.status as PublishStatus)
         .field('difficulty', updateCourseDto.difficulty as Difficulty)
+        .field('categoryId', updateCourseDto.categoryId as string)
         .attach('image', imageMock)
         .expect(HttpStatus.OK)
         .then(
@@ -820,6 +925,7 @@ describe('Course Module', () => {
         'price',
         'imageUrl',
         'difficulty',
+        'category',
       ];
 
       await request(app.getHttpServer())

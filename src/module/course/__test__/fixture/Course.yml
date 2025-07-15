@@ -10,6 +10,7 @@ items:
     slug: 'introduction-to-programming'
     difficulty: beginner
     instructor: '@admin-user'
+    category: '@category3'
   course2:
     title: 'Advanced Web Development'
     description: 'Master React, Node.js and modern web architectures'
@@ -19,6 +20,7 @@ items:
     slug: 'advanced-web-development'
     difficulty: advanced
     instructor: '@admin-user'
+    category: '@category3'
   course3:
     title: 'Data Science Fundamentals'
     description: 'Introduction to data analysis and machine learning'
@@ -28,6 +30,7 @@ items:
     slug: 'data-science-fundamentals'
     difficulty: intermediate
     instructor: '@admin-user'
+    category: '@category3'
   course{4..23}:
     title: '{{commerce.productName}} Course'
     description: '{{lorem.paragraph}}'
@@ -37,3 +40,4 @@ items:
     slug: '{{lorem.slug}}'
     difficulty: '{{@key % 3 == 0 ? "beginner" : (@key % 3 == 1 ? "intermediate" : "advanced")}}'
     instructor: '@admin-user'
+    category: '@category3'
