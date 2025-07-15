@@ -1,10 +1,14 @@
 import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
+import { CategoryWithAncestors } from '@module/category/application/repository/category.repository.interface';
+import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
 import { Course } from '@module/course/domain/course.entity';
 import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
 import { User } from '@module/iam/user/domain/user.entity';
 import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
+import { Section } from '@module/section/domain/section.entity';
+import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
 export class CourseMapper implements IEntityMapper<Course, CourseEntity> {
   toDomainEntity(entity: CourseEntity): Course {
@@ -19,6 +23,8 @@ export class CourseMapper implements IEntityMapper<Course, CourseEntity> {
       entity.difficulty as Difficulty,
       entity.status,
       entity.instructor as User,
+      entity.sections as Section[],
+      entity.category as CategoryWithAncestors,
     );
   }
 
@@ -34,6 +40,8 @@ export class CourseMapper implements IEntityMapper<Course, CourseEntity> {
       domainEntity.slug,
       domainEntity.difficulty,
       domainEntity.instructor as UserEntity,
+      domainEntity.sections as SectionEntity[],
+      domainEntity.category as CategoryEntity,
     );
   }
 }
