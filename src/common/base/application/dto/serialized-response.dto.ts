@@ -1,3 +1,4 @@
+import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
 import {
   ICollectionLinks,
@@ -5,7 +6,9 @@ import {
   ISerializedResponseData,
 } from '@common/base/application/dto/serialized-response.interface';
 
-export class SerializedResponseDtoCollection<ResponseDto extends object> {
+export class SerializedResponseDtoCollection<
+  ResponseDto extends BaseResponseDto,
+> {
   data: ISerializedResponseData<ResponseDto>[];
   links: ICollectionLinks;
   meta?: IPagingCollectionData;
@@ -21,7 +24,7 @@ export class SerializedResponseDtoCollection<ResponseDto extends object> {
   }
 }
 
-export class SerializedResponseDto<ResponseDto extends object> {
+export class SerializedResponseDto<ResponseDto extends BaseResponseDto> {
   data: Omit<ISerializedResponseData<ResponseDto>, 'links'>;
   links: IResponseDtoLinks;
 
