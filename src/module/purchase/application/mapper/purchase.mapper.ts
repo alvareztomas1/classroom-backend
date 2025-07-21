@@ -1,0 +1,41 @@
+import { Injectable } from '@nestjs/common';
+
+import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
+
+import { Purchase } from '@module/purchase/domain/purchase.entity';
+import { PurchaseEntity } from '@module/purchase/infrastructure/database/purchase.entity';
+
+@Injectable()
+export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {
+  toDomainEntity(entity: PurchaseEntity): Purchase {
+    const {
+      userId,
+      courseId,
+      amount,
+      status,
+      externalId,
+      id,
+      createdAt,
+      updatedAt,
+      deletedAt,
+    } = entity;
+
+    return new Purchase(
+      userId,
+      courseId,
+      amount,
+      status,
+      externalId,
+      id,
+      createdAt?.toISOString(),
+      updatedAt?.toISOString(),
+      deletedAt?.toISOString(),
+    );
+  }
+
+  toPersistenceEntity(domain: Purchase): PurchaseEntity {
+    const { userId, courseId, amount, status, externalId, id } = domain;
+
+    return new PurchaseEntity(userId, courseId, amount, status, externalId, id);
+  }
+}

@@ -1,0 +1,35 @@
+entity: course
+items:
+  course1:
+    id: '29694b5e-c5d1-487e-a6e8-3f7aa6c4238c'
+    title: 'Introduction to Programming'
+    description: 'Learn the basics of programming with JavaScript'
+    price: 49.99
+    imageUrl: '{{internet.url}}/intro-programming.jpg'
+    status: published
+    slug: 'introduction-to-programming'
+    difficulty: beginner
+    instructor: '@admin-user'
+    category: '@category3'
+  course2:
+    id: '89dd5d47-9c71-463b-b021-0bc3289f998d'
+    title: 'Advanced Web Development'
+    description: 'Master React, Node.js and modern web architectures'
+    price: 89.99
+    imageUrl: '{{internet.url}}/advanced-web.jpg'
+    status: archived
+    slug: 'advanced-web-development'
+    difficulty: advanced
+    instructor: '@admin-user'
+    category: '@category3'
+  course3:
+    id: '57732eea-ce64-4e9b-80c6-63a08ee82764'
+    title: 'Data Science Fundamentals'
+    description: 'Introduction to data analysis and machine learning'
+    price: 79.99
+    imageUrl: '{{internet.url}}/data-science.jpg'
+    status: published
+    slug: 'data-science-fundamentals'
+    difficulty: intermediate
+    instructor: '@admin-user'
+    category: '@category3'

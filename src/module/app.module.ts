@@ -13,6 +13,7 @@ import { CourseModule } from '@module/course/course.module';
 import { IamModule } from '@module/iam/iam.module';
 import { LessonModule } from '@module/lesson/lesson.module';
 import { PaymentMethodModule } from '@module/payment-method/payment-method.module';
+import { PurchaseModule } from '@module/purchase/purchase.module';
 import { SectionModule } from '@module/section/section.module';
 
 @Global()
@@ -35,6 +36,7 @@ import { SectionModule } from '@module/section/section.module';
     LessonModule,
     PaymentMethodModule,
     CategoryModule,
+    PurchaseModule,
   ],
   providers: [LinkBuilderService, SlugService],
   exports: [LinkBuilderService, SlugService],

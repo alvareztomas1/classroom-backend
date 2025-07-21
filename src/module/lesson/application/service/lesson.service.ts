@@ -81,7 +81,7 @@ export class LessonService extends BaseCRUDService<
         this.MIME_TYPE_TO_LESSON_TYPE[lessonFile.mimetype];
     }
 
-    return super.updateOne(id, UpdateLessonDto);
+    return super.updateOneByIdOrFail(id, UpdateLessonDto);
   }
 
   private buildFileFolder(courseId: string, sectionId: string): string {

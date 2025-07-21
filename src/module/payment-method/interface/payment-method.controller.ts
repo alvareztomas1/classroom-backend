@@ -124,7 +124,7 @@ export class PaymentMethodController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePaymentMethodDto: UpdatePaymentMethodDto,
   ): Promise<PaymentMethodResponseDto> {
-    return await this.paymentMethodService.updateOne(
+    return await this.paymentMethodService.updateOneByIdOrFail(
       id,
       updatePaymentMethodDto,
     );
