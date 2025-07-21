@@ -13,6 +13,6 @@ export interface ICRUDService<
   getAll(options?: IGetAllOptions<Entity>): Promise<CollectionDto<ResponseDto>>;
   getOneByIdOrFail(id: string): Promise<ResponseDto>;
   saveOne(createDto: CreateDto): Promise<ResponseDto>;
-  updateOne(id: string, updateDto: UpdateDto): Promise<ResponseDto>;
+  updateOneByIdOrFail(id: string, updateDto: UpdateDto): Promise<ResponseDto>;
   deleteOneByIdOrFail(id: string): Promise<SuccessOperationResponseDto>;
 }

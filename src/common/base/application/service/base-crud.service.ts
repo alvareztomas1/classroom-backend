@@ -69,7 +69,10 @@ export class BaseCRUDService<
     return responseDto;
   }
 
-  async updateOne(id: string, updateDto: UpdateDto): Promise<ResponseDto> {
+  async updateOneByIdOrFail(
+    id: string,
+    updateDto: UpdateDto,
+  ): Promise<ResponseDto> {
     const entityToUpdate = await this.repository.getOneByIdOrFail(id);
     const entity = this.mapper.fromUpdateDtoToEntity(entityToUpdate, updateDto);
     const updatedEntity = await this.repository.saveOne(entity);

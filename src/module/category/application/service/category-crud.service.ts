@@ -68,6 +68,6 @@ export class CategoryCRUDService extends BaseCRUDService<
       ? await this.categoryRepository.getOneByIdOrFail(parentId)
       : undefined;
 
-    return super.updateOne(id, updateDto);
+    return super.updateOneByIdOrFail(id, updateDto);
   }
 }

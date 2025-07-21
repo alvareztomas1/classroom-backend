@@ -68,7 +68,7 @@ export class SectionController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateDto: UpdateSectionDto,
   ): Promise<SectionResponseDto> {
-    return this.sectionService.updateOne(id, updateDto);
+    return this.sectionService.updateOneByIdOrFail(id, updateDto);
   }
 
   @Delete(':id')
