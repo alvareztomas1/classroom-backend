@@ -8,12 +8,14 @@ export class UpdatePurchaseDto {
   status!: PurchaseStatus;
 
   @ValidateIf((o: UpdatePurchaseDto) =>
-    [
-      PurchaseStatus.COMPLETED,
-      PurchaseStatus.FAILED,
-      PurchaseStatus.REFUNDED,
-    ].includes(o.status),
+    [PurchaseStatus.COMPLETED, PurchaseStatus.FAILED].includes(o.status),
   )
+  @IsNotEmpty()
   @IsString()
-  externalId?: string;
+  paymentTransactionId?: string;
+
+  @ValidateIf((o: UpdatePurchaseDto) => o.status === PurchaseStatus.REFUNDED)
+  @IsNotEmpty()
+  @IsString()
+  refundTransactionId?: string;
 }

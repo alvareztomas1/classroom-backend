@@ -39,5 +39,9 @@ export class PurchaseDto extends BaseDto {
 
   @IsOptional()
   @IsString()
-  externalId?: string;
+  paymentTransactionId?: string;
+
+  @IsOptional()
+  @IsString()
+  refundTransactionId?: string;
 }
