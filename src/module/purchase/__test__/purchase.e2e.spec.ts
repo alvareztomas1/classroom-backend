@@ -279,10 +279,10 @@ describe('Purchase Module', () => {
   describe('PATCH - /purchase/:id', () => {
     it('Should update a purchase', async () => {
       const existingPurchaseId = 'e6c78b10-d9b0-4819-ac4e-a36ca36f8554';
-      const externalId = '00000000-0000-0000-0000-000000000000';
+      const paymentTransactionId = '00000000-0000-0000-0000-000000000000';
       const updatePurchaseDto = {
         status: PurchaseStatus.COMPLETED,
-        externalId,
+        paymentTransactionId,
       } as UpdatePurchaseDto;
 
       return await request(app.getHttpServer())
@@ -301,7 +301,7 @@ describe('Purchase Module', () => {
                 userId: expect.any(String),
                 courseId: expect.any(String),
                 updatedAt: expect.any(String),
-                externalId,
+                paymentTransactionId,
               }),
             }),
             links: expect.arrayContaining([
@@ -322,7 +322,7 @@ describe('Purchase Module', () => {
       const nonExistingPurchaseId = 'a731f47d-cd6c-4cdb-ac60-c9e9fc52f589';
       const updatePurchaseDto = {
         status: PurchaseStatus.COMPLETED,
-        externalId: '00000000-0000-0000-0000-000000000000',
+        paymentTransactionId: '00000000-0000-0000-0000-000000000000',
       } as UpdatePurchaseDto;
 
       return await request(app.getHttpServer())
@@ -349,7 +349,7 @@ describe('Purchase Module', () => {
       const purchaseId = 'a5978602-defc-4415-ae50-33ce6902e113';
       const updatePurchaseDto = {
         status: PurchaseStatus.PENDING,
-        externalId: '00000000-0000-0000-0000-000000000000',
+        paymentTransactionId: '00000000-0000-0000-0000-000000000000',
       } as UpdatePurchaseDto;
 
       return await request(app.getHttpServer())
