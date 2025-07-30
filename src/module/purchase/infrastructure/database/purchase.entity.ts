@@ -28,14 +28,18 @@ export class PurchaseEntity extends BaseEntity {
   status: PurchaseStatus;
 
   @Column({ type: 'varchar', nullable: true })
-  externalId?: string;
+  paymentTransactionId?: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  refundTransactionId?: string;
 
   constructor(
     userId: string,
     courseId: string,
     amount: number,
     status: PurchaseStatus,
-    externalId?: string,
+    paymentTransactionId?: string,
+    refundTransactionId?: string,
     id?: string,
   ) {
     super(id);
@@ -44,6 +48,7 @@ export class PurchaseEntity extends BaseEntity {
     this.courseId = courseId;
     this.amount = amount;
     this.status = status;
-    this.externalId = externalId;
+    this.paymentTransactionId = paymentTransactionId;
+    this.refundTransactionId = refundTransactionId;
   }
 }

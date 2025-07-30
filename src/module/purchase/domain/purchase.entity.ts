@@ -7,14 +7,16 @@ export class Purchase extends Base {
   courseId: string;
   amount: number;
   status: PurchaseStatus;
-  externalId?: string;
+  paymentTransactionId?: string;
+  refundTransactionId?: string;
 
   constructor(
     userId: string,
     courseId: string,
     amount: number,
     status: PurchaseStatus,
-    externalId?: string,
+    paymentTransactionId?: string,
+    refundTransactionId?: string,
     id?: string,
     createdAt?: string,
     updatedAt?: string,
@@ -26,6 +28,7 @@ export class Purchase extends Base {
     this.courseId = courseId;
     this.amount = amount;
     this.status = status;
-    this.externalId = externalId;
+    this.paymentTransactionId = paymentTransactionId;
+    this.refundTransactionId = refundTransactionId;
   }
 }
