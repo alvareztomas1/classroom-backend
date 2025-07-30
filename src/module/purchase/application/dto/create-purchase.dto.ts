@@ -3,13 +3,18 @@ import { OmitType } from '@nestjs/mapped-types';
 import { PurchaseDto } from '@module/purchase/application/dto/purchase.dto';
 import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
 
-export class CreatePurchaseDto extends OmitType(PurchaseDto, ['amount']) {
+export class CreatePurchaseDto extends OmitType(PurchaseDto, [
+  'amount',
+  'paymentTransactionId',
+  'refundTransactionId',
+]) {
   amount?: number;
+  paymentTransactionId?: string;
+  refundTransactionId?: string;
 }
 
 export class CreatePurchaseDtoRequest extends OmitType(CreatePurchaseDto, [
   'userId',
-  'amount',
 ]) {
   status: PurchaseStatus = PurchaseStatus.PENDING;
   userId!: string;

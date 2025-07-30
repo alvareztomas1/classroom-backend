@@ -7,7 +7,8 @@ export class PurchaseResponseDto extends BaseResponseDto {
   courseId: string;
   amount: number;
   status: PurchaseStatus;
-  externalId?: string;
+  paymentTransactionId?: string;
+  refundTransactionId?: string;
   createdAt?: string;
   updatedAt?: string;
 
@@ -17,7 +18,8 @@ export class PurchaseResponseDto extends BaseResponseDto {
     courseId: string,
     amount: number,
     status: PurchaseStatus,
-    externalId?: string,
+    paymentTransactionId?: string,
+    refundTransactionId?: string,
     id?: string,
     createdAt?: string,
     updatedAt?: string,
@@ -28,7 +30,8 @@ export class PurchaseResponseDto extends BaseResponseDto {
     this.courseId = courseId;
     this.amount = amount;
     this.status = status;
-    this.externalId = externalId;
+    this.paymentTransactionId = paymentTransactionId;
+    this.refundTransactionId = refundTransactionId;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }

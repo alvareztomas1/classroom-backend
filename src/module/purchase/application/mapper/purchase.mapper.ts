@@ -13,7 +13,8 @@ export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {
       courseId,
       amount,
       status,
-      externalId,
+      paymentTransactionId,
+      refundTransactionId,
       id,
       createdAt,
       updatedAt,
@@ -25,7 +26,8 @@ export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {
       courseId,
       amount,
       status,
-      externalId,
+      paymentTransactionId,
+      refundTransactionId,
       id,
       createdAt?.toISOString(),
       updatedAt?.toISOString(),
@@ -34,8 +36,24 @@ export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {
   }
 
   toPersistenceEntity(domain: Purchase): PurchaseEntity {
-    const { userId, courseId, amount, status, externalId, id } = domain;
+    const {
+      userId,
+      courseId,
+      amount,
+      status,
+      paymentTransactionId,
+      refundTransactionId,
+      id,
+    } = domain;
 
-    return new PurchaseEntity(userId, courseId, amount, status, externalId, id);
+    return new PurchaseEntity(
+      userId,
+      courseId,
+      amount,
+      status,
+      paymentTransactionId,
+      refundTransactionId,
+      id,
+    );
   }
 }
