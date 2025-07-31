@@ -16,7 +16,8 @@ import {
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+
 import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
 import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
 import { PaymentMethodDto } from '@module/payment-method/application/dto/payment-method.dto';
