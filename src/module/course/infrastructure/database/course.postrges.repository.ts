@@ -10,8 +10,8 @@ import { ICourseRepository } from '@course/application/repository/repository.int
 import { Course } from '@course/domain/course.entity';
 import { CourseEntity } from '@course/infrastructure/database/course.entity';
 
-import { CATEGORY_TREE_REPOSITORY_KEY } from '@module/category/application/repository/category.repository.interface';
-import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
+import { CATEGORY_TREE_REPOSITORY_KEY } from '@category/application/repository/category.repository.interface';
+import { CategoryEntity } from '@category/infrastructure/database/category.entity';
 
 @Injectable()
 export class CoursePostgresRepository

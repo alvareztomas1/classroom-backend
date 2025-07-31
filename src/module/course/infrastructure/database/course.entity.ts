@@ -5,7 +5,8 @@ import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
 import { UserEntity } from '@iam/user/infrastructure/database/user.entity';
 
-import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
+import { CategoryEntity } from '@category/infrastructure/database/category.entity';
+
 import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
 @Entity('course')

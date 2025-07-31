@@ -7,8 +7,9 @@ import { UserEntity } from '@iam/user/infrastructure/database/user.entity';
 import { Course } from '@course/domain/course.entity';
 import { CourseEntity } from '@course/infrastructure/database/course.entity';
 
-import { Category } from '@module/category/domain/category.entity';
-import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
+import { Category } from '@category/domain/category.entity';
+import { CategoryEntity } from '@category/infrastructure/database/category.entity';
+
 import { Section } from '@module/section/domain/section.entity';
 import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 

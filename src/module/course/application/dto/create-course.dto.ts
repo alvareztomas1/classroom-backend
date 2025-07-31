@@ -3,7 +3,7 @@ import { IsOptional, IsUUID } from 'class-validator';
 
 import { CourseDto } from '@course/application/dto/course.dto';
 
-import { Category } from '@module/category/domain/category.entity';
+import { Category } from '@category/domain/category.entity';
 
 export class CreateCourseDto extends CourseDto {
   @IsUUID('4')

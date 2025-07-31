@@ -1,10 +1,10 @@
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
-import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
-import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
-import { CategoryWithChildren } from '@module/category/application/repository/category.repository.interface';
-import { Category } from '@module/category/domain/category.entity';
+import { CategoryResponseDto } from '@category/application/dto/category-response.dto';
+import { CreateCategoryDto } from '@category/application/dto/create-category.dto';
+import { UpdateCategoryDto } from '@category/application/dto/update-category.dto';
+import { CategoryWithChildren } from '@category/application/repository/category.repository.interface';
+import { Category } from '@category/domain/category.entity';
 
 export class CategoryDtoMapper
   implements

@@ -7,7 +7,7 @@ import { AppAction } from '@iam/authorization/domain/app.action.enum';
 import { IPolicyHandler } from '@iam/authorization/infrastructure/policy/handler/policy-handler.interface';
 import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/storage/policies-handler.storage';
 
-import { Category } from '@module/category/domain/category.entity';
+import { Category } from '@category/domain/category.entity';
 
 @Injectable()
 export class CreateCategoryPolicyHandler

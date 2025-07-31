@@ -4,7 +4,8 @@ import { Base } from '@common/base/domain/base.entity';
 
 import { User } from '@iam/user/domain/user.entity';
 
-import { Category } from '@module/category/domain/category.entity';
+import { Category } from '@category/domain/category.entity';
+
 import { Section } from '@module/section/domain/section.entity';
 
 export class Course extends Base {

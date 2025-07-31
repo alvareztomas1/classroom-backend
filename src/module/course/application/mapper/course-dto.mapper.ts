@@ -10,7 +10,7 @@ import { CreateCourseDto } from '@course/application/dto/create-course.dto';
 import { UpdateCourseDto } from '@course/application/dto/update-course.dto';
 import { Course } from '@course/domain/course.entity';
 
-import { Category } from '@module/category/domain/category.entity';
+import { Category } from '@category/domain/category.entity';
 
 export class CourseDtoMapper
   implements
