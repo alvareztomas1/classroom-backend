@@ -2,7 +2,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 import { BaseDto } from '@common/base/application/dto/base.dto';
 
-import { Category } from '@module/category/domain/category.entity';
+import { Category } from '@category/domain/category.entity';
 
 export class CategoryDto extends BaseDto {
   @IsString()

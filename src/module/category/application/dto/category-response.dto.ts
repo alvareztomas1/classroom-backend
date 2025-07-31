@@ -1,6 +1,6 @@
 import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 
-import { Category } from '@module/category/domain/category.entity';
+import { Category } from '@category/domain/category.entity';
 
 export type RelatedCategory = Pick<Category, 'name' | 'id'>;
 

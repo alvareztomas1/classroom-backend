@@ -3,16 +3,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
-import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
-import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
-import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
-import { CategoryDtoMapper } from '@module/category/application/mapper/category-dto.mapper';
+import { CategoryResponseDto } from '@category/application/dto/category-response.dto';
+import { CreateCategoryDto } from '@category/application/dto/create-category.dto';
+import { UpdateCategoryDto } from '@category/application/dto/update-category.dto';
+import { CategoryDtoMapper } from '@category/application/mapper/category-dto.mapper';
 import {
   CATEGORY_REPOSITORY_KEY,
   ICategoryRepository,
-} from '@module/category/application/repository/category.repository.interface';
-import { Category } from '@module/category/domain/category.entity';
-import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
+} from '@category/application/repository/category.repository.interface';
+import { Category } from '@category/domain/category.entity';
+import { CategoryEntity } from '@category/infrastructure/database/category.entity';
 
 @Injectable()
 export class CategoryCRUDService extends BaseCRUDService<

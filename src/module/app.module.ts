@@ -12,7 +12,8 @@ import { IamModule } from '@iam/iam.module';
 
 import { CourseModule } from '@course/course.module';
 
-import { CategoryModule } from '@module/category/category.module';
+import { CategoryModule } from '@category/category.module';
+
 import { CloudModule } from '@module/cloud/cloud.module';
 import { LessonModule } from '@module/lesson/lesson.module';
 import { PaymentMethodModule } from '@module/payment-method/payment-method.module';

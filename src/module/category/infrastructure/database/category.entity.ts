@@ -11,7 +11,7 @@ import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
 import { CourseEntity } from '@course/infrastructure/database/course.entity';
 
-import { Category } from '@module/category/domain/category.entity';
+import { Category } from '@category/domain/category.entity';
 
 @Entity('category')
 @Tree('closure-table')

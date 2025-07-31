@@ -20,16 +20,16 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
 
-import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
-import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
-import { CategoryFieldsQueryParamsDto } from '@module/category/application/dto/query-params/category-fields-query-params.dto';
-import { CategoryFilterQueryParamsDto } from '@module/category/application/dto/query-params/category-filter-query-params.dto';
-import { CategorySortQueryParamsDto } from '@module/category/application/dto/query-params/category-sort-query-params.dto';
-import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
-import { CreateCategoryPolicyHandler } from '@module/category/application/policy/create-category-policy.handler';
-import { DeleteCategoryPolicyHandler } from '@module/category/application/policy/delete-category-policy.handler';
-import { UpdateCategoryPolicyHandler } from '@module/category/application/policy/update-category-policy.handler';
-import { CategoryCRUDService } from '@module/category/application/service/category-crud.service';
+import { CategoryResponseDto } from '@category/application/dto/category-response.dto';
+import { CreateCategoryDto } from '@category/application/dto/create-category.dto';
+import { CategoryFieldsQueryParamsDto } from '@category/application/dto/query-params/category-fields-query-params.dto';
+import { CategoryFilterQueryParamsDto } from '@category/application/dto/query-params/category-filter-query-params.dto';
+import { CategorySortQueryParamsDto } from '@category/application/dto/query-params/category-sort-query-params.dto';
+import { UpdateCategoryDto } from '@category/application/dto/update-category.dto';
+import { CreateCategoryPolicyHandler } from '@category/application/policy/create-category-policy.handler';
+import { DeleteCategoryPolicyHandler } from '@category/application/policy/delete-category-policy.handler';
+import { UpdateCategoryPolicyHandler } from '@category/application/policy/update-category-policy.handler';
+import { CategoryCRUDService } from '@category/application/service/category-crud.service';
 
 @Controller('category')
 @UseGuards(PoliciesGuard)

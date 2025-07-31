@@ -4,7 +4,7 @@ import { IsIn, IsOptional } from 'class-validator';
 import { IGetAllOptions } from '@common/base/application/dto/query-params/get-all-options.interface';
 import { fromCommaSeparatedToArray } from '@common/base/application/mapper/base.mapper';
 
-import { Category } from '@module/category/domain/category.entity';
+import { Category } from '@category/domain/category.entity';
 
 type CategoryFields = IGetAllOptions<Category>['fields'];
 

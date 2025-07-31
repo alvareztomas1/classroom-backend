@@ -6,15 +6,15 @@ import { ICollection } from '@common/base/application/dto/collection.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
-import { CategoryMapper } from '@module/category/application/mapper/category.mapper';
+import { CategoryMapper } from '@category/application/mapper/category.mapper';
 import {
   CATEGORY_TREE_REPOSITORY_KEY,
   CategoryWithChildren,
   ICategoryRepository,
-} from '@module/category/application/repository/category.repository.interface';
-import { Category } from '@module/category/domain/category.entity';
-import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
-import { CategoryAlreadyExistsException } from '@module/category/infrastructure/database/exception/category-alredy-exists.exception';
+} from '@category/application/repository/category.repository.interface';
+import { Category } from '@category/domain/category.entity';
+import { CategoryEntity } from '@category/infrastructure/database/category.entity';
+import { CategoryAlreadyExistsException } from '@category/infrastructure/database/exception/category-alredy-exists.exception';
 
 @Injectable()
 export class CategoryPostgresRepository
