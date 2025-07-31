@@ -23,7 +23,7 @@
       "@common/*": ["src/common/*"],
       "@config/*": ["src/config/*"],
       "@app/*": ["src/module/app/*"],
-      "@cloud/*": ["src/cloud/*"],
+      "@cloud/*": ["src/module/cloud/*"],
       "@iam/*": ["src/module/iam/*"],
       "@course/*": ["src/module/course/*"],
       "@category/*": ["src/module/category/*"],
