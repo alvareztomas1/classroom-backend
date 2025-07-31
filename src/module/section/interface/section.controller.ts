@@ -13,8 +13,9 @@ import { Hypermedia } from '@common/base/application/decorator/hypermedia.decora
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
-import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
-import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
+import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
+
 import { SectionResponseDto } from '@module/section/application/dto/section.response.dto';
 import { UpdateSectionDto } from '@module/section/application/dto/update.section.dto';
 import { CreateSectionPolicyHandler } from '@module/section/application/policy/create-section-policy.handler';

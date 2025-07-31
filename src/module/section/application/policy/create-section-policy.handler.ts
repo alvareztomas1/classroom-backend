@@ -1,17 +1,18 @@
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 
+import { BasePolicyHandler } from '@iam/authorization/application/policy/base-policy.handler';
+import { AuthorizationService } from '@iam/authorization/application/service/authorization.service';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+import { IPolicyHandler } from '@iam/authorization/infrastructure/policy/handler/policy-handler.interface';
+import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/storage/policies-handler.storage';
+
 import {
   COURSE_REPOSITORY_KEY,
   ICourseRepository,
 } from '@course/application/repository/repository.interface';
 
-import { BasePolicyHandler } from '@module/iam/authorization/application/policy/base-policy.handler';
-import { AuthorizationService } from '@module/iam/authorization/application/service/authorization.service';
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
-import { IPolicyHandler } from '@module/iam/authorization/infrastructure/policy/handler/policy-handler.interface';
-import { PolicyHandlerStorage } from '@module/iam/authorization/infrastructure/policy/storage/policies-handler.storage';
 import { Section } from '@module/section/domain/section.entity';
 
 @Injectable()
