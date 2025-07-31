@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 
+import { FileStorageService } from '@cloud/application/service/file-storage.service';
+
 import { ConfirmPasswordDto } from '@iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@iam/authentication/application/dto/confirm-user.dto';
 import { ForgotPasswordDto } from '@iam/authentication/application/dto/forgot-password.dto';
@@ -32,8 +34,6 @@ import {
   USER_REPOSITORY_KEY,
 } from '@iam/user/application/repository/user.repository.interface';
 import { User } from '@iam/user/domain/user.entity';
-
-import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 
 @Injectable()
 export class AuthenticationService {

@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { FILE_STORAGE_PROVIDER_SERVICE_KEY } from '@cloud/application/interface/file-storage-provider.interface';
+
 import { IDENTITY_PROVIDER_SERVICE_KEY } from '@iam/authentication/application/service/identity-provider.service.interface';
 
 import { AppModule } from '@module/app.module';
-import { FILE_STORAGE_PROVIDER_SERVICE_KEY } from '@module/cloud/application/interface/file-storage-provider.interface';
 
 export const identityProviderServiceMock = {
   signUp: jest.fn(),

@@ -10,9 +10,10 @@ import { Readable } from 'stream';
 
 import { setupApp } from '@config/app.config';
 
+import { FILE_STORAGE_PROVIDER_SERVICE_KEY } from '@cloud/application/interface/file-storage-provider.interface';
+import { AmazonS3Service } from '@cloud/infrastructure/aws/s3/s3.service';
+
 import { AppModule } from '@module/app.module';
-import { FILE_STORAGE_PROVIDER_SERVICE_KEY } from '@module/cloud/application/interface/file-storage-provider.interface';
-import { AmazonS3Service } from '@module/cloud/infrastructure/aws/s3/s3.service';
 
 const sendMock = jest.fn();
 

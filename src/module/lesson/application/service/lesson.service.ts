@@ -3,6 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MIME_FILE_TYPE_MAP } from '@common/base/application/constant/file.constant';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
+import { FileStorageService } from '@cloud/application/service/file-storage.service';
+
 import { CreateLessonDto } from '@lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@lesson/application/dto/lesson-response.dto';
 import { UpdateLessonDto } from '@lesson/application/dto/update-lesson.dto';
@@ -14,8 +16,6 @@ import {
 import { Lesson } from '@lesson/domain/lesson.entity';
 import { LessonType } from '@lesson/domain/lesson.type';
 import { LessonEntity } from '@lesson/infrastructure/database/lesson.entity';
-
-import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 
 @Injectable()
 export class LessonService extends BaseCRUDService<

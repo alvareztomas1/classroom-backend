@@ -10,6 +10,8 @@ import { BaseCRUDService } from '@common/base/application/service/base-crud.serv
 
 import { SlugService } from '@app/application/service/slug.service';
 
+import { FileStorageService } from '@cloud/application/service/file-storage.service';
+
 import { CourseResponseDto } from '@course/application/dto/course-response.dto';
 import { CreateCourseDto } from '@course/application/dto/create-course.dto';
 import { UpdateCourseDto } from '@course/application/dto/update-course.dto';
@@ -25,8 +27,6 @@ import {
   CATEGORY_REPOSITORY_KEY,
   ICategoryRepository,
 } from '@category/application/repository/category.repository.interface';
-
-import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 
 @Injectable()
 export class CourseService extends BaseCRUDService<
