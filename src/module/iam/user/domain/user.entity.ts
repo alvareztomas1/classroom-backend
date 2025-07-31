@@ -1,6 +1,6 @@
 import { Base } from '@common/base/domain/base.entity';
 
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
 
 export class User extends Base {
   externalId?: string;

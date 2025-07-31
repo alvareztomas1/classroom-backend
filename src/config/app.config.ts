@@ -3,10 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
+import { AuthorizationService } from '@iam/authorization/application/service/authorization.service';
+
 import { ResponseFormatterInterceptor } from '@module/app/application/interceptor/response-formatter.interceptor';
 import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
 import { AppExceptionFilter } from '@module/app/infrastructure/nestjs/app-exception.filter';
-import { AuthorizationService } from '@module/iam/authorization/application/service/authorization.service';
 
 export const setupApp = (app: NestExpressApplication): void => {
   app.enableVersioning({

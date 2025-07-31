@@ -11,7 +11,8 @@ import { loadFixtures } from '@data/util/fixture-loader';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { IS_NOT_VALID_MESSAGE } from '@common/base/application/exception/base-exception.messages';
 
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+
 import { CreatePurchaseDtoRequest } from '@module/purchase/application/dto/create-purchase.dto';
 import { UpdatePurchaseDto } from '@module/purchase/application/dto/update-purchase.dto';
 import {

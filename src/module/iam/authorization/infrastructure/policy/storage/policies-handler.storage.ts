@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, Type } from '@nestjs/common';
 
-import { IPolicyHandler } from '@module/iam/authorization/infrastructure/policy/handler/policy-handler.interface';
+import { IPolicyHandler } from '@iam/authorization/infrastructure/policy/handler/policy-handler.interface';
 
 @Injectable()
 export class PolicyHandlerStorage {

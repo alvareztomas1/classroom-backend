@@ -1,6 +1,6 @@
 import { CustomDecorator, SetMetadata } from '@nestjs/common';
 
-import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
+import { AuthType } from '@iam/authentication/domain/auth-type.enum';
 
 export const AUTH_TYPE_KEY = 'AUTH_TYPE';
 

@@ -9,7 +9,7 @@ import {
 
 import { BaseDto } from '@common/base/application/dto/base.dto';
 
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
 
 export class UserDto extends BaseDto {
   @IsEmail()

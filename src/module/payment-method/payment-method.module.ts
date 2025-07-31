@@ -1,8 +1,9 @@
 import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
-import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+import { AuthorizationModule } from '@iam/authorization/authorization.module';
+import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+
 import { PaymentMethodDtoMapper } from '@module/payment-method/application/mapper/payment-method-dto.mapper';
 import { PaymentMethodMapper } from '@module/payment-method/application/mapper/payment-method.mapper';
 import { CreatePaymentMethodPolicyHandler } from '@module/payment-method/application/policy/create-payment-method-policy.handler';

@@ -1,8 +1,9 @@
 import { InferSubjects } from '@casl/ability';
 
+import { User } from '@iam/user/domain/user.entity';
+
 import { Course } from '@course/domain/course.entity';
 
-import { User } from '@module/iam/user/domain/user.entity';
 import { Lesson } from '@module/lesson/domain/lesson.entity';
 import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
 import { Purchase } from '@module/purchase/domain/purchase.entity';

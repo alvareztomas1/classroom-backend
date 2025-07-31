@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 
-import { AuthenticationModule } from '@module/iam/authentication/authentication.module';
-import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
-import { UserModule } from '@module/iam/user/user.module';
+import { AuthenticationModule } from '@iam/authentication/authentication.module';
+import { AuthorizationModule } from '@iam/authorization/authorization.module';
+import { UserModule } from '@iam/user/user.module';
 
 @Module({
   imports: [UserModule, AuthenticationModule, AuthorizationModule.forRoot()],

@@ -1,6 +1,7 @@
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
-import { IPermissionsDefinition } from '@module/iam/authorization/infrastructure/policy/type/permissions-definition.interface';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+import { IPermissionsDefinition } from '@iam/authorization/infrastructure/policy/type/permissions-definition.interface';
+
 import { Purchase } from '@module/purchase/domain/purchase.entity';
 
 export const purchasePermissions: IPermissionsDefinition = {

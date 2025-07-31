@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
-import { AUTH_TYPE_KEY } from '@module/iam/authentication/infrastructure/decorator/auth.decorator';
-import { AccessTokenGuard } from '@module/iam/authentication/infrastructure/guard/access-token.guard';
+import { AuthType } from '@iam/authentication/domain/auth-type.enum';
+import { AUTH_TYPE_KEY } from '@iam/authentication/infrastructure/decorator/auth.decorator';
+import { AccessTokenGuard } from '@iam/authentication/infrastructure/guard/access-token.guard';
 
 type AuthTypeGuardMap = Record<AuthType, CanActivate | CanActivate[]>;
 

@@ -15,7 +15,8 @@ import { FileFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+
 import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
 import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';

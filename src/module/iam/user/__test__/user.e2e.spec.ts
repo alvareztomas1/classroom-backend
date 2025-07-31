@@ -19,10 +19,10 @@ import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
-import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
-import { UserDto } from '@module/iam/user/application/dto/user.dto';
-import { User } from '@module/iam/user/domain/user.entity';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
+import { UserResponseDto } from '@iam/user/application/dto/user-response.dto';
+import { UserDto } from '@iam/user/application/dto/user.dto';
+import { User } from '@iam/user/domain/user.entity';
 
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken, createLargeMockFile } from '@test/test.util';

@@ -1,9 +1,9 @@
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { UpdateUserDto } from '@module/iam/user/application/dto/update-user.dto';
-import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
-import { UserDto } from '@module/iam/user/application/dto/user.dto';
-import { User } from '@module/iam/user/domain/user.entity';
+import { UpdateUserDto } from '@iam/user/application/dto/update-user.dto';
+import { UserResponseDto } from '@iam/user/application/dto/user-response.dto';
+import { UserDto } from '@iam/user/application/dto/user.dto';
+import { User } from '@iam/user/domain/user.entity';
 
 export class UserDtoMapper
   implements

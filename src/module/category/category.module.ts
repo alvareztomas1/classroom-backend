@@ -2,6 +2,9 @@ import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
+import { AuthorizationModule } from '@iam/authorization/authorization.module';
+import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+
 import { CategoryDtoMapper } from '@module/category/application/mapper/category-dto.mapper';
 import { CategoryMapper } from '@module/category/application/mapper/category.mapper';
 import { CreateCategoryPolicyHandler } from '@module/category/application/policy/create-category-policy.handler';
@@ -17,8 +20,6 @@ import { categoryPermissions } from '@module/category/domain/category.permission
 import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
 import { CategoryPostgresRepository } from '@module/category/infrastructure/database/category.postgres.repository';
 import { CategoryController } from '@module/category/interface/category.controller';
-import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
-import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 
 const categoryRepositoryProvider: Provider = {
   provide: CATEGORY_REPOSITORY_KEY,

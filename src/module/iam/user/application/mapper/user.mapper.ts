@@ -1,8 +1,8 @@
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
-import { User } from '@module/iam/user/domain/user.entity';
-import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
+import { User } from '@iam/user/domain/user.entity';
+import { UserEntity } from '@iam/user/infrastructure/database/user.entity';
 
 export class UserMapper implements IEntityMapper<User, UserEntity> {
   toDomainEntity(entity: UserEntity): User {

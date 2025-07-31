@@ -6,11 +6,12 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 
-import { BasePolicyHandler } from '@module/iam/authorization/application/policy/base-policy.handler';
-import { AuthorizationService } from '@module/iam/authorization/application/service/authorization.service';
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
-import { IPolicyHandler } from '@module/iam/authorization/infrastructure/policy/handler/policy-handler.interface';
-import { PolicyHandlerStorage } from '@module/iam/authorization/infrastructure/policy/storage/policies-handler.storage';
+import { BasePolicyHandler } from '@iam/authorization/application/policy/base-policy.handler';
+import { AuthorizationService } from '@iam/authorization/application/service/authorization.service';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+import { IPolicyHandler } from '@iam/authorization/infrastructure/policy/handler/policy-handler.interface';
+import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/storage/policies-handler.storage';
+
 import {
   ISectionRepository,
   SECTION_REPOSITORY_KEY,

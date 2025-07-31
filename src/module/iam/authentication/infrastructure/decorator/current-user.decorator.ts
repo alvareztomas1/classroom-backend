@@ -1,7 +1,7 @@
 import { ExecutionContext, createParamDecorator } from '@nestjs/common';
 import { Request } from 'express';
 
-import { User } from '@module/iam/user/domain/user.entity';
+import { User } from '@iam/user/domain/user.entity';
 
 export const REQUEST_USER_KEY = 'user';
 

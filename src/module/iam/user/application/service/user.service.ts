@@ -3,16 +3,17 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { IGetAllOptions } from '@common/base/application/dto/query-params/get-all-options.interface';
 
-import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
-import { UpdateUserDto } from '@module/iam/user/application/dto/update-user.dto';
-import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
-import { UserDto } from '@module/iam/user/application/dto/user.dto';
-import { UserDtoMapper } from '@module/iam/user/application/mapper/user-dto.mapper';
+import { UpdateUserDto } from '@iam/user/application/dto/update-user.dto';
+import { UserResponseDto } from '@iam/user/application/dto/user-response.dto';
+import { UserDto } from '@iam/user/application/dto/user.dto';
+import { UserDtoMapper } from '@iam/user/application/mapper/user-dto.mapper';
 import {
   IUserRepository,
   USER_REPOSITORY_KEY,
-} from '@module/iam/user/application/repository/user.repository.interface';
-import { User } from '@module/iam/user/domain/user.entity';
+} from '@iam/user/application/repository/user.repository.interface';
+import { User } from '@iam/user/domain/user.entity';
+
+import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 
 @Injectable()
 export class UserService {

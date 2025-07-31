@@ -1,6 +1,6 @@
 import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
 
 export class UserResponseDto extends BaseResponseDto {
   email: string;

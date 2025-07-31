@@ -1,6 +1,9 @@
 import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AuthorizationModule } from '@iam/authorization/authorization.module';
+import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+
 import { CourseDtoMapper } from '@course/application/mapper/course-dto.mapper';
 import { CourseMapper } from '@course/application/mapper/course.mapper';
 import { CreateCoursePolicyHandler } from '@course/application/policy/create-course-policy-handler';
@@ -16,8 +19,6 @@ import { CourseController } from '@course/interface/course.controller';
 
 import { CategoryModule } from '@module/category/category.module';
 import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
-import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
-import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 
 const courseRepositoryProvider: Provider = {
   provide: COURSE_REPOSITORY_KEY,

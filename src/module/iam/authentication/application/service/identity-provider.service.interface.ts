@@ -1,8 +1,8 @@
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
-import { IRefreshSessionResponse } from '@module/iam/authentication/application/dto/refresh-session-response.dto';
-import { ISignInResponse } from '@module/iam/authentication/application/dto/sign-in-response.dto';
-import { ISignUpResponse } from '@module/iam/authentication/application/dto/sign-up-response.interface';
+import { IRefreshSessionResponse } from '@iam/authentication/application/dto/refresh-session-response.dto';
+import { ISignInResponse } from '@iam/authentication/application/dto/sign-in-response.dto';
+import { ISignUpResponse } from '@iam/authentication/application/dto/sign-up-response.interface';
 
 export const IDENTITY_PROVIDER_SERVICE_KEY = 'identity_provider_service';
 

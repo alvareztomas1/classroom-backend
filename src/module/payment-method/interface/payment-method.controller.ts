@@ -17,8 +17,9 @@ import { PageQueryParamsDto } from '@common/base/application/dto/query-params/pa
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
-import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
-import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
+import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
+
 import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
 import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
 import { PaymentMethodFieldsQueryParamsDto } from '@module/payment-method/application/dto/query-params/payment-method-fields-query-params.dto';

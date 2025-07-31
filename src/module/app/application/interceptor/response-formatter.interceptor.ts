@@ -27,11 +27,12 @@ import {
 } from '@common/base/application/dto/serialized-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
+import { AuthorizationService } from '@iam/authorization/application/service/authorization.service';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+import { AppSubjects } from '@iam/authorization/infrastructure/casl/type/app-subjects.type';
+import { User } from '@iam/user/domain/user.entity';
+
 import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
-import { AuthorizationService } from '@module/iam/authorization/application/service/authorization.service';
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
-import { AppSubjects } from '@module/iam/authorization/infrastructure/casl/type/app-subjects.type';
-import { User } from '@module/iam/user/domain/user.entity';
 
 @Injectable()
 export class ResponseFormatterInterceptor implements NestInterceptor {

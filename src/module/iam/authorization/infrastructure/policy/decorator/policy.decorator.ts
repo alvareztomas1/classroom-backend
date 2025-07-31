@@ -1,6 +1,6 @@
 import { CustomDecorator, SetMetadata, Type } from '@nestjs/common';
 
-import { IPolicyHandler } from '@module/iam/authorization/infrastructure/policy/handler/policy-handler.interface';
+import { IPolicyHandler } from '@iam/authorization/infrastructure/policy/handler/policy-handler.interface';
 
 export const POLICIES_KEY = 'POLICIES_KEY';
 

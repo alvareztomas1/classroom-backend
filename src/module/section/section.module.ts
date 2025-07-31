@@ -1,10 +1,11 @@
 import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AuthorizationModule } from '@iam/authorization/authorization.module';
+import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+
 import { CourseModule } from '@course/course.module';
 
-import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
-import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 import { SectionDtoMapper } from '@module/section/application/mapper/section-dto.mapper';
 import { SectionMapper } from '@module/section/application/mapper/section.mapper';
 import { CreateSectionPolicyHandler } from '@module/section/application/policy/create-section-policy.handler';

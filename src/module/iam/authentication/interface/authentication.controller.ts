@@ -15,19 +15,19 @@ import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { FileOptionsFactory } from '@common/base/application/factory/file-options.factory';
 
-import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
-import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
-import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
-import { RefreshSessionResponseDto } from '@module/iam/authentication/application/dto/refresh-session-response.dto';
-import { RefreshSessionDto } from '@module/iam/authentication/application/dto/refresh-session.dto';
-import { ResendConfirmationCodeDto } from '@module/iam/authentication/application/dto/resend-confirmation-code.dto';
-import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
-import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
-import { SignUpQueryDto } from '@module/iam/authentication/application/dto/sign-up.dto';
-import { AuthenticationService } from '@module/iam/authentication/application/service/authentication.service';
-import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
-import { Auth } from '@module/iam/authentication/infrastructure/decorator/auth.decorator';
-import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
+import { ConfirmPasswordDto } from '@iam/authentication/application/dto/confirm-password.dto';
+import { ConfirmUserDto } from '@iam/authentication/application/dto/confirm-user.dto';
+import { ForgotPasswordDto } from '@iam/authentication/application/dto/forgot-password.dto';
+import { RefreshSessionResponseDto } from '@iam/authentication/application/dto/refresh-session-response.dto';
+import { RefreshSessionDto } from '@iam/authentication/application/dto/refresh-session.dto';
+import { ResendConfirmationCodeDto } from '@iam/authentication/application/dto/resend-confirmation-code.dto';
+import { SignInResponseDto } from '@iam/authentication/application/dto/sign-in-response.dto';
+import { SignInDto } from '@iam/authentication/application/dto/sign-in.dto';
+import { SignUpQueryDto } from '@iam/authentication/application/dto/sign-up.dto';
+import { AuthenticationService } from '@iam/authentication/application/service/authentication.service';
+import { AuthType } from '@iam/authentication/domain/auth-type.enum';
+import { Auth } from '@iam/authentication/infrastructure/decorator/auth.decorator';
+import { UserResponseDto } from '@iam/user/application/dto/user-response.dto';
 
 @Auth(AuthType.None)
 @Controller('auth')

@@ -4,7 +4,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { Readable } from 'stream';
 
-import { IAccessTokenPayload } from '@module/iam/authentication/infrastructure/passport/access-token-payload.interface';
+import { IAccessTokenPayload } from '@iam/authentication/infrastructure/passport/access-token-payload.interface';
 
 import { JWT_AUTOMATED_TESTS_SECRET } from '@test/test.constants';
 

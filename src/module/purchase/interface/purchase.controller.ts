@@ -10,10 +10,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
-import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
-import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
-import { User } from '@module/iam/user/domain/user.entity';
+import { CurrentUser } from '@iam/authentication/infrastructure/decorator/current-user.decorator';
+import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
+import { User } from '@iam/user/domain/user.entity';
+
 import { CreatePurchaseDtoRequest } from '@module/purchase/application/dto/create-purchase.dto';
 import { PurchaseResponseDto } from '@module/purchase/application/dto/purchase-response.dto';
 import { UpdatePurchaseDto } from '@module/purchase/application/dto/update-purchase.dto';

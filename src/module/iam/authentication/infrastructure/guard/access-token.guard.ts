@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { TOKEN_EXPIRED_ERROR } from '@module/iam/authentication/application/exception/authentication-exception-messages';
-import { TokenExpiredException } from '@module/iam/authentication/application/exception/token-expired.exception';
+import { TOKEN_EXPIRED_ERROR } from '@iam/authentication/application/exception/authentication-exception-messages';
+import { TokenExpiredException } from '@iam/authentication/application/exception/token-expired.exception';
 
 @Injectable()
 export class AccessTokenGuard extends AuthGuard('jwt') {

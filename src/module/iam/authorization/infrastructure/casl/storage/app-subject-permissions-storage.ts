@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { AppSubjects } from '@module/iam/authorization/infrastructure/casl/type/app-subjects.type';
-import { IPermissionsDefinition } from '@module/iam/authorization/infrastructure/policy/type/permissions-definition.interface';
+import { AppSubjects } from '@iam/authorization/infrastructure/casl/type/app-subjects.type';
+import { IPermissionsDefinition } from '@iam/authorization/infrastructure/policy/type/permissions-definition.interface';
 
 @Injectable()
 export class AppSubjectPermissionStorage {

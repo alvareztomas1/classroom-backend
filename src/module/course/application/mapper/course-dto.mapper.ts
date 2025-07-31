@@ -1,5 +1,7 @@
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
+import { User } from '@iam/user/domain/user.entity';
+
 import {
   CourseResponseDto,
   CourseResponseInstructor,
@@ -9,7 +11,6 @@ import { UpdateCourseDto } from '@course/application/dto/update-course.dto';
 import { Course } from '@course/domain/course.entity';
 
 import { Category } from '@module/category/domain/category.entity';
-import { User } from '@module/iam/user/domain/user.entity';
 
 export class CourseDtoMapper
   implements
