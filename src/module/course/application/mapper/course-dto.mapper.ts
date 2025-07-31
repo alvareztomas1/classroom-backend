@@ -1,13 +1,14 @@
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { Category } from '@module/category/domain/category.entity';
 import {
   CourseResponseDto,
   CourseResponseInstructor,
-} from '@module/course/application/dto/course-response.dto';
-import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
-import { UpdateCourseDto } from '@module/course/application/dto/update-course.dto';
-import { Course } from '@module/course/domain/course.entity';
+} from '@course/application/dto/course-response.dto';
+import { CreateCourseDto } from '@course/application/dto/create-course.dto';
+import { UpdateCourseDto } from '@course/application/dto/update-course.dto';
+import { Course } from '@course/domain/course.entity';
+
+import { Category } from '@module/category/domain/category.entity';
 import { User } from '@module/iam/user/domain/user.entity';
 
 export class CourseDtoMapper

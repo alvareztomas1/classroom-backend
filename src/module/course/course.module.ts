@@ -1,20 +1,21 @@
 import { Module, OnModuleInit, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CourseDtoMapper } from '@course/application/mapper/course-dto.mapper';
+import { CourseMapper } from '@course/application/mapper/course.mapper';
+import { CreateCoursePolicyHandler } from '@course/application/policy/create-course-policy-handler';
+import { DeleteCoursePolicyHandler } from '@course/application/policy/delete-course-policy-handler';
+import { UpdateCoursePolicyHandler } from '@course/application/policy/update-course-policy.handler';
+import { COURSE_REPOSITORY_KEY } from '@course/application/repository/repository.interface';
+import { CourseService } from '@course/application/service/course.service';
+import { Course } from '@course/domain/course.entity';
+import { coursePermissions } from '@course/domain/course.permissions';
+import { CourseEntity } from '@course/infrastructure/database/course.entity';
+import { CoursePostgresRepository } from '@course/infrastructure/database/course.postrges.repository';
+import { CourseController } from '@course/interface/course.controller';
+
 import { CategoryModule } from '@module/category/category.module';
 import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
-import { CourseDtoMapper } from '@module/course/application/mapper/course-dto.mapper';
-import { CourseMapper } from '@module/course/application/mapper/course.mapper';
-import { CreateCoursePolicyHandler } from '@module/course/application/policy/create-course-policy-handler';
-import { DeleteCoursePolicyHandler } from '@module/course/application/policy/delete-course-policy-handler';
-import { UpdateCoursePolicyHandler } from '@module/course/application/policy/update-course-policy.handler';
-import { COURSE_REPOSITORY_KEY } from '@module/course/application/repository/repository.interface';
-import { CourseService } from '@module/course/application/service/course.service';
-import { Course } from '@module/course/domain/course.entity';
-import { coursePermissions } from '@module/course/domain/course.permissions';
-import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
-import { CoursePostgresRepository } from '@module/course/infrastructure/database/course.postrges.repository';
-import { CourseController } from '@module/course/interface/course.controller';
 import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
 import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 

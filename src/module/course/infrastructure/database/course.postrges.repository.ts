@@ -5,12 +5,13 @@ import { Repository, TreeRepository } from 'typeorm';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
+import { CourseMapper } from '@course/application/mapper/course.mapper';
+import { ICourseRepository } from '@course/application/repository/repository.interface';
+import { Course } from '@course/domain/course.entity';
+import { CourseEntity } from '@course/infrastructure/database/course.entity';
+
 import { CATEGORY_TREE_REPOSITORY_KEY } from '@module/category/application/repository/category.repository.interface';
 import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
-import { CourseMapper } from '@module/course/application/mapper/course.mapper';
-import { ICourseRepository } from '@module/course/application/repository/repository.interface';
-import { Course } from '@module/course/domain/course.entity';
-import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
 
 @Injectable()
 export class CoursePostgresRepository

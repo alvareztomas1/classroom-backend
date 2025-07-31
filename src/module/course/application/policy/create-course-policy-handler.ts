@@ -1,7 +1,8 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 
-import { Course } from '@module/course/domain/course.entity';
+import { Course } from '@course/domain/course.entity';
+
 import { BasePolicyHandler } from '@module/iam/authorization/application/policy/base-policy.handler';
 import { AuthorizationService } from '@module/iam/authorization/application/service/authorization.service';
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';

@@ -8,22 +8,23 @@ import {
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
+import { CourseResponseDto } from '@course/application/dto/course-response.dto';
+import { CreateCourseDto } from '@course/application/dto/create-course.dto';
+import { UpdateCourseDto } from '@course/application/dto/update-course.dto';
+import { CourseDtoMapper } from '@course/application/mapper/course-dto.mapper';
+import {
+  COURSE_REPOSITORY_KEY,
+  ICourseRepository,
+} from '@course/application/repository/repository.interface';
+import { Course } from '@course/domain/course.entity';
+import { CourseEntity } from '@course/infrastructure/database/course.entity';
+
 import { SlugService } from '@module/app/application/service/slug.service';
 import {
   CATEGORY_REPOSITORY_KEY,
   ICategoryRepository,
 } from '@module/category/application/repository/category.repository.interface';
 import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
-import { CourseResponseDto } from '@module/course/application/dto/course-response.dto';
-import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
-import { UpdateCourseDto } from '@module/course/application/dto/update-course.dto';
-import { CourseDtoMapper } from '@module/course/application/mapper/course-dto.mapper';
-import {
-  COURSE_REPOSITORY_KEY,
-  ICourseRepository,
-} from '@module/course/application/repository/repository.interface';
-import { Course } from '@module/course/domain/course.entity';
-import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
 
 @Injectable()
 export class CourseService extends BaseCRUDService<

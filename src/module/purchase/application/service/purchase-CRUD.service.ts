@@ -8,7 +8,8 @@ import BaseRepository from '@common/base/infrastructure/database/base.repository
 import {
   COURSE_REPOSITORY_KEY,
   ICourseRepository,
-} from '@module/course/application/repository/repository.interface';
+} from '@course/application/repository/repository.interface';
+
 import { CreatePurchaseDto } from '@module/purchase/application/dto/create-purchase.dto';
 import { PurchaseResponseDto } from '@module/purchase/application/dto/purchase-response.dto';
 import { UpdatePurchaseDto } from '@module/purchase/application/dto/update-purchase.dto';

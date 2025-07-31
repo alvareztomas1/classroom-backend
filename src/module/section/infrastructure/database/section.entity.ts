@@ -2,7 +2,8 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
-import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
+import { CourseEntity } from '@course/infrastructure/database/course.entity';
+
 import { LessonEntity } from '@module/lesson/infrastructure/database/lesson.entity';
 
 @Entity('section')

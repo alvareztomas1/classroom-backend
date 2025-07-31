@@ -1,7 +1,7 @@
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 
-import { Course } from '@module/course/domain/course.entity';
-import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
+import { Course } from '@course/domain/course.entity';
+import { CourseEntity } from '@course/infrastructure/database/course.entity';
 
 export const COURSE_REPOSITORY_KEY = 'course_repository';
 

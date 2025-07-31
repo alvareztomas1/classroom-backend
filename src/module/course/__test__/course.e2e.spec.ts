@@ -4,7 +4,8 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import path from 'path';
 import request from 'supertest';
 
-import { loadFixtures } from '@data/util/fixture-loader';
+import { setupApp } from '@config/app.config';
+import { datasourceOptions } from '@config/orm.config';
 
 import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant';
 import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
@@ -19,17 +20,16 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
-import { setupApp } from '@config/app.config';
-import { datasourceOptions } from '@config/orm.config';
+import { loadFixtures } from '@data/util/fixture-loader';
+
+import { CourseResponseDto } from '@course/application/dto/course-response.dto';
+import { CourseDto } from '@course/application/dto/course.dto';
+import { CreateCourseDto } from '@course/application/dto/create-course.dto';
+import { UpdateCourseDto } from '@course/application/dto/update-course.dto';
+import { Course } from '@course/domain/course.entity';
 
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken, createLargeMockFile } from '@test/test.util';
-
-import { CourseResponseDto } from '@module/course/application/dto/course-response.dto';
-import { CourseDto } from '@module/course/application/dto/course.dto';
-import { CreateCourseDto } from '@module/course/application/dto/create-course.dto';
-import { UpdateCourseDto } from '@module/course/application/dto/update-course.dto';
-import { Course } from '@module/course/domain/course.entity';
 
 describe('Course Module', () => {
   let app: NestExpressApplication;
