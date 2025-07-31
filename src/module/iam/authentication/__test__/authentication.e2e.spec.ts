@@ -15,22 +15,22 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { IAppErrorResponse } from '@common/base/application/exception/app-error-response.interface';
 import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
-import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
-import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
-import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
-import { IRefreshSessionResponse } from '@module/iam/authentication/application/dto/refresh-session-response.dto';
-import { RefreshSessionDto } from '@module/iam/authentication/application/dto/refresh-session.dto';
-import { ResendConfirmationCodeDto } from '@module/iam/authentication/application/dto/resend-confirmation-code.dto';
-import { ISignInResponse } from '@module/iam/authentication/application/dto/sign-in-response.dto';
-import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
-import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
+import { ConfirmPasswordDto } from '@iam/authentication/application/dto/confirm-password.dto';
+import { ConfirmUserDto } from '@iam/authentication/application/dto/confirm-user.dto';
+import { ForgotPasswordDto } from '@iam/authentication/application/dto/forgot-password.dto';
+import { IRefreshSessionResponse } from '@iam/authentication/application/dto/refresh-session-response.dto';
+import { RefreshSessionDto } from '@iam/authentication/application/dto/refresh-session.dto';
+import { ResendConfirmationCodeDto } from '@iam/authentication/application/dto/resend-confirmation-code.dto';
+import { ISignInResponse } from '@iam/authentication/application/dto/sign-in-response.dto';
+import { SignInDto } from '@iam/authentication/application/dto/sign-in.dto';
+import { SignUpDto } from '@iam/authentication/application/dto/sign-up.dto';
 import {
   TOKEN_EXPIRED_ERROR,
   USER_ALREADY_CONFIRMED_ERROR,
-} from '@module/iam/authentication/application/exception/authentication-exception-messages';
-import { TokenExpiredException } from '@module/iam/authentication/application/exception/token-expired.exception';
-import { AUTHENTICATION_NAME } from '@module/iam/authentication/domain/authentication.name';
-import { CodeMismatchException } from '@module/iam/authentication/infrastructure/cognito/exception/code-mismatch.exception';
+} from '@iam/authentication/application/exception/authentication-exception-messages';
+import { TokenExpiredException } from '@iam/authentication/application/exception/token-expired.exception';
+import { AUTHENTICATION_NAME } from '@iam/authentication/domain/authentication.name';
+import { CodeMismatchException } from '@iam/authentication/infrastructure/cognito/exception/code-mismatch.exception';
 import {
   CODE_MISMATCH_ERROR,
   EXPIRED_CODE_ERROR,
@@ -40,17 +40,17 @@ import {
   PASSWORD_VALIDATION_ERROR,
   UNEXPECTED_ERROR_CODE_ERROR,
   USER_NOT_CONFIRMED_ERROR,
-} from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
-import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
-import { ExpiredCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/expired-code.exception';
-import { InvalidPasswordException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-password.exception';
-import { InvalidRefreshTokenException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-refresh-token.exception';
-import { NewPasswordRequiredException } from '@module/iam/authentication/infrastructure/cognito/exception/new-password-required.exception';
-import { PasswordValidationException } from '@module/iam/authentication/infrastructure/cognito/exception/password-validation.exception';
-import { UnexpectedErrorCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/unexpected-code.exception';
-import { UserNotConfirmedException } from '@module/iam/authentication/infrastructure/cognito/exception/user-not-confirmed.exception';
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
-import { User } from '@module/iam/user/domain/user.entity';
+} from '@iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
+import { CouldNotSignUpException } from '@iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
+import { ExpiredCodeException } from '@iam/authentication/infrastructure/cognito/exception/expired-code.exception';
+import { InvalidPasswordException } from '@iam/authentication/infrastructure/cognito/exception/invalid-password.exception';
+import { InvalidRefreshTokenException } from '@iam/authentication/infrastructure/cognito/exception/invalid-refresh-token.exception';
+import { NewPasswordRequiredException } from '@iam/authentication/infrastructure/cognito/exception/new-password-required.exception';
+import { PasswordValidationException } from '@iam/authentication/infrastructure/cognito/exception/password-validation.exception';
+import { UnexpectedErrorCodeException } from '@iam/authentication/infrastructure/cognito/exception/unexpected-code.exception';
+import { UserNotConfirmedException } from '@iam/authentication/infrastructure/cognito/exception/user-not-confirmed.exception';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
+import { User } from '@iam/user/domain/user.entity';
 
 import { createAccessToken, createLargeMockFile } from '@test/test.util';
 

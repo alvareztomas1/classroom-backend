@@ -14,11 +14,11 @@ import { ConfigService } from '@nestjs/config';
 
 import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
-import { IRefreshSessionResponse } from '@module/iam/authentication/application/dto/refresh-session-response.dto';
-import { ISignInResponse } from '@module/iam/authentication/application/dto/sign-in-response.dto';
-import { ISignUpResponse } from '@module/iam/authentication/application/dto/sign-up-response.interface';
-import { IIdentityProviderService } from '@module/iam/authentication/application/service/identity-provider.service.interface';
-import { CodeMismatchException } from '@module/iam/authentication/infrastructure/cognito/exception/code-mismatch.exception';
+import { IRefreshSessionResponse } from '@iam/authentication/application/dto/refresh-session-response.dto';
+import { ISignInResponse } from '@iam/authentication/application/dto/sign-in-response.dto';
+import { ISignUpResponse } from '@iam/authentication/application/dto/sign-up-response.interface';
+import { IIdentityProviderService } from '@iam/authentication/application/service/identity-provider.service.interface';
+import { CodeMismatchException } from '@iam/authentication/infrastructure/cognito/exception/code-mismatch.exception';
 import {
   CODE_MISMATCH_ERROR,
   EXPIRED_CODE_ERROR,
@@ -28,15 +28,15 @@ import {
   PASSWORD_VALIDATION_ERROR,
   UNEXPECTED_ERROR_CODE_ERROR,
   USER_NOT_CONFIRMED_ERROR,
-} from '@module/iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
-import { CouldNotSignUpException } from '@module/iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
-import { ExpiredCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/expired-code.exception';
-import { InvalidPasswordException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-password.exception';
-import { InvalidRefreshTokenException } from '@module/iam/authentication/infrastructure/cognito/exception/invalid-refresh-token.exception';
-import { NewPasswordRequiredException } from '@module/iam/authentication/infrastructure/cognito/exception/new-password-required.exception';
-import { PasswordValidationException } from '@module/iam/authentication/infrastructure/cognito/exception/password-validation.exception';
-import { UnexpectedErrorCodeException } from '@module/iam/authentication/infrastructure/cognito/exception/unexpected-code.exception';
-import { UserNotConfirmedException } from '@module/iam/authentication/infrastructure/cognito/exception/user-not-confirmed.exception';
+} from '@iam/authentication/infrastructure/cognito/exception/cognito-exception-messages';
+import { CouldNotSignUpException } from '@iam/authentication/infrastructure/cognito/exception/could-not-sign-up.exception';
+import { ExpiredCodeException } from '@iam/authentication/infrastructure/cognito/exception/expired-code.exception';
+import { InvalidPasswordException } from '@iam/authentication/infrastructure/cognito/exception/invalid-password.exception';
+import { InvalidRefreshTokenException } from '@iam/authentication/infrastructure/cognito/exception/invalid-refresh-token.exception';
+import { NewPasswordRequiredException } from '@iam/authentication/infrastructure/cognito/exception/new-password-required.exception';
+import { PasswordValidationException } from '@iam/authentication/infrastructure/cognito/exception/password-validation.exception';
+import { UnexpectedErrorCodeException } from '@iam/authentication/infrastructure/cognito/exception/unexpected-code.exception';
+import { UserNotConfirmedException } from '@iam/authentication/infrastructure/cognito/exception/user-not-confirmed.exception';
 
 @Injectable()
 export class CognitoService implements IIdentityProviderService {

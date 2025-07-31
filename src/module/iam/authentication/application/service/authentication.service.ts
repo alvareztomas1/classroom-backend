@@ -3,36 +3,37 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 
-import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
-import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
-import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
-import { ForgotPasswordDto } from '@module/iam/authentication/application/dto/forgot-password.dto';
-import { RefreshSessionResponseDto } from '@module/iam/authentication/application/dto/refresh-session-response.dto';
-import { RefreshSessionDto } from '@module/iam/authentication/application/dto/refresh-session.dto';
-import { ResendConfirmationCodeDto } from '@module/iam/authentication/application/dto/resend-confirmation-code.dto';
-import { SignInResponseDto } from '@module/iam/authentication/application/dto/sign-in-response.dto';
-import { SignInDto } from '@module/iam/authentication/application/dto/sign-in.dto';
-import { SignUpDto } from '@module/iam/authentication/application/dto/sign-up.dto';
+import { ConfirmPasswordDto } from '@iam/authentication/application/dto/confirm-password.dto';
+import { ConfirmUserDto } from '@iam/authentication/application/dto/confirm-user.dto';
+import { ForgotPasswordDto } from '@iam/authentication/application/dto/forgot-password.dto';
+import { RefreshSessionResponseDto } from '@iam/authentication/application/dto/refresh-session-response.dto';
+import { RefreshSessionDto } from '@iam/authentication/application/dto/refresh-session.dto';
+import { ResendConfirmationCodeDto } from '@iam/authentication/application/dto/resend-confirmation-code.dto';
+import { SignInResponseDto } from '@iam/authentication/application/dto/sign-in-response.dto';
+import { SignInDto } from '@iam/authentication/application/dto/sign-in.dto';
+import { SignUpDto } from '@iam/authentication/application/dto/sign-up.dto';
 import {
   SIGNUP_CONFLICT_TITLE,
   USER_ALREADY_CONFIRMED_ERROR,
   USER_ALREADY_SIGNED_UP_ERROR,
-} from '@module/iam/authentication/application/exception/authentication-exception-messages';
-import { UserAlreadyConfirmed } from '@module/iam/authentication/application/exception/user-already-confirmed.exception';
-import { UserAlreadySignedUp } from '@module/iam/authentication/application/exception/user-already-signed-up.exception';
+} from '@iam/authentication/application/exception/authentication-exception-messages';
+import { UserAlreadyConfirmed } from '@iam/authentication/application/exception/user-already-confirmed.exception';
+import { UserAlreadySignedUp } from '@iam/authentication/application/exception/user-already-signed-up.exception';
 import {
   IDENTITY_PROVIDER_SERVICE_KEY,
   IIdentityProviderService,
-} from '@module/iam/authentication/application/service/identity-provider.service.interface';
-import { AUTHENTICATION_NAME } from '@module/iam/authentication/domain/authentication.name';
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
-import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
-import { UserDtoMapper } from '@module/iam/user/application/mapper/user-dto.mapper';
+} from '@iam/authentication/application/service/identity-provider.service.interface';
+import { AUTHENTICATION_NAME } from '@iam/authentication/domain/authentication.name';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
+import { UserResponseDto } from '@iam/user/application/dto/user-response.dto';
+import { UserDtoMapper } from '@iam/user/application/mapper/user-dto.mapper';
 import {
   IUserRepository,
   USER_REPOSITORY_KEY,
-} from '@module/iam/user/application/repository/user.repository.interface';
-import { User } from '@module/iam/user/domain/user.entity';
+} from '@iam/user/application/repository/user.repository.interface';
+import { User } from '@iam/user/domain/user.entity';
+
+import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 
 @Injectable()
 export class AuthenticationService {

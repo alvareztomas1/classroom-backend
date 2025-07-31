@@ -5,8 +5,8 @@ import { Request } from 'express';
 import {
   CurrentUser,
   REQUEST_USER_KEY,
-} from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
-import { User } from '@module/iam/user/domain/user.entity';
+} from '@iam/authentication/infrastructure/decorator/current-user.decorator';
+import { User } from '@iam/user/domain/user.entity';
 
 describe('@CurrentUser', () => {
   const user = {
