@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
-import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
+import { SectionEntity } from '@section/infrastructure/database/section.entity';
 
 @Entity('lesson')
 export class LessonEntity extends BaseEntity {

@@ -12,12 +12,12 @@ import { AppAction } from '@iam/authorization/domain/app.action.enum';
 import { IPolicyHandler } from '@iam/authorization/infrastructure/policy/handler/policy-handler.interface';
 import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/storage/policies-handler.storage';
 
-import { Lesson } from '@lesson/domain/lesson.entity';
-
 import {
   ISectionRepository,
   SECTION_REPOSITORY_KEY,
-} from '@module/section/application/repository/section.repository.interface';
+} from '@section/application/repository/section.repository.interface';
+
+import { Lesson } from '@lesson/domain/lesson.entity';
 
 export class CreateLessonPolicyHandler
   extends BasePolicyHandler

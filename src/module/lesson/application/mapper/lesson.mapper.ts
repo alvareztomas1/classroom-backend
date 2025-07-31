@@ -1,11 +1,11 @@
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
+import { Section } from '@section/domain/section.entity';
+import { SectionEntity } from '@section/infrastructure/database/section.entity';
+
 import { Lesson } from '@lesson/domain/lesson.entity';
 import { LessonType } from '@lesson/domain/lesson.type';
 import { LessonEntity } from '@lesson/infrastructure/database/lesson.entity';
-
-import { Section } from '@module/section/domain/section.entity';
-import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
 export class LessonMapper implements IEntityMapper<Lesson, LessonEntity> {
   toDomainEntity(entity: LessonEntity): Lesson {
