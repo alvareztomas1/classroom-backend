@@ -5,10 +5,10 @@ import { Repository } from 'typeorm';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 import EntityAlreadyExistsException from '@common/base/infrastructure/exception/entity-already-excists.exception';
 
-import { PaymentMethodMapper } from '@module/payment-method/application/mapper/payment-method.mapper';
-import { IPaymentMethodRepository } from '@module/payment-method/application/repository/payment-method-repository.interface';
-import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
-import { PaymentMethodEntity } from '@module/payment-method/infrastructure/database/payment-method.entity';
+import { PaymentMethodMapper } from '@payment-method/application/mapper/payment-method.mapper';
+import { IPaymentMethodRepository } from '@payment-method/application/repository/payment-method-repository.interface';
+import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
+import { PaymentMethodEntity } from '@payment-method/infrastructure/database/payment-method.entity';
 
 @Injectable()
 export class PaymentMethodPostgresRepository

@@ -1,10 +1,10 @@
 import { fromStringToKebabCase } from '@common/base/application/mapper/base.mapper';
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
-import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
-import { UpdatePaymentMethodDto } from '@module/payment-method/application/dto/update-payment-method.dto';
-import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
+import { CreatePaymentMethodDto } from '@payment-method/application/dto/create-payment-method.dto';
+import { PaymentMethodResponseDto } from '@payment-method/application/dto/payment-method-response.dto';
+import { UpdatePaymentMethodDto } from '@payment-method/application/dto/update-payment-method.dto';
+import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
 
 export class PaymentMethodDtoMapper
   implements

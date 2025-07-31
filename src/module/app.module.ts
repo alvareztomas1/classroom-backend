@@ -18,7 +18,8 @@ import { CategoryModule } from '@category/category.module';
 
 import { LessonModule } from '@lesson/lesson.module';
 
-import { PaymentMethodModule } from '@module/payment-method/payment-method.module';
+import { PaymentMethodModule } from '@payment-method/payment-method.module';
+
 import { PurchaseModule } from '@module/purchase/purchase.module';
 import { SectionModule } from '@module/section/section.module';
 

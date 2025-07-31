@@ -6,7 +6,8 @@ import { Course } from '@course/domain/course.entity';
 
 import { Lesson } from '@lesson/domain/lesson.entity';
 
-import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
+import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
+
 import { Purchase } from '@module/purchase/domain/purchase.entity';
 import { Section } from '@module/section/domain/section.entity';
 

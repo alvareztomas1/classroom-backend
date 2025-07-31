@@ -1,7 +1,7 @@
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
-import { PaymentMethodEntity } from '@module/payment-method/infrastructure/database/payment-method.entity';
+import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
+import { PaymentMethodEntity } from '@payment-method/infrastructure/database/payment-method.entity';
 
 export class PaymentMethodMapper
   implements IEntityMapper<PaymentMethod, PaymentMethodEntity>
