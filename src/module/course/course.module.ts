@@ -17,8 +17,8 @@ import { CourseEntity } from '@course/infrastructure/database/course.entity';
 import { CoursePostgresRepository } from '@course/infrastructure/database/course.postrges.repository';
 import { CourseController } from '@course/interface/course.controller';
 
-import { CategoryModule } from '@module/category/category.module';
-import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
+import { CategoryModule } from '@category/category.module';
+import { CategoryEntity } from '@category/infrastructure/database/category.entity';
 
 const courseRepositoryProvider: Provider = {
   provide: COURSE_REPOSITORY_KEY,

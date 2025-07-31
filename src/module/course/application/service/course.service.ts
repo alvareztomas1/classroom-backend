@@ -24,7 +24,8 @@ import { CourseEntity } from '@course/infrastructure/database/course.entity';
 import {
   CATEGORY_REPOSITORY_KEY,
   ICategoryRepository,
-} from '@module/category/application/repository/category.repository.interface';
+} from '@category/application/repository/category.repository.interface';
+
 import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 
 @Injectable()
