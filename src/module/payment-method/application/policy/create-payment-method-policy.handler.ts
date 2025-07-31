@@ -7,7 +7,7 @@ import { AppAction } from '@iam/authorization/domain/app.action.enum';
 import { IPolicyHandler } from '@iam/authorization/infrastructure/policy/handler/policy-handler.interface';
 import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/storage/policies-handler.storage';
 
-import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
+import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
 
 @Injectable()
 export class CreatePaymentMethodPolicyHandler

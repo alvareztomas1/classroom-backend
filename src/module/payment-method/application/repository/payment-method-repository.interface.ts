@@ -1,7 +1,7 @@
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 
-import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
-import { PaymentMethodEntity } from '@module/payment-method/infrastructure/database/payment-method.entity';
+import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
+import { PaymentMethodEntity } from '@payment-method/infrastructure/database/payment-method.entity';
 
 export const PAYMENT_METHOD_REPOSITORY_KEY = 'payment_method_repository';
 

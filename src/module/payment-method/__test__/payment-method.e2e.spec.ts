@@ -18,10 +18,10 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { AppAction } from '@iam/authorization/domain/app.action.enum';
 
-import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
-import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
-import { PaymentMethodDto } from '@module/payment-method/application/dto/payment-method.dto';
-import { UpdatePaymentMethodDto } from '@module/payment-method/application/dto/update-payment-method.dto';
+import { CreatePaymentMethodDto } from '@payment-method/application/dto/create-payment-method.dto';
+import { PaymentMethodResponseDto } from '@payment-method/application/dto/payment-method-response.dto';
+import { PaymentMethodDto } from '@payment-method/application/dto/payment-method.dto';
+import { UpdatePaymentMethodDto } from '@payment-method/application/dto/update-payment-method.dto';
 
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';

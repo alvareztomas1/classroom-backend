@@ -20,16 +20,16 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
 
-import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
-import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
-import { PaymentMethodFieldsQueryParamsDto } from '@module/payment-method/application/dto/query-params/payment-method-fields-query-params.dto';
-import { PaymentMethodFilterQueryParamsDto } from '@module/payment-method/application/dto/query-params/payment-method-filter-query-params.dto';
-import { PaymentMethodSortQueryParamsDto } from '@module/payment-method/application/dto/query-params/payment-method-sort-query-params.dto';
-import { UpdatePaymentMethodDto } from '@module/payment-method/application/dto/update-payment-method.dto';
-import { CreatePaymentMethodPolicyHandler } from '@module/payment-method/application/policy/create-payment-method-policy.handler';
-import { DeletePaymentMethodPolicyHandler } from '@module/payment-method/application/policy/delete-payment-method-policy.handler';
-import { UpdatePaymentMethodPolicyHandler } from '@module/payment-method/application/policy/update-payment-method-policy.handler';
-import { PaymentMethodCRUDService } from '@module/payment-method/application/service/payment-method-crud.service';
+import { CreatePaymentMethodDto } from '@payment-method/application/dto/create-payment-method.dto';
+import { PaymentMethodResponseDto } from '@payment-method/application/dto/payment-method-response.dto';
+import { PaymentMethodFieldsQueryParamsDto } from '@payment-method/application/dto/query-params/payment-method-fields-query-params.dto';
+import { PaymentMethodFilterQueryParamsDto } from '@payment-method/application/dto/query-params/payment-method-filter-query-params.dto';
+import { PaymentMethodSortQueryParamsDto } from '@payment-method/application/dto/query-params/payment-method-sort-query-params.dto';
+import { UpdatePaymentMethodDto } from '@payment-method/application/dto/update-payment-method.dto';
+import { CreatePaymentMethodPolicyHandler } from '@payment-method/application/policy/create-payment-method-policy.handler';
+import { DeletePaymentMethodPolicyHandler } from '@payment-method/application/policy/delete-payment-method-policy.handler';
+import { UpdatePaymentMethodPolicyHandler } from '@payment-method/application/policy/update-payment-method-policy.handler';
+import { PaymentMethodCRUDService } from '@payment-method/application/service/payment-method-crud.service';
 
 @Controller('payment-method')
 @UseGuards(PoliciesGuard)
