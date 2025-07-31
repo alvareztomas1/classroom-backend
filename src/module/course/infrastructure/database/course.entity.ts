@@ -3,8 +3,9 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
+import { UserEntity } from '@iam/user/infrastructure/database/user.entity';
+
 import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
-import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
 import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
 @Entity('course')

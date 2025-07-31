@@ -1,8 +1,8 @@
-import { Course } from '@course/domain/course.entity';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+import { IPermissionsDefinition } from '@iam/authorization/infrastructure/policy/type/permissions-definition.interface';
 
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
-import { IPermissionsDefinition } from '@module/iam/authorization/infrastructure/policy/type/permissions-definition.interface';
+import { Course } from '@course/domain/course.entity';
 
 export const coursePermissions: IPermissionsDefinition = {
   [AppRole.Regular](_, { can }) {

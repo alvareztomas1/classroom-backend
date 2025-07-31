@@ -2,8 +2,9 @@ import { BaseResponseDto } from '@common/base/application/dto/base.response.dto'
 import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 
+import { User } from '@iam/user/domain/user.entity';
+
 import { Category } from '@module/category/domain/category.entity';
-import { User } from '@module/iam/user/domain/user.entity';
 
 export type CourseResponseInstructor = Pick<
   User,

@@ -22,6 +22,12 @@ import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { FileOptionsFactory } from '@common/base/application/factory/file-options.factory';
 
+import { CurrentUser } from '@iam/authentication/infrastructure/decorator/current-user.decorator';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
+import { User } from '@iam/user/domain/user.entity';
+
 import { CourseFieldsQueryParamsDto } from '@course/application/dto/course-fields-query-params.dto';
 import { CourseFilterQueryParamsDto } from '@course/application/dto/course-filter-query-params.dto';
 import { CourseIncludeQueryDto } from '@course/application/dto/course-include.dto';
@@ -34,12 +40,6 @@ import { DeleteCoursePolicyHandler } from '@course/application/policy/delete-cou
 import { UpdateCoursePolicyHandler } from '@course/application/policy/update-course-policy.handler';
 import { CourseService } from '@course/application/service/course.service';
 import { Course } from '@course/domain/course.entity';
-
-import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
-import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
-import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
-import { User } from '@module/iam/user/domain/user.entity';
 
 @Controller('course')
 @UseInterceptors(

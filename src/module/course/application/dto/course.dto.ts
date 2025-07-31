@@ -16,7 +16,8 @@ import { BaseDto } from '@common/base/application/dto/base.dto';
 import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 
-import { User } from '@module/iam/user/domain/user.entity';
+import { User } from '@iam/user/domain/user.entity';
+
 import { Section } from '@module/section/domain/section.entity';
 
 export class CourseDto extends BaseDto {
