@@ -4,13 +4,13 @@ import { User } from '@iam/user/domain/user.entity';
 
 import { Course } from '@course/domain/course.entity';
 
+import { Section } from '@section/domain/section.entity';
+
 import { Lesson } from '@lesson/domain/lesson.entity';
 
 import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
 
 import { Purchase } from '@purchase/domain/purchase.entity';
-
-import { Section } from '@module/section/domain/section.entity';
 
 export type AppSubjects =
   | InferSubjects<

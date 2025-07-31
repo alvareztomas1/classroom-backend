@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/mapped-types';
 
-import { SectionDto } from '@module/section/application/dto/section.dto';
+import { SectionDto } from '@section/application/dto/section.dto';
 
 export class CreateSectionDtoQuery extends OmitType(SectionDto, ['courseId']) {}
 

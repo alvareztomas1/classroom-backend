@@ -7,7 +7,7 @@ import { UserEntity } from '@iam/user/infrastructure/database/user.entity';
 
 import { CategoryEntity } from '@category/infrastructure/database/category.entity';
 
-import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
+import { SectionEntity } from '@section/infrastructure/database/section.entity';
 
 @Entity('course')
 export class CourseEntity extends BaseEntity {

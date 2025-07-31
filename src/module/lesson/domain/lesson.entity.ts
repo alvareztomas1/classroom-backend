@@ -1,8 +1,8 @@
 import { Base } from '@common/base/domain/base.entity';
 
-import { LessonType } from '@lesson/domain/lesson.type';
+import { Section } from '@section/domain/section.entity';
 
-import { Section } from '@module/section/domain/section.entity';
+import { LessonType } from '@lesson/domain/lesson.type';
 
 export class Lesson extends Base {
   courseId: string;

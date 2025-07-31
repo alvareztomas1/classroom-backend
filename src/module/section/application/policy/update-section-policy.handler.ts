@@ -15,7 +15,7 @@ import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/s
 import {
   ISectionRepository,
   SECTION_REPOSITORY_KEY,
-} from '@module/section/application/repository/section.repository.interface';
+} from '@section/application/repository/section.repository.interface';
 
 @Injectable()
 export class UpdateSectionPolicyHandler

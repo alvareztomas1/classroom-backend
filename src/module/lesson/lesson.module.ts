@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthorizationModule } from '@iam/authorization/authorization.module';
 import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
 
+import { SectionModule } from '@section/section.module';
+
 import { LessonDtoMapper } from '@lesson/application/mapper/lesson-dto.mapper';
 import { LessonMapper } from '@lesson/application/mapper/lesson.mapper';
 import { CreateLessonPolicyHandler } from '@lesson/application/policy/create-lesson-policy.handler';
@@ -16,8 +18,6 @@ import { lessonPermissions } from '@lesson/domain/lesson.permissions';
 import { LessonEntity } from '@lesson/infrastructure/database/lesson.entity';
 import { LessonPostgresRepository } from '@lesson/infrastructure/database/lesson.postgres.repository';
 import { LessonController } from '@lesson/interface/lesson.controller';
-
-import { SectionModule } from '@module/section/section.module';
 
 const lessonRepositoryProvider: Provider = {
   provide: LESSON_REPOSITORY_KEY,

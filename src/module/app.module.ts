@@ -16,13 +16,13 @@ import { CourseModule } from '@course/course.module';
 
 import { CategoryModule } from '@category/category.module';
 
+import { SectionModule } from '@section/section.module';
+
 import { LessonModule } from '@lesson/lesson.module';
 
 import { PaymentMethodModule } from '@payment-method/payment-method.module';
 
 import { PurchaseModule } from '@purchase/purchase.module';
-
-import { SectionModule } from '@module/section/section.module';
 
 @Global()
 @Module({

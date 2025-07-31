@@ -10,8 +10,8 @@ import { CourseEntity } from '@course/infrastructure/database/course.entity';
 import { Category } from '@category/domain/category.entity';
 import { CategoryEntity } from '@category/infrastructure/database/category.entity';
 
-import { Section } from '@module/section/domain/section.entity';
-import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
+import { Section } from '@section/domain/section.entity';
+import { SectionEntity } from '@section/infrastructure/database/section.entity';
 
 export class CourseMapper implements IEntityMapper<Course, CourseEntity> {
   toDomainEntity(entity: CourseEntity): Course {
