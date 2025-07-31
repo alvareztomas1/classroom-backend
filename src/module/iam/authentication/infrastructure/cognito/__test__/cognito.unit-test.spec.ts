@@ -10,9 +10,9 @@ import {
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
-
 import { setupApp } from '@config/app.config';
+
+import { ISuccessfulOperationResponse } from '@common/base/application/dto/successful-operation-response.interface';
 
 import { AppModule } from '@module/app.module';
 import { IDENTITY_PROVIDER_SERVICE_KEY } from '@module/iam/authentication/application/service/identity-provider.service.interface';

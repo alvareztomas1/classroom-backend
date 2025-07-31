@@ -3,16 +3,13 @@ import { HttpStatus } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 
+import { setupApp } from '@config/app.config';
+import { datasourceOptions } from '@config/orm.config';
+
 import { loadFixtures } from '@data/util/fixture-loader';
 
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { IS_NOT_VALID_MESSAGE } from '@common/base/application/exception/base-exception.messages';
-
-import { setupApp } from '@config/app.config';
-import { datasourceOptions } from '@config/orm.config';
-
-import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
-import { createAccessToken } from '@test/test.util';
 
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { CreatePurchaseDtoRequest } from '@module/purchase/application/dto/create-purchase.dto';
@@ -27,6 +24,9 @@ import {
 } from '@module/purchase/application/exception/purchase-exception.messages';
 import { Purchase } from '@module/purchase/domain/purchase.entity';
 import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
+
+import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
+import { createAccessToken } from '@test/test.util';
 
 describe('Purchase Module', () => {
   let app: NestExpressApplication;

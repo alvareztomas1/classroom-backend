@@ -6,14 +6,14 @@ import { ExtractJwt, Strategy, StrategyOptionsWithRequest } from 'passport-jwt';
 
 import { ENVIRONMENT } from '@config/environment.enum';
 
-import { JWT_AUTOMATED_TESTS_SECRET } from '@test/test.constants';
-
 import { IAccessTokenPayload } from '@module/iam/authentication/infrastructure/passport/access-token-payload.interface';
 import {
   IUserRepository,
   USER_REPOSITORY_KEY,
 } from '@module/iam/user/application/repository/user.repository.interface';
 import { User } from '@module/iam/user/domain/user.entity';
+
+import { JWT_AUTOMATED_TESTS_SECRET } from '@test/test.constants';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
