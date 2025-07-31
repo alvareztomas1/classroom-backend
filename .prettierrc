@@ -7,11 +7,11 @@
   "plugins": ["@trivago/prettier-plugin-sort-imports"],
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
-    "^@cloud/(.*)$",
     "^@config/(.*)$",
     "^@data/(.*)$",
     "^@common/(.*)$",
     "^@app/(.*)$",
+    "^@cloud/(.*)$",
     "^@iam/(.*)$",
     "^@course/(.*)$",
     "^@category/(.*)$",

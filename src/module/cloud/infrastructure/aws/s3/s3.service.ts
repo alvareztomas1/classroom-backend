@@ -7,7 +7,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 
-import { IFileStorageProvider } from '@module/cloud/application/interface/file-storage-provider.interface';
+import { IFileStorageProvider } from '@cloud/application/interface/file-storage-provider.interface';
 
 @Injectable()
 export class AmazonS3Service implements IFileStorageProvider {

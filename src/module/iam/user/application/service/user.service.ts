@@ -3,6 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { IGetAllOptions } from '@common/base/application/dto/query-params/get-all-options.interface';
 
+import { FileStorageService } from '@cloud/application/service/file-storage.service';
+
 import { UpdateUserDto } from '@iam/user/application/dto/update-user.dto';
 import { UserResponseDto } from '@iam/user/application/dto/user-response.dto';
 import { UserDto } from '@iam/user/application/dto/user.dto';
@@ -12,8 +14,6 @@ import {
   USER_REPOSITORY_KEY,
 } from '@iam/user/application/repository/user.repository.interface';
 import { User } from '@iam/user/domain/user.entity';
-
-import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 
 @Injectable()
 export class UserService {
