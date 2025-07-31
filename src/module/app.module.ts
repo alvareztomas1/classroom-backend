@@ -14,8 +14,9 @@ import { CourseModule } from '@course/course.module';
 
 import { CategoryModule } from '@category/category.module';
 
+import { LessonModule } from '@lesson/lesson.module';
+
 import { CloudModule } from '@module/cloud/cloud.module';
-import { LessonModule } from '@module/lesson/lesson.module';
 import { PaymentMethodModule } from '@module/payment-method/payment-method.module';
 import { PurchaseModule } from '@module/purchase/purchase.module';
 import { SectionModule } from '@module/section/section.module';

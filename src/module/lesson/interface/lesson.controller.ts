@@ -23,13 +23,13 @@ import { FileOptionsFactory } from '@common/base/application/factory/file-option
 import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
 
-import { CreateLessonDtoQuery } from '@module/lesson/application/dto/create-lesson.dto';
-import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
-import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
-import { CreateLessonPolicyHandler } from '@module/lesson/application/policy/create-lesson-policy.handler';
-import { DeleteLessonPolicyHandler } from '@module/lesson/application/policy/delete-lession-policy.handler';
-import { UpdateLessonPolicyHandler } from '@module/lesson/application/policy/update-lesson-policy.handler';
-import { LessonService } from '@module/lesson/application/service/lesson.service';
+import { CreateLessonDtoQuery } from '@lesson/application/dto/create-lesson.dto';
+import { LessonResponseDto } from '@lesson/application/dto/lesson-response.dto';
+import { UpdateLessonDto } from '@lesson/application/dto/update-lesson.dto';
+import { CreateLessonPolicyHandler } from '@lesson/application/policy/create-lesson-policy.handler';
+import { DeleteLessonPolicyHandler } from '@lesson/application/policy/delete-lession-policy.handler';
+import { UpdateLessonPolicyHandler } from '@lesson/application/policy/update-lesson-policy.handler';
+import { LessonService } from '@lesson/application/service/lesson.service';
 
 @Controller('course/:courseId/section/:sectionId/lesson')
 @UseGuards(PoliciesGuard)

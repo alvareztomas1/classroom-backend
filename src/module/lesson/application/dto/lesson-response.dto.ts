@@ -1,6 +1,7 @@
 import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 
-import { LessonType } from '@module/lesson/domain/lesson.type';
+import { LessonType } from '@lesson/domain/lesson.type';
+
 import { Section } from '@module/section/domain/section.entity';
 
 export class LessonResponseDto extends BaseResponseDto {

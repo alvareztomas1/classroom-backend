@@ -3,18 +3,19 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MIME_FILE_TYPE_MAP } from '@common/base/application/constant/file.constant';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
-import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
-import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
-import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
-import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
-import { LessonDtoMapper } from '@module/lesson/application/mapper/lesson-dto.mapper';
+import { CreateLessonDto } from '@lesson/application/dto/create-lesson.dto';
+import { LessonResponseDto } from '@lesson/application/dto/lesson-response.dto';
+import { UpdateLessonDto } from '@lesson/application/dto/update-lesson.dto';
+import { LessonDtoMapper } from '@lesson/application/mapper/lesson-dto.mapper';
 import {
   ILessonRepository,
   LESSON_REPOSITORY_KEY,
-} from '@module/lesson/application/repository/lesson.repository.interface';
-import { Lesson } from '@module/lesson/domain/lesson.entity';
-import { LessonType } from '@module/lesson/domain/lesson.type';
-import { LessonEntity } from '@module/lesson/infrastructure/database/lesson.entity';
+} from '@lesson/application/repository/lesson.repository.interface';
+import { Lesson } from '@lesson/domain/lesson.entity';
+import { LessonType } from '@lesson/domain/lesson.type';
+import { LessonEntity } from '@lesson/infrastructure/database/lesson.entity';
+
+import { FileStorageService } from '@module/cloud/application/service/file-storage.service';
 
 @Injectable()
 export class LessonService extends BaseCRUDService<

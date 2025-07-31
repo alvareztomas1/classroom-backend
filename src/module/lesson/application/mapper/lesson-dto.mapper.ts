@@ -1,9 +1,9 @@
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
-import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
-import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
-import { Lesson } from '@module/lesson/domain/lesson.entity';
+import { CreateLessonDto } from '@lesson/application/dto/create-lesson.dto';
+import { LessonResponseDto } from '@lesson/application/dto/lesson-response.dto';
+import { UpdateLessonDto } from '@lesson/application/dto/update-lesson.dto';
+import { Lesson } from '@lesson/domain/lesson.entity';
 
 export class LessonDtoMapper
   implements

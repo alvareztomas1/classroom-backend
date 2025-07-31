@@ -3,8 +3,9 @@ import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 import { Course } from '@course/domain/course.entity';
 import { CourseEntity } from '@course/infrastructure/database/course.entity';
 
-import { Lesson } from '@module/lesson/domain/lesson.entity';
-import { LessonEntity } from '@module/lesson/infrastructure/database/lesson.entity';
+import { Lesson } from '@lesson/domain/lesson.entity';
+import { LessonEntity } from '@lesson/infrastructure/database/lesson.entity';
+
 import { Section } from '@module/section/domain/section.entity';
 import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 

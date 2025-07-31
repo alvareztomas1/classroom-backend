@@ -1,8 +1,9 @@
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { Lesson } from '@module/lesson/domain/lesson.entity';
-import { LessonType } from '@module/lesson/domain/lesson.type';
-import { LessonEntity } from '@module/lesson/infrastructure/database/lesson.entity';
+import { Lesson } from '@lesson/domain/lesson.entity';
+import { LessonType } from '@lesson/domain/lesson.type';
+import { LessonEntity } from '@lesson/infrastructure/database/lesson.entity';
+
 import { Section } from '@module/section/domain/section.entity';
 import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
 
