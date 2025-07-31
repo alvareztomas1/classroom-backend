@@ -9,13 +9,13 @@ import {
 import { ICollection } from '@common/base/application/dto/collection.interface';
 import { IGetAllOptions } from '@common/base/application/dto/query-params/get-all-options.interface';
 
-import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
-import { UserMapper } from '@module/iam/user/application/mapper/user.mapper';
-import { IUserRepository } from '@module/iam/user/application/repository/user.repository.interface';
-import { User } from '@module/iam/user/domain/user.entity';
-import { EmailNotFoundException } from '@module/iam/user/infrastructure/database/exception/email-not-found.exception';
-import { UserNotFoundException } from '@module/iam/user/infrastructure/database/exception/user-not-found.exception';
-import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
+import { AppRole } from '@iam/authorization/domain/app-role.enum';
+import { UserMapper } from '@iam/user/application/mapper/user.mapper';
+import { IUserRepository } from '@iam/user/application/repository/user.repository.interface';
+import { User } from '@iam/user/domain/user.entity';
+import { EmailNotFoundException } from '@iam/user/infrastructure/database/exception/email-not-found.exception';
+import { UserNotFoundException } from '@iam/user/infrastructure/database/exception/user-not-found.exception';
+import { UserEntity } from '@iam/user/infrastructure/database/user.entity';
 
 @Injectable()
 export class UserPostgresRepository implements IUserRepository {

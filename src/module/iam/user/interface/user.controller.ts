@@ -17,18 +17,18 @@ import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { FileOptionsFactory } from '@common/base/application/factory/file-options.factory';
 
-import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
-import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
-import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
-import { UpdateUserDtoQuery } from '@module/iam/user/application/dto/update-user.dto';
-import { UserFieldsQueryParamsDto } from '@module/iam/user/application/dto/user-fields-query-params.dto';
-import { UserFilterQueryParamsDto } from '@module/iam/user/application/dto/user-filter-query-params.dto';
-import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
-import { UserSortQueryParamsDto } from '@module/iam/user/application/dto/user-sort-query-params.dto';
-import { ReadUserPolicyHandler } from '@module/iam/user/application/policy/read-user-policy.handler';
-import { UserService } from '@module/iam/user/application/service/user.service';
-import { User } from '@module/iam/user/domain/user.entity';
+import { CurrentUser } from '@iam/authentication/infrastructure/decorator/current-user.decorator';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
+import { UpdateUserDtoQuery } from '@iam/user/application/dto/update-user.dto';
+import { UserFieldsQueryParamsDto } from '@iam/user/application/dto/user-fields-query-params.dto';
+import { UserFilterQueryParamsDto } from '@iam/user/application/dto/user-filter-query-params.dto';
+import { UserResponseDto } from '@iam/user/application/dto/user-response.dto';
+import { UserSortQueryParamsDto } from '@iam/user/application/dto/user-sort-query-params.dto';
+import { ReadUserPolicyHandler } from '@iam/user/application/policy/read-user-policy.handler';
+import { UserService } from '@iam/user/application/service/user.service';
+import { User } from '@iam/user/domain/user.entity';
 
 @Controller('user')
 @UseInterceptors(

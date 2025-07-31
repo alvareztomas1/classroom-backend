@@ -1,7 +1,7 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { IsOptional, IsString } from 'class-validator';
 
-import { UserDto } from '@module/iam/user/application/dto/user.dto';
+import { UserDto } from '@iam/user/application/dto/user.dto';
 
 export class UpdateUserDto
   implements Pick<UserDto, 'firstName' | 'lastName' | 'avatarUrl'>
