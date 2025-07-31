@@ -2,7 +2,7 @@ import { AppRole } from '@iam/authorization/domain/app-role.enum';
 import { AppAction } from '@iam/authorization/domain/app.action.enum';
 import { IPermissionsDefinition } from '@iam/authorization/infrastructure/policy/type/permissions-definition.interface';
 
-import { Section } from '@module/section/domain/section.entity';
+import { Section } from '@section/domain/section.entity';
 
 export const sectionPermissions: IPermissionsDefinition = {
   [AppRole.Regular](_, { cannot }) {

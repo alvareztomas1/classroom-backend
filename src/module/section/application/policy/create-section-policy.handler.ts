@@ -13,7 +13,7 @@ import {
   ICourseRepository,
 } from '@course/application/repository/repository.interface';
 
-import { Section } from '@module/section/domain/section.entity';
+import { Section } from '@section/domain/section.entity';
 
 @Injectable()
 export class CreateSectionPolicyHandler

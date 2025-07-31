@@ -6,18 +6,18 @@ import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/c
 
 import { CourseModule } from '@course/course.module';
 
-import { SectionDtoMapper } from '@module/section/application/mapper/section-dto.mapper';
-import { SectionMapper } from '@module/section/application/mapper/section.mapper';
-import { CreateSectionPolicyHandler } from '@module/section/application/policy/create-section-policy.handler';
-import { DeleteSectionPolicyHandler } from '@module/section/application/policy/delete-section-policy.handler';
-import { UpdateSectionPolicyHandler } from '@module/section/application/policy/update-section-policy.handler';
-import { SECTION_REPOSITORY_KEY } from '@module/section/application/repository/section.repository.interface';
-import { SectionService } from '@module/section/application/service/section.service';
-import { Section } from '@module/section/domain/section.entity';
-import { sectionPermissions } from '@module/section/domain/section.permissions';
-import { SectionEntity } from '@module/section/infrastructure/database/section.entity';
-import { SectionPostgresRepository } from '@module/section/infrastructure/database/section.postgres.repository';
-import { SectionController } from '@module/section/interface/section.controller';
+import { SectionDtoMapper } from '@section/application/mapper/section-dto.mapper';
+import { SectionMapper } from '@section/application/mapper/section.mapper';
+import { CreateSectionPolicyHandler } from '@section/application/policy/create-section-policy.handler';
+import { DeleteSectionPolicyHandler } from '@section/application/policy/delete-section-policy.handler';
+import { UpdateSectionPolicyHandler } from '@section/application/policy/update-section-policy.handler';
+import { SECTION_REPOSITORY_KEY } from '@section/application/repository/section.repository.interface';
+import { SectionService } from '@section/application/service/section.service';
+import { Section } from '@section/domain/section.entity';
+import { sectionPermissions } from '@section/domain/section.permissions';
+import { SectionEntity } from '@section/infrastructure/database/section.entity';
+import { SectionPostgresRepository } from '@section/infrastructure/database/section.postgres.repository';
+import { SectionController } from '@section/interface/section.controller';
 
 export const sectionRepositoryProvider: Provider = {
   provide: SECTION_REPOSITORY_KEY,

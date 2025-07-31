@@ -1,9 +1,9 @@
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { CreateSectionDto } from '@module/section/application/dto/create.section.dto';
-import { SectionResponseDto } from '@module/section/application/dto/section.response.dto';
-import { UpdateSectionDto } from '@module/section/application/dto/update.section.dto';
-import { Section } from '@module/section/domain/section.entity';
+import { CreateSectionDto } from '@section/application/dto/create.section.dto';
+import { SectionResponseDto } from '@section/application/dto/section.response.dto';
+import { UpdateSectionDto } from '@section/application/dto/update.section.dto';
+import { Section } from '@section/domain/section.entity';
 
 export class SectionDtoMapper
   implements

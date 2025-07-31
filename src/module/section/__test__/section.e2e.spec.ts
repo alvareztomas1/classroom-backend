@@ -13,8 +13,8 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
 import { AppAction } from '@iam/authorization/domain/app.action.enum';
 
-import { SectionResponseDto } from '@module/section/application/dto/section.response.dto';
-import { UpdateSectionDto } from '@module/section/application/dto/update.section.dto';
+import { SectionResponseDto } from '@section/application/dto/section.response.dto';
+import { UpdateSectionDto } from '@section/application/dto/update.section.dto';
 
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';

@@ -16,12 +16,12 @@ import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
 
-import { SectionResponseDto } from '@module/section/application/dto/section.response.dto';
-import { UpdateSectionDto } from '@module/section/application/dto/update.section.dto';
-import { CreateSectionPolicyHandler } from '@module/section/application/policy/create-section-policy.handler';
-import { DeleteSectionPolicyHandler } from '@module/section/application/policy/delete-section-policy.handler';
-import { UpdateSectionPolicyHandler } from '@module/section/application/policy/update-section-policy.handler';
-import { SectionService } from '@module/section/application/service/section.service';
+import { SectionResponseDto } from '@section/application/dto/section.response.dto';
+import { UpdateSectionDto } from '@section/application/dto/update.section.dto';
+import { CreateSectionPolicyHandler } from '@section/application/policy/create-section-policy.handler';
+import { DeleteSectionPolicyHandler } from '@section/application/policy/delete-section-policy.handler';
+import { UpdateSectionPolicyHandler } from '@section/application/policy/update-section-policy.handler';
+import { SectionService } from '@section/application/service/section.service';
 
 import { CreateSectionDtoQuery } from '../application/dto/create.section.dto';
 
