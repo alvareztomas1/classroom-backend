@@ -9,9 +9,9 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 
-import { POLICIES_KEY } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
-import { IPolicyHandler } from '@module/iam/authorization/infrastructure/policy/handler/policy-handler.interface';
-import { PolicyHandlerStorage } from '@module/iam/authorization/infrastructure/policy/storage/policies-handler.storage';
+import { POLICIES_KEY } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { IPolicyHandler } from '@iam/authorization/infrastructure/policy/handler/policy-handler.interface';
+import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/storage/policies-handler.storage';
 
 @Injectable()
 export class PoliciesGuard implements CanActivate {

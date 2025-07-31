@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
-import { CaslAbilityFactory } from '@module/iam/authorization/infrastructure/casl/factory/casl-ability.factory';
-import { AppSubjects } from '@module/iam/authorization/infrastructure/casl/type/app-subjects.type';
-import { User } from '@module/iam/user/domain/user.entity';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+import { CaslAbilityFactory } from '@iam/authorization/infrastructure/casl/factory/casl-ability.factory';
+import { AppSubjects } from '@iam/authorization/infrastructure/casl/type/app-subjects.type';
+import { User } from '@iam/user/domain/user.entity';
 
 @Injectable()
 export class AuthorizationService {

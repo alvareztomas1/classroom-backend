@@ -5,11 +5,11 @@ import {
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
-import { AppSubjectPermissionStorage } from '@module/iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
-import { AppAbility } from '@module/iam/authorization/infrastructure/casl/type/app-ability.type';
-import { AppSubjects } from '@module/iam/authorization/infrastructure/casl/type/app-subjects.type';
-import { IPermissionsDefinition } from '@module/iam/authorization/infrastructure/policy/type/permissions-definition.interface';
-import { User } from '@module/iam/user/domain/user.entity';
+import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+import { AppAbility } from '@iam/authorization/infrastructure/casl/type/app-ability.type';
+import { AppSubjects } from '@iam/authorization/infrastructure/casl/type/app-subjects.type';
+import { IPermissionsDefinition } from '@iam/authorization/infrastructure/policy/type/permissions-definition.interface';
+import { User } from '@iam/user/domain/user.entity';
 
 @Injectable()
 export class CaslAbilityFactory {
