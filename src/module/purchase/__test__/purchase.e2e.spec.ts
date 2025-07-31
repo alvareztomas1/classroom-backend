@@ -14,6 +14,7 @@ import { datasourceOptions } from '@config/orm.config';
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';
 
+import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { CreatePurchaseDtoRequest } from '@module/purchase/application/dto/create-purchase.dto';
 import { UpdatePurchaseDto } from '@module/purchase/application/dto/update-purchase.dto';
 import {
@@ -30,6 +31,9 @@ import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
 describe('Purchase Module', () => {
   let app: NestExpressApplication;
 
+  const superAdminToken = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000X',
+  });
   const regularToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000Z',
   });
@@ -125,6 +129,28 @@ describe('Purchase Module', () => {
               },
               status: HttpStatus.NOT_FOUND.toString(),
               title: 'Entity not found',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny access to a user who is not the owner of the purchase', async () => {
+      const existingPurchaseId = 'e6c78b10-d9b0-4819-ac4e-a36ca36f8554';
+
+      return await request(app.getHttpServer())
+        .get(`${endpoint}/${existingPurchaseId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Read.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${existingPurchaseId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
             },
           });
           expect(body).toEqual(expectedResponse);
@@ -287,7 +313,7 @@ describe('Purchase Module', () => {
 
       return await request(app.getHttpServer())
         .patch(`${endpoint}/${existingPurchaseId}`)
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .send(updatePurchaseDto)
         .expect(HttpStatus.OK)
         .then(({ body }) => {
@@ -327,7 +353,7 @@ describe('Purchase Module', () => {
 
       return await request(app.getHttpServer())
         .patch(`${endpoint}/${nonExistingPurchaseId}`)
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .send(updatePurchaseDto)
         .expect(HttpStatus.NOT_FOUND)
         .then(({ body }) => {
@@ -354,7 +380,7 @@ describe('Purchase Module', () => {
 
       return await request(app.getHttpServer())
         .patch(`${endpoint}/${purchaseId}`)
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .send(updatePurchaseDto)
         .expect(HttpStatus.BAD_REQUEST)
         .then(({ body }) => {
@@ -366,6 +392,33 @@ describe('Purchase Module', () => {
               },
               status: HttpStatus.BAD_REQUEST.toString(),
               title: 'Invalid purchase',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny access to non-super-admin users', async () => {
+      const existingPurchaseId = 'e6c78b10-d9b0-4819-ac4e-a36ca36f8554';
+      const updatePurchaseDto = {
+        status: PurchaseStatus.COMPLETED,
+        paymentTransactionId: '00000000-0000-0000-0000-000000000000',
+      } as UpdatePurchaseDto;
+
+      return await request(app.getHttpServer())
+        .patch(`${endpoint}/${existingPurchaseId}`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(updatePurchaseDto)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${existingPurchaseId}`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
             },
           });
           expect(body).toEqual(expectedResponse);

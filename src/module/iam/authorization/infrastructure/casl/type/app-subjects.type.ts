@@ -4,6 +4,7 @@ import { Course } from '@module/course/domain/course.entity';
 import { User } from '@module/iam/user/domain/user.entity';
 import { Lesson } from '@module/lesson/domain/lesson.entity';
 import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
+import { Purchase } from '@module/purchase/domain/purchase.entity';
 import { Section } from '@module/section/domain/section.entity';
 
 export type AppSubjects =
@@ -18,5 +19,7 @@ export type AppSubjects =
       | Lesson
       | typeof PaymentMethod
       | PaymentMethod
+      | typeof Purchase
+      | Purchase
     >
   | 'all';
