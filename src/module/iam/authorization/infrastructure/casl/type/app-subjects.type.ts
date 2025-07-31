@@ -4,7 +4,8 @@ import { User } from '@iam/user/domain/user.entity';
 
 import { Course } from '@course/domain/course.entity';
 
-import { Lesson } from '@module/lesson/domain/lesson.entity';
+import { Lesson } from '@lesson/domain/lesson.entity';
+
 import { PaymentMethod } from '@module/payment-method/domain/payment-method.entity';
 import { Purchase } from '@module/purchase/domain/purchase.entity';
 import { Section } from '@module/section/domain/section.entity';
