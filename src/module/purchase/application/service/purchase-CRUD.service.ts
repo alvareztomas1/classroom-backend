@@ -10,12 +10,12 @@ import {
   ICourseRepository,
 } from '@course/application/repository/repository.interface';
 
-import { CreatePurchaseDto } from '@module/purchase/application/dto/create-purchase.dto';
-import { PurchaseResponseDto } from '@module/purchase/application/dto/purchase-response.dto';
-import { UpdatePurchaseDto } from '@module/purchase/application/dto/update-purchase.dto';
-import { CourseNotPublishedException } from '@module/purchase/application/exception/course-not-published.exception';
-import { InvalidPurchaseException } from '@module/purchase/application/exception/invalid-purchase.exception';
-import { PurchaseAlreadyExists } from '@module/purchase/application/exception/purchase-already-exists-exception';
+import { CreatePurchaseDto } from '@purchase/application/dto/create-purchase.dto';
+import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
+import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
+import { CourseNotPublishedException } from '@purchase/application/exception/course-not-published.exception';
+import { InvalidPurchaseException } from '@purchase/application/exception/invalid-purchase.exception';
+import { PurchaseAlreadyExists } from '@purchase/application/exception/purchase-already-exists-exception';
 import {
   CAN_NOT_BUY_OWN_COURSE_MESSAGE,
   COURSE_NOT_PUBLISHED_MESSAGE,
@@ -23,17 +23,17 @@ import {
   PURCHASE_ALREADY_EXISTS_MESSAGE,
   PURCHASE_FOR_COURSE_MESSAGE,
   STATUS_TRANSITION_MESSAGE,
-} from '@module/purchase/application/exception/purchase-exception.messages';
-import { SelfPurchaseNotAllowedException } from '@module/purchase/application/exception/self-purchase-not-allowed.exception';
-import { PurchaseDtoMapper } from '@module/purchase/application/mapper/purchase-dto.mapper';
+} from '@purchase/application/exception/purchase-exception.messages';
+import { SelfPurchaseNotAllowedException } from '@purchase/application/exception/self-purchase-not-allowed.exception';
+import { PurchaseDtoMapper } from '@purchase/application/mapper/purchase-dto.mapper';
 import {
   IPurchaseRepository,
   PURCHASE_REPOSITORY_KEY,
-} from '@module/purchase/application/repository/purchase-repository.interface';
-import { IPurchaseCRUDService } from '@module/purchase/application/service/purchase-CRUD-service.interface';
-import { Purchase } from '@module/purchase/domain/purchase.entity';
-import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
-import { PurchaseEntity } from '@module/purchase/infrastructure/database/purchase.entity';
+} from '@purchase/application/repository/purchase-repository.interface';
+import { IPurchaseCRUDService } from '@purchase/application/service/purchase-CRUD-service.interface';
+import { Purchase } from '@purchase/domain/purchase.entity';
+import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
+import { PurchaseEntity } from '@purchase/infrastructure/database/purchase.entity';
 
 @Injectable()
 export class PurchaseCRUDService

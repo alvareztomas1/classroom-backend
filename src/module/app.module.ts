@@ -20,7 +20,8 @@ import { LessonModule } from '@lesson/lesson.module';
 
 import { PaymentMethodModule } from '@payment-method/payment-method.module';
 
-import { PurchaseModule } from '@module/purchase/purchase.module';
+import { PurchaseModule } from '@purchase/purchase.module';
+
 import { SectionModule } from '@module/section/section.module';
 
 @Global()

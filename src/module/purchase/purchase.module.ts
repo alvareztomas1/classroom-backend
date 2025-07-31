@@ -7,18 +7,18 @@ import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/c
 import { CourseModule } from '@course/course.module';
 import { CourseEntity } from '@course/infrastructure/database/course.entity';
 
-import { PurchaseDtoMapper } from '@module/purchase/application/mapper/purchase-dto.mapper';
-import { PurchaseMapper } from '@module/purchase/application/mapper/purchase.mapper';
-import { ReadPurchasePolicyHandler } from '@module/purchase/application/policy/read-purchase-policy.handler';
-import { UpdatePurchasePolicyHandler } from '@module/purchase/application/policy/update-purchase-policy.handler';
-import { PURCHASE_REPOSITORY_KEY } from '@module/purchase/application/repository/purchase-repository.interface';
-import { PURCHASE_CRUD_SERVICE_KEY } from '@module/purchase/application/service/purchase-CRUD-service.interface';
-import { PurchaseCRUDService } from '@module/purchase/application/service/purchase-CRUD.service';
-import { Purchase } from '@module/purchase/domain/purchase.entity';
-import { purchasePermissions } from '@module/purchase/domain/purchase.permissions';
-import { PurchaseEntity } from '@module/purchase/infrastructure/database/purchase.entity';
-import { PurchasePostgresRepository } from '@module/purchase/infrastructure/database/purchase.postgres.repository';
-import { PurchaseController } from '@module/purchase/interface/purchase.controller';
+import { PurchaseDtoMapper } from '@purchase/application/mapper/purchase-dto.mapper';
+import { PurchaseMapper } from '@purchase/application/mapper/purchase.mapper';
+import { ReadPurchasePolicyHandler } from '@purchase/application/policy/read-purchase-policy.handler';
+import { UpdatePurchasePolicyHandler } from '@purchase/application/policy/update-purchase-policy.handler';
+import { PURCHASE_REPOSITORY_KEY } from '@purchase/application/repository/purchase-repository.interface';
+import { PURCHASE_CRUD_SERVICE_KEY } from '@purchase/application/service/purchase-CRUD-service.interface';
+import { PurchaseCRUDService } from '@purchase/application/service/purchase-CRUD.service';
+import { Purchase } from '@purchase/domain/purchase.entity';
+import { purchasePermissions } from '@purchase/domain/purchase.permissions';
+import { PurchaseEntity } from '@purchase/infrastructure/database/purchase.entity';
+import { PurchasePostgresRepository } from '@purchase/infrastructure/database/purchase.postgres.repository';
+import { PurchaseController } from '@purchase/interface/purchase.controller';
 
 const purchaseRepositoryProvider: Provider = {
   provide: PURCHASE_REPOSITORY_KEY,

@@ -2,7 +2,7 @@ import { Column, Entity } from 'typeorm';
 
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 
-import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
+import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
 
 @Entity('purchase')
 export class PurchaseEntity extends BaseEntity {

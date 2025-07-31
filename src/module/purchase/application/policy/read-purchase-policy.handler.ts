@@ -10,7 +10,7 @@ import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/s
 import {
   IPurchaseRepository,
   PURCHASE_REPOSITORY_KEY,
-} from '@module/purchase/application/repository/purchase-repository.interface';
+} from '@purchase/application/repository/purchase-repository.interface';
 
 @Injectable()
 export class ReadPurchasePolicyHandler

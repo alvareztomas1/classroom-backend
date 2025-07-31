@@ -1,7 +1,7 @@
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 
-import { Purchase } from '@module/purchase/domain/purchase.entity';
-import { PurchaseEntity } from '@module/purchase/infrastructure/database/purchase.entity';
+import { Purchase } from '@purchase/domain/purchase.entity';
+import { PurchaseEntity } from '@purchase/infrastructure/database/purchase.entity';
 
 export const PURCHASE_REPOSITORY_KEY = 'purchase_repository';
 

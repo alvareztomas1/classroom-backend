@@ -7,7 +7,7 @@ import { AppAction } from '@iam/authorization/domain/app.action.enum';
 import { IPolicyHandler } from '@iam/authorization/infrastructure/policy/handler/policy-handler.interface';
 import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/storage/policies-handler.storage';
 
-import { Purchase } from '@module/purchase/domain/purchase.entity';
+import { Purchase } from '@purchase/domain/purchase.entity';
 
 @Injectable()
 export class UpdatePurchasePolicyHandler
