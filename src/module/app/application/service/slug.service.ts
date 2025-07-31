@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import slugify from 'slugify';
 
-import { ISlugService } from '@module/app/application/service/slug-service.interface';
+import { ISlugService } from '@app/application/service/slug-service.interface';
 
 @Injectable()
 export class SlugService implements ISlugService {

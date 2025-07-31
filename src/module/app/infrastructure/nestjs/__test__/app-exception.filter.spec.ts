@@ -2,7 +2,7 @@ import { ArgumentsHost, HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Request, Response } from 'express';
 
-import { AppExceptionFilter } from '@module/app/infrastructure/nestjs/app-exception.filter';
+import { AppExceptionFilter } from '@app/infrastructure/nestjs/app-exception.filter';
 
 describe('AppExceptionFilter', () => {
   let appExceptionFilter: AppExceptionFilter;
