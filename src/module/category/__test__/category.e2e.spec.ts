@@ -16,11 +16,12 @@ import {
 import { INonPaginatedSerializedCollection } from '@common/base/application/dto/serialized-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
 import { CategoryDto } from '@module/category/application/dto/category.dto';
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';

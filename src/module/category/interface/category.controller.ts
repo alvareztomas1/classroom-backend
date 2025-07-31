@@ -17,6 +17,9 @@ import { PageQueryParamsDto } from '@common/base/application/dto/query-params/pa
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
+import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
+
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
 import { CategoryFieldsQueryParamsDto } from '@module/category/application/dto/query-params/category-fields-query-params.dto';
@@ -27,8 +30,6 @@ import { CreateCategoryPolicyHandler } from '@module/category/application/policy
 import { DeleteCategoryPolicyHandler } from '@module/category/application/policy/delete-category-policy.handler';
 import { UpdateCategoryPolicyHandler } from '@module/category/application/policy/update-category-policy.handler';
 import { CategoryCRUDService } from '@module/category/application/service/category-crud.service';
-import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
-import { PoliciesGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
 
 @Controller('category')
 @UseGuards(PoliciesGuard)
