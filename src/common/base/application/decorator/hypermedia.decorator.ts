@@ -2,8 +2,8 @@ import { CustomDecorator, SetMetadata } from '@nestjs/common';
 
 import { ILink } from '@common/base/application/dto/serialized-response.interface';
 
-import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
-import { AppSubjects } from '@module/iam/authorization/infrastructure/casl/type/app-subjects.type';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
+import { AppSubjects } from '@iam/authorization/infrastructure/casl/type/app-subjects.type';
 
 export interface ILinkMetadata extends Omit<ILink, 'href'> {
   endpoint: string;
