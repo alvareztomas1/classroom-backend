@@ -1,7 +1,7 @@
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 
-import { Lesson } from '@module/lesson/domain/lesson.entity';
-import { LessonEntity } from '@module/lesson/infrastructure/database/lesson.entity';
+import { Lesson } from '@lesson/domain/lesson.entity';
+import { LessonEntity } from '@lesson/infrastructure/database/lesson.entity';
 
 export const LESSON_REPOSITORY_KEY = 'lesson_repository';
 

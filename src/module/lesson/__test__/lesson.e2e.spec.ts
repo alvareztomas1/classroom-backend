@@ -17,10 +17,10 @@ import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
 import { AppAction } from '@iam/authorization/domain/app.action.enum';
 
-import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
-import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
-import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
-import { LessonType } from '@module/lesson/domain/lesson.type';
+import { CreateLessonDto } from '@lesson/application/dto/create-lesson.dto';
+import { LessonResponseDto } from '@lesson/application/dto/lesson-response.dto';
+import { UpdateLessonDto } from '@lesson/application/dto/update-lesson.dto';
+import { LessonType } from '@lesson/domain/lesson.type';
 
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken, createLargeMockFile } from '@test/test.util';

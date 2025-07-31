@@ -9,7 +9,8 @@ import {
 
 import { BaseDto } from '@common/base/application/dto/base.dto';
 
-import { LessonType } from '@module/lesson/domain/lesson.type';
+import { LessonType } from '@lesson/domain/lesson.type';
+
 import { Section } from '@module/section/domain/section.entity';
 
 export class LessonDto extends BaseDto {

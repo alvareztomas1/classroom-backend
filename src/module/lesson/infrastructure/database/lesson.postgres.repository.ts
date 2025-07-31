@@ -4,10 +4,10 @@ import { Repository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 
-import { LessonMapper } from '@module/lesson/application/mapper/lesson.mapper';
-import { ILessonRepository } from '@module/lesson/application/repository/lesson.repository.interface';
-import { Lesson } from '@module/lesson/domain/lesson.entity';
-import { LessonEntity } from '@module/lesson/infrastructure/database/lesson.entity';
+import { LessonMapper } from '@lesson/application/mapper/lesson.mapper';
+import { ILessonRepository } from '@lesson/application/repository/lesson.repository.interface';
+import { Lesson } from '@lesson/domain/lesson.entity';
+import { LessonEntity } from '@lesson/infrastructure/database/lesson.entity';
 
 @Injectable()
 export class LessonPostgresRepository

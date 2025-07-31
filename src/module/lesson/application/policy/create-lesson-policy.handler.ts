@@ -12,7 +12,8 @@ import { AppAction } from '@iam/authorization/domain/app.action.enum';
 import { IPolicyHandler } from '@iam/authorization/infrastructure/policy/handler/policy-handler.interface';
 import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/storage/policies-handler.storage';
 
-import { Lesson } from '@module/lesson/domain/lesson.entity';
+import { Lesson } from '@lesson/domain/lesson.entity';
+
 import {
   ISectionRepository,
   SECTION_REPOSITORY_KEY,

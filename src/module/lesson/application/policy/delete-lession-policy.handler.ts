@@ -15,8 +15,8 @@ import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/s
 import {
   ILessonRepository,
   LESSON_REPOSITORY_KEY,
-} from '@module/lesson/application/repository/lesson.repository.interface';
-import { Lesson } from '@module/lesson/domain/lesson.entity';
+} from '@lesson/application/repository/lesson.repository.interface';
+import { Lesson } from '@lesson/domain/lesson.entity';
 
 export class DeleteLessonPolicyHandler
   extends BasePolicyHandler
