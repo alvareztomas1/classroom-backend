@@ -3,20 +3,20 @@ import { HttpStatus } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 
+import { setupApp } from '@config/app.config';
+import { datasourceOptions } from '@config/orm.config';
+
 import { loadFixtures } from '@data/util/fixture-loader';
 
 import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
-import { setupApp } from '@config/app.config';
-import { datasourceOptions } from '@config/orm.config';
-
-import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
-import { createAccessToken } from '@test/test.util';
-
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { SectionResponseDto } from '@module/section/application/dto/section.response.dto';
 import { UpdateSectionDto } from '@module/section/application/dto/update.section.dto';
+
+import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
+import { createAccessToken } from '@test/test.util';
 
 import { CreateSectionDto } from '../application/dto/create.section.dto';
 

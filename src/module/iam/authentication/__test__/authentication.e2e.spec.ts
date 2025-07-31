@@ -4,6 +4,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import path from 'path';
 import request from 'supertest';
 
+import { setupApp } from '@config/app.config';
+import { datasourceOptions } from '@config/orm.config';
+
 import { loadFixtures } from '@data/util/fixture-loader';
 
 import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant';
@@ -11,11 +14,6 @@ import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { IAppErrorResponse } from '@common/base/application/exception/app-error-response.interface';
 import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
-
-import { setupApp } from '@config/app.config';
-import { datasourceOptions } from '@config/orm.config';
-
-import { createAccessToken, createLargeMockFile } from '@test/test.util';
 
 import { ConfirmPasswordDto } from '@module/iam/authentication/application/dto/confirm-password.dto';
 import { ConfirmUserDto } from '@module/iam/authentication/application/dto/confirm-user.dto';
@@ -53,6 +51,8 @@ import { UnexpectedErrorCodeException } from '@module/iam/authentication/infrast
 import { UserNotConfirmedException } from '@module/iam/authentication/infrastructure/cognito/exception/user-not-confirmed.exception';
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 import { User } from '@module/iam/user/domain/user.entity';
+
+import { createAccessToken, createLargeMockFile } from '@test/test.util';
 
 import {
   identityProviderServiceMock,

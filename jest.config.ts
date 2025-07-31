@@ -17,12 +17,19 @@ export default async (): Promise<Config> => {
     testEnvironment: 'node',
     moduleNameMapper: {
       '^@/(.*)$': '<rootDir>/../src/$1',
-      '^@root/(.*)$': '<rootDir>/../$1',
-      '^@data/(.*)$': '<rootDir>/../data/$1',
-      '^@common/(.*)$': '<rootDir>/common/$1',
+      '^@cloud/(.*)$': '<rootDir>/module/cloud/$1',
       '^@config/(.*)$': '<rootDir>/config/$1',
+      '^@common/(.*)$': '<rootDir>/common/$1',
+      '^@data/(.*)$': '<rootDir>/../data/$1',
+      '^@iam/(.*)$': '<rootDir>/module/iam/$1',
+      '^@course/(.*)$': '<rootDir>/module/course/$1',
+      '^@section/(.*)$': '<rootDir>/module/section/$1',
+      '^@lesson/(.*)$': '<rootDir>/module/lesson/$1',
+      '^@payment-method/(.*)$': '<rootDir>/module/payment-method/$1',
+      '^@purchase/(.*)$': '<rootDir>/module/purchase/$1',
       '^@module/(.*)$': '<rootDir>/module/$1',
       '^@test/(.*)$': '<rootDir>/test/$1',
+      '^@root/(.*)$': '<rootDir>/../$1',
     },
   };
 };

@@ -1,10 +1,11 @@
 import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
+import { Course } from '@course/domain/course.entity';
+import { CourseEntity } from '@course/infrastructure/database/course.entity';
+
 import { Category } from '@module/category/domain/category.entity';
 import { CategoryEntity } from '@module/category/infrastructure/database/category.entity';
-import { Course } from '@module/course/domain/course.entity';
-import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
 import { User } from '@module/iam/user/domain/user.entity';
 import { UserEntity } from '@module/iam/user/infrastructure/database/user.entity';
 import { Section } from '@module/section/domain/section.entity';

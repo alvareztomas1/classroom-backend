@@ -22,11 +22,19 @@
       "@data/*": ["data/*"],
       "@common/*": ["src/common/*"],
       "@config/*": ["src/config/*"],
+      "@cloud/*": ["src/cloud/*"],
+      "@iam/*": ["src/module/iam/*"],
+      "@course/*": ["src/module/course/*"],
+      "@section/*": ["src/module/section/*"],
+      "@lesson/*": ["src/module/lesson/*"],
+      "@purchase/*": ["src/module/purchase/*"],
+      "@payment-method/*": ["src/module/payment-method/*"],
       "@module/*": ["src/module/*"],
       "@test/*": ["src/test/*"],
       "@/*": ["src/*"],
       "@root/*": ["*"]
     },
+
     "inlineSources": true,
     "sourceRoot": "/"
   }

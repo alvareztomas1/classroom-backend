@@ -4,6 +4,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import path from 'path';
 import request from 'supertest';
 
+import { setupApp } from '@config/app.config';
+import { datasourceOptions } from '@config/orm.config';
+
 import { loadFixtures } from '@data/util/fixture-loader';
 
 import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant';
@@ -16,16 +19,13 @@ import { ImageFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
-import { setupApp } from '@config/app.config';
-import { datasourceOptions } from '@config/orm.config';
-
-import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
-import { createAccessToken, createLargeMockFile } from '@test/test.util';
-
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
 import { UserResponseDto } from '@module/iam/user/application/dto/user-response.dto';
 import { UserDto } from '@module/iam/user/application/dto/user.dto';
 import { User } from '@module/iam/user/domain/user.entity';
+
+import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
+import { createAccessToken, createLargeMockFile } from '@test/test.util';
 
 describe('User Module', () => {
   let app: NestExpressApplication;

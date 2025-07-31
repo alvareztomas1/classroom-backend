@@ -4,6 +4,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import path from 'path';
 import request from 'supertest';
 
+import { setupApp } from '@config/app.config';
+import { datasourceOptions } from '@config/orm.config';
+
 import { loadFixtures } from '@data/util/fixture-loader';
 
 import { MAX_FILE_SIZES } from '@common/base/application/constant/file.constant';
@@ -12,17 +15,14 @@ import { FileFormat } from '@common/base/application/enum/file-format.enum';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { fromBytesToMB } from '@common/base/application/mapper/base.mapper';
 
-import { setupApp } from '@config/app.config';
-import { datasourceOptions } from '@config/orm.config';
-
-import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
-import { createAccessToken, createLargeMockFile } from '@test/test.util';
-
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { CreateLessonDto } from '@module/lesson/application/dto/create-lesson.dto';
 import { LessonResponseDto } from '@module/lesson/application/dto/lesson-response.dto';
 import { UpdateLessonDto } from '@module/lesson/application/dto/update-lesson.dto';
 import { LessonType } from '@module/lesson/domain/lesson.type';
+
+import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
+import { createAccessToken, createLargeMockFile } from '@test/test.util';
 
 describe('Lesson Module', () => {
   let app: NestExpressApplication;

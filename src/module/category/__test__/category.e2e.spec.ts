@@ -3,6 +3,9 @@ import { HttpStatus } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 
+import { setupApp } from '@config/app.config';
+import { datasourceOptions } from '@config/orm.config';
+
 import { loadFixtures } from '@data/util/fixture-loader';
 
 import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
@@ -13,17 +16,14 @@ import {
 import { INonPaginatedSerializedCollection } from '@common/base/application/dto/serialized-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
-import { setupApp } from '@config/app.config';
-import { datasourceOptions } from '@config/orm.config';
-
-import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
-import { createAccessToken } from '@test/test.util';
-
 import { CategoryResponseDto } from '@module/category/application/dto/category-response.dto';
 import { CategoryDto } from '@module/category/application/dto/category.dto';
 import { CreateCategoryDto } from '@module/category/application/dto/create-category.dto';
 import { UpdateCategoryDto } from '@module/category/application/dto/update-category.dto';
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
+
+import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
+import { createAccessToken } from '@test/test.util';
 
 describe('Category Module', () => {
   let app: NestExpressApplication;

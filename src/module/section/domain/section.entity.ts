@@ -1,6 +1,7 @@
 import { Base } from '@common/base/domain/base.entity';
 
-import { Course } from '@module/course/domain/course.entity';
+import { Course } from '@course/domain/course.entity';
+
 import { Lesson } from '@module/lesson/domain/lesson.entity';
 
 export class Section extends Base {

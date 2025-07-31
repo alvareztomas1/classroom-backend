@@ -3,7 +3,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
 import { ArrayTransformer } from '@common/transformers/array.transformer';
 
-import { CourseEntity } from '@module/course/infrastructure/database/course.entity';
+import { CourseEntity } from '@course/infrastructure/database/course.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {

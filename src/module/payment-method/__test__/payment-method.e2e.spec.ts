@@ -3,6 +3,9 @@ import { HttpStatus } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 
+import { setupApp } from '@config/app.config';
+import { datasourceOptions } from '@config/orm.config';
+
 import { loadFixtures } from '@data/util/fixture-loader';
 
 import { IPagingCollectionData } from '@common/base/application/dto/collection.interface';
@@ -13,17 +16,14 @@ import {
 import { SuccessOperationResponseDto } from '@common/base/application/dto/success-operation-response.dto';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
-import { setupApp } from '@config/app.config';
-import { datasourceOptions } from '@config/orm.config';
-
-import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
-import { createAccessToken } from '@test/test.util';
-
 import { AppAction } from '@module/iam/authorization/domain/app.action.enum';
 import { CreatePaymentMethodDto } from '@module/payment-method/application/dto/create-payment-method.dto';
 import { PaymentMethodResponseDto } from '@module/payment-method/application/dto/payment-method-response.dto';
 import { PaymentMethodDto } from '@module/payment-method/application/dto/payment-method.dto';
 import { UpdatePaymentMethodDto } from '@module/payment-method/application/dto/update-payment-method.dto';
+
+import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
+import { createAccessToken } from '@test/test.util';
 
 describe('PaymentMethod Module', () => {
   let app: NestExpressApplication;

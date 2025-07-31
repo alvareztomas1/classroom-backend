@@ -7,15 +7,23 @@
   "plugins": ["@trivago/prettier-plugin-sort-imports"],
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
+    "^@cloud/(.*)$",
+    "^@config/(.*)$",
     "^@data/(.*)$",
     "^@common/(.*)$",
-    "^@config/(.*)$",
-    "^@test/(.*)$",
+    "^@iam/(.*)$",
+    "^@course/(.*)$",
+    "^@section/(.*)$",
+    "^@lesson/(.*)$",
+    "^@payment-method/(.*)$",
+    "^@purchase/(.*)$",
     "^@module/(.*)$",
+    "^@test/(.*)$",
     "^@root/(.*)$",
     "^@/(.*)$",
     "^[./]"
   ],
+
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "importOrderParserPlugins": [

@@ -4,7 +4,8 @@ import { Request } from 'express';
 import {
   COURSE_REPOSITORY_KEY,
   ICourseRepository,
-} from '@module/course/application/repository/repository.interface';
+} from '@course/application/repository/repository.interface';
+
 import { BasePolicyHandler } from '@module/iam/authorization/application/policy/base-policy.handler';
 import { AuthorizationService } from '@module/iam/authorization/application/service/authorization.service';
 import { AppRole } from '@module/iam/authorization/domain/app-role.enum';
