@@ -21,6 +21,7 @@ export default async (): Promise<Config> => {
       '^@config/(.*)$': '<rootDir>/config/$1',
       '^@common/(.*)$': '<rootDir>/common/$1',
       '^@data/(.*)$': '<rootDir>/../data/$1',
+      '^@app/(.*)$': '<rootDir>/module/app/$1',
       '^@iam/(.*)$': '<rootDir>/module/iam/$1',
       '^@course/(.*)$': '<rootDir>/module/course/$1',
       '^@section/(.*)$': '<rootDir>/module/section/$1',

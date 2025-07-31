@@ -8,6 +8,8 @@ import {
 import { PublishStatus } from '@common/base/application/enum/publish-status.enum';
 import { BaseCRUDService } from '@common/base/application/service/base-crud.service';
 
+import { SlugService } from '@app/application/service/slug.service';
+
 import { CourseResponseDto } from '@course/application/dto/course-response.dto';
 import { CreateCourseDto } from '@course/application/dto/create-course.dto';
 import { UpdateCourseDto } from '@course/application/dto/update-course.dto';
@@ -19,7 +21,6 @@ import {
 import { Course } from '@course/domain/course.entity';
 import { CourseEntity } from '@course/infrastructure/database/course.entity';
 
-import { SlugService } from '@module/app/application/service/slug.service';
 import {
   CATEGORY_REPOSITORY_KEY,
   ICategoryRepository,

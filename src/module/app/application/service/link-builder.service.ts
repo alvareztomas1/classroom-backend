@@ -9,7 +9,7 @@ import {
 } from '@common/base/application/dto/serialized-response.interface';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 
-import { ILinkBuilderService } from '@module/app/application/service/link-builder.service.interface';
+import { ILinkBuilderService } from '@app/application/service/link-builder.service.interface';
 
 @Injectable()
 export class LinkBuilderService implements ILinkBuilderService {

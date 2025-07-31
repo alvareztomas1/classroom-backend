@@ -5,12 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { environmentConfig } from '@config/environment.config';
 import { datasourceOptions } from '@config/orm.config';
 
+import { LinkBuilderService } from '@app/application/service/link-builder.service';
+import { SlugService } from '@app/application/service/slug.service';
+
 import { IamModule } from '@iam/iam.module';
 
 import { CourseModule } from '@course/course.module';
 
-import { LinkBuilderService } from '@module/app/application/service/link-builder.service';
-import { SlugService } from '@module/app/application/service/slug.service';
 import { CategoryModule } from '@module/category/category.module';
 import { CloudModule } from '@module/cloud/cloud.module';
 import { LessonModule } from '@module/lesson/lesson.module';
