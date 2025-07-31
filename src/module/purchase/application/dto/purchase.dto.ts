@@ -11,7 +11,7 @@ import {
 
 import { BaseDto } from '@common/base/application/dto/base.dto';
 
-import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
+import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
 
 export class PurchaseDto extends BaseDto {
   @IsNotEmpty()

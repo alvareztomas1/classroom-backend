@@ -1,9 +1,9 @@
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { CreatePurchaseDto } from '@module/purchase/application/dto/create-purchase.dto';
-import { PurchaseResponseDto } from '@module/purchase/application/dto/purchase-response.dto';
-import { UpdatePurchaseDto } from '@module/purchase/application/dto/update-purchase.dto';
-import { Purchase } from '@module/purchase/domain/purchase.entity';
+import { CreatePurchaseDto } from '@purchase/application/dto/create-purchase.dto';
+import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
+import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
+import { Purchase } from '@purchase/domain/purchase.entity';
 
 export class PurchaseDtoMapper
   implements

@@ -1,6 +1,6 @@
 import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 
-import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
+import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
 
 export class PurchaseResponseDto extends BaseResponseDto {
   userId: string;

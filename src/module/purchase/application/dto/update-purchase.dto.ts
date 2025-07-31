@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
 
-import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
+import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
 
 export class UpdatePurchaseDto {
   @IsNotEmpty()

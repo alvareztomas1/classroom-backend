@@ -4,11 +4,11 @@ import { In, Repository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 
-import { PurchaseMapper } from '@module/purchase/application/mapper/purchase.mapper';
-import { IPurchaseRepository } from '@module/purchase/application/repository/purchase-repository.interface';
-import { Purchase } from '@module/purchase/domain/purchase.entity';
-import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
-import { PurchaseEntity } from '@module/purchase/infrastructure/database/purchase.entity';
+import { PurchaseMapper } from '@purchase/application/mapper/purchase.mapper';
+import { IPurchaseRepository } from '@purchase/application/repository/purchase-repository.interface';
+import { Purchase } from '@purchase/domain/purchase.entity';
+import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
+import { PurchaseEntity } from '@purchase/infrastructure/database/purchase.entity';
 
 @Injectable()
 export class PurchasePostgresRepository

@@ -13,8 +13,8 @@ import { IS_NOT_VALID_MESSAGE } from '@common/base/application/exception/base-ex
 
 import { AppAction } from '@iam/authorization/domain/app.action.enum';
 
-import { CreatePurchaseDtoRequest } from '@module/purchase/application/dto/create-purchase.dto';
-import { UpdatePurchaseDto } from '@module/purchase/application/dto/update-purchase.dto';
+import { CreatePurchaseDtoRequest } from '@purchase/application/dto/create-purchase.dto';
+import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
 import {
   CAN_NOT_BUY_OWN_COURSE_MESSAGE,
   COURSE_NOT_PUBLISHED_MESSAGE,
@@ -22,9 +22,9 @@ import {
   PURCHASE_ALREADY_EXISTS_MESSAGE,
   PURCHASE_FOR_COURSE_MESSAGE,
   STATUS_TRANSITION_MESSAGE,
-} from '@module/purchase/application/exception/purchase-exception.messages';
-import { Purchase } from '@module/purchase/domain/purchase.entity';
-import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
+} from '@purchase/application/exception/purchase-exception.messages';
+import { Purchase } from '@purchase/domain/purchase.entity';
+import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
 
 import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';

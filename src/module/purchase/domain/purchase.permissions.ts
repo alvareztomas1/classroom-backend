@@ -2,7 +2,7 @@ import { AppRole } from '@iam/authorization/domain/app-role.enum';
 import { AppAction } from '@iam/authorization/domain/app.action.enum';
 import { IPermissionsDefinition } from '@iam/authorization/infrastructure/policy/type/permissions-definition.interface';
 
-import { Purchase } from '@module/purchase/domain/purchase.entity';
+import { Purchase } from '@purchase/domain/purchase.entity';
 
 export const purchasePermissions: IPermissionsDefinition = {
   [AppRole.Regular](user, { can }) {

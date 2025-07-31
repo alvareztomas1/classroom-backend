@@ -15,15 +15,15 @@ import { Policies } from '@iam/authorization/infrastructure/policy/decorator/pol
 import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
 import { User } from '@iam/user/domain/user.entity';
 
-import { CreatePurchaseDtoRequest } from '@module/purchase/application/dto/create-purchase.dto';
-import { PurchaseResponseDto } from '@module/purchase/application/dto/purchase-response.dto';
-import { UpdatePurchaseDto } from '@module/purchase/application/dto/update-purchase.dto';
-import { ReadPurchasePolicyHandler } from '@module/purchase/application/policy/read-purchase-policy.handler';
-import { UpdatePurchasePolicyHandler } from '@module/purchase/application/policy/update-purchase-policy.handler';
+import { CreatePurchaseDtoRequest } from '@purchase/application/dto/create-purchase.dto';
+import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
+import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
+import { ReadPurchasePolicyHandler } from '@purchase/application/policy/read-purchase-policy.handler';
+import { UpdatePurchasePolicyHandler } from '@purchase/application/policy/update-purchase-policy.handler';
 import {
   IPurchaseCRUDService,
   PURCHASE_CRUD_SERVICE_KEY,
-} from '@module/purchase/application/service/purchase-CRUD-service.interface';
+} from '@purchase/application/service/purchase-CRUD-service.interface';
 
 @Controller('purchase')
 @UseGuards(PoliciesGuard)

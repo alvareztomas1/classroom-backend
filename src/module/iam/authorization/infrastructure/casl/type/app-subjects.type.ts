@@ -8,7 +8,8 @@ import { Lesson } from '@lesson/domain/lesson.entity';
 
 import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
 
-import { Purchase } from '@module/purchase/domain/purchase.entity';
+import { Purchase } from '@purchase/domain/purchase.entity';
+
 import { Section } from '@module/section/domain/section.entity';
 
 export type AppSubjects =

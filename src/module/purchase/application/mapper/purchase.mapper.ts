@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { Purchase } from '@module/purchase/domain/purchase.entity';
-import { PurchaseEntity } from '@module/purchase/infrastructure/database/purchase.entity';
+import { Purchase } from '@purchase/domain/purchase.entity';
+import { PurchaseEntity } from '@purchase/infrastructure/database/purchase.entity';
 
 @Injectable()
 export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {

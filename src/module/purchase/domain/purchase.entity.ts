@@ -1,6 +1,6 @@
 import { Base } from '@common/base/domain/base.entity';
 
-import { PurchaseStatus } from '@module/purchase/domain/purchase.status.enum';
+import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
 
 export class Purchase extends Base {
   userId: string;
