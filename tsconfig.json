@@ -26,6 +26,7 @@
       "@cloud/*": ["src/cloud/*"],
       "@iam/*": ["src/module/iam/*"],
       "@course/*": ["src/module/course/*"],
+      "@category/*": ["src/module/category/*"],
       "@section/*": ["src/module/section/*"],
       "@lesson/*": ["src/module/lesson/*"],
       "@purchase/*": ["src/module/purchase/*"],
