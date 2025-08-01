@@ -12,6 +12,7 @@ import {
 
 import { CreatePurchaseDto } from '@purchase/application/dto/create-purchase.dto';
 import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
+import { UpdatePurchaseStatusDto } from '@purchase/application/dto/update-purchase-status.dto';
 import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
 import { CourseNotPublishedException } from '@purchase/application/exception/course-not-published.exception';
 import { InvalidPurchaseException } from '@purchase/application/exception/invalid-purchase.exception';
@@ -47,6 +48,7 @@ export class PurchaseCRUDService
   implements IPurchaseCRUDService
 {
   declare deleteOneByIdOrFail: never;
+  declare updateOneByIdOrFail: never;
 
   constructor(
     @Inject(PURCHASE_REPOSITORY_KEY)
@@ -82,19 +84,25 @@ export class PurchaseCRUDService
     return await super.saveOne(createDto);
   }
 
-  async updateOneByIdOrFail(
+  async updateStatusByIdOrFail(
     id: string,
-    updateDto: UpdatePurchaseDto,
+    updatePurchaseStatusDto: UpdatePurchaseStatusDto,
   ): Promise<PurchaseResponseDto> {
     const purchaseToUpdate = await this.purchaseRepository.getOneByIdOrFail(id);
-    this.validateStatusTransition(purchaseToUpdate.status, updateDto.status);
+
+    this.validateStatusTransition(
+      purchaseToUpdate.status,
+      updatePurchaseStatusDto.status,
+    );
+
     const purchase = this.purchaseDtoMapper.fromUpdateDtoToEntity(
       purchaseToUpdate,
-      updateDto,
+      updatePurchaseStatusDto,
     );
     const updatedPurchase = await this.purchaseRepository.saveOne(purchase);
     const responseDto =
       this.purchaseDtoMapper.fromEntityToResponseDto(updatedPurchase);
+
     return responseDto;
   }
 
