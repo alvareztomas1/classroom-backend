@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { fromStringToKebabCase } from '@common/base/application/mapper/base.mapper';
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
@@ -6,6 +8,7 @@ import { PaymentMethodResponseDto } from '@payment-method/application/dto/paymen
 import { UpdatePaymentMethodDto } from '@payment-method/application/dto/update-payment-method.dto';
 import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
 
+@Injectable()
 export class PaymentMethodDtoMapper
   implements
     IDtoMapper<

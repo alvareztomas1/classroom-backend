@@ -17,7 +17,7 @@ import { User } from '@iam/user/domain/user.entity';
 
 import { CreatePurchaseDtoRequest } from '@purchase/application/dto/create-purchase.dto';
 import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
-import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
+import { UpdatePurchaseStatusDto } from '@purchase/application/dto/update-purchase-status.dto';
 import { ReadPurchasePolicyHandler } from '@purchase/application/policy/read-purchase-policy.handler';
 import { UpdatePurchasePolicyHandler } from '@purchase/application/policy/update-purchase-policy.handler';
 import {
@@ -38,7 +38,7 @@ export class PurchaseController {
   async getOneById(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<PurchaseResponseDto> {
-    return await this.purchaseService.getOneByIdOrFail(id);
+    return await this.purchaseService.getOneByIdOrFail(id, ['paymentMethod']);
   }
 
   @Post()
@@ -52,13 +52,13 @@ export class PurchaseController {
     });
   }
 
-  @Patch(':id')
+  @Patch(':id/status')
   @Policies(UpdatePurchasePolicyHandler)
   async updateOne(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updatePurchaseDto: UpdatePurchaseDto,
+    @Body() updatePurchaseDto: UpdatePurchaseStatusDto,
   ): Promise<PurchaseResponseDto> {
-    return await this.purchaseService.updateOneByIdOrFail(
+    return await this.purchaseService.updateStatusByIdOrFail(
       id,
       updatePurchaseDto,
     );

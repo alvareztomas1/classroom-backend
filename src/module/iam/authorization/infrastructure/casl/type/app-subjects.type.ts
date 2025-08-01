@@ -4,6 +4,8 @@ import { User } from '@iam/user/domain/user.entity';
 
 import { Course } from '@course/domain/course.entity';
 
+import { Category } from '@category/domain/category.entity';
+
 import { Section } from '@section/domain/section.entity';
 
 import { Lesson } from '@lesson/domain/lesson.entity';
@@ -26,5 +28,7 @@ export type AppSubjects =
       | PaymentMethod
       | typeof Purchase
       | Purchase
+      | Category
+      | typeof Category
     >
   | 'all';

@@ -1,6 +1,8 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from '@common/base/infrastructure/database/base.entity';
+
+import { PaymentMethodEntity } from '@payment-method/infrastructure/database/payment-method.entity';
 
 import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
 
@@ -27,17 +29,27 @@ export class PurchaseEntity extends BaseEntity {
   @Column({ type: 'varchar' })
   status: PurchaseStatus;
 
+  @Column({ type: 'varchar' })
+  paymentMethodId: string;
+
   @Column({ type: 'varchar', nullable: true })
   paymentTransactionId?: string;
 
   @Column({ type: 'varchar', nullable: true })
   refundTransactionId?: string;
 
+  @ManyToOne(
+    () => PaymentMethodEntity,
+    (paymentMethod) => paymentMethod.purchases,
+  )
+  paymentMethod?: PaymentMethodEntity;
+
   constructor(
     userId: string,
     courseId: string,
     amount: number,
     status: PurchaseStatus,
+    paymentMethodId: string,
     paymentTransactionId?: string,
     refundTransactionId?: string,
     id?: string,
@@ -48,6 +60,7 @@ export class PurchaseEntity extends BaseEntity {
     this.courseId = courseId;
     this.amount = amount;
     this.status = status;
+    this.paymentMethodId = paymentMethodId;
     this.paymentTransactionId = paymentTransactionId;
     this.refundTransactionId = refundTransactionId;
   }

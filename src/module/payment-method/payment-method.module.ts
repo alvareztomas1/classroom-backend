@@ -41,6 +41,7 @@ const policyHandlersProviders = [
     ...policyHandlersProviders,
   ],
   controllers: [PaymentMethodController],
+  exports: [PaymentMethodMapper],
 })
 export class PaymentMethodModule implements OnModuleInit {
   constructor(private readonly registry: AppSubjectPermissionStorage) {}

@@ -59,7 +59,7 @@ describe('Purchase Module', () => {
   });
 
   const endpoint = '/api/v1/purchase';
-  const existingsCourses = {
+  const existingCourses = {
     first: {
       id: '29694b5e-c5d1-487e-a6e8-3f7aa6c4238c',
       amount: 49.99,
@@ -78,10 +78,11 @@ describe('Purchase Module', () => {
       id: '5e822193-13ca-4846-9b60-9f2f38d7eefa',
     },
   };
+  const existingPaymentMethodId = '361cb833-1f51-4b21-b5e9-1089c5d09b09';
 
   describe('GET - /purchase/:id', () => {
     it('Should return a purchase', async () => {
-      const existingPurchaseId = 'e6c78b10-d9b0-4819-ac4e-a36ca36f8554';
+      const existingPurchaseId = 'a5978602-defc-4415-ae50-33ce6902e113';
 
       return await request(app.getHttpServer())
         .get(`${endpoint}/${existingPurchaseId}`)
@@ -93,10 +94,15 @@ describe('Purchase Module', () => {
               id: existingPurchaseId,
               type: Purchase.getEntityName(),
               attributes: expect.objectContaining({
-                status: PurchaseStatus.PENDING,
+                status: PurchaseStatus.COMPLETED,
                 amount: expect.any(Number),
                 userId: expect.any(String),
                 courseId: expect.any(String),
+                paymentTransactionId: expect.any(String),
+                refundTransactionId: null,
+                paymentMethodId: existingPaymentMethodId,
+                createdAt: expect.any(String),
+                updatedAt: expect.any(String),
               }),
             }),
             links: expect.arrayContaining([
@@ -162,10 +168,11 @@ describe('Purchase Module', () => {
   describe('POST - /purchase', () => {
     it('Should create a purchase', async () => {
       const createPurchaseDto = {
-        courseId: existingsCourses.first.id,
+        courseId: existingCourses.first.id,
+        paymentMethodId: existingPaymentMethodId,
       } as CreatePurchaseDtoRequest;
 
-      await request(app.getHttpServer())
+      return await request(app.getHttpServer())
         .post(endpoint)
         .auth(regularToken, { type: 'bearer' })
         .send(createPurchaseDto)
@@ -177,9 +184,12 @@ describe('Purchase Module', () => {
               type: Purchase.getEntityName(),
               attributes: expect.objectContaining({
                 status: PurchaseStatus.PENDING,
-                amount: existingsCourses.first.amount,
+                amount: existingCourses.first.amount,
                 userId: existingUsers.regular.id,
-                courseId: existingsCourses.first.id,
+                courseId: existingCourses.first.id,
+                paymentMethodId: existingPaymentMethodId,
+                paymentTransactionId: null,
+                refundTransactionId: null,
                 createdAt: expect.any(String),
               }),
             }),
@@ -197,9 +207,10 @@ describe('Purchase Module', () => {
     });
 
     it('Should deny purchases for not published courses', async () => {
-      const courseId = existingsCourses.second.id;
+      const courseId = existingCourses.second.id;
       const createPurchaseDto = {
         courseId,
+        paymentMethodId: existingPaymentMethodId,
       } as CreatePurchaseDtoRequest;
 
       return await request(app.getHttpServer())
@@ -227,6 +238,7 @@ describe('Purchase Module', () => {
 
       const createPurchaseDto = {
         courseId: nonExistingCourseId,
+        paymentMethodId: existingPaymentMethodId,
       } as CreatePurchaseDtoRequest;
 
       return await request(app.getHttpServer())
@@ -250,9 +262,10 @@ describe('Purchase Module', () => {
     });
 
     it('Should deny purchases when user is instructor', async () => {
-      const courseId = existingsCourses.first.id;
+      const courseId = existingCourses.first.id;
       const createPurchaseDto = {
         courseId,
+        paymentMethodId: existingPaymentMethodId,
       } as CreatePurchaseDtoRequest;
 
       return await request(app.getHttpServer())
@@ -276,10 +289,11 @@ describe('Purchase Module', () => {
     });
 
     it('Should deny duplicate purchases', async () => {
-      const courseId = existingsCourses.third.id;
+      const courseId = existingCourses.third.id;
 
       const createPurchaseDto = {
         courseId,
+        paymentMethodId: existingPaymentMethodId,
       } as CreatePurchaseDtoRequest;
 
       return await request(app.getHttpServer())
@@ -303,7 +317,7 @@ describe('Purchase Module', () => {
     });
   });
 
-  describe('PATCH - /purchase/:id', () => {
+  describe('PATCH - /purchase/:id/status', () => {
     it('Should update a purchase', async () => {
       const existingPurchaseId = 'e6c78b10-d9b0-4819-ac4e-a36ca36f8554';
       const paymentTransactionId = '00000000-0000-0000-0000-000000000000';
@@ -313,7 +327,7 @@ describe('Purchase Module', () => {
       } as UpdatePurchaseDto;
 
       return await request(app.getHttpServer())
-        .patch(`${endpoint}/${existingPurchaseId}`)
+        .patch(`${endpoint}/${existingPurchaseId}/status`)
         .auth(superAdminToken, { type: 'bearer' })
         .send(updatePurchaseDto)
         .expect(HttpStatus.OK)
@@ -353,7 +367,7 @@ describe('Purchase Module', () => {
       } as UpdatePurchaseDto;
 
       return await request(app.getHttpServer())
-        .patch(`${endpoint}/${nonExistingPurchaseId}`)
+        .patch(`${endpoint}/${nonExistingPurchaseId}/status`)
         .auth(superAdminToken, { type: 'bearer' })
         .send(updatePurchaseDto)
         .expect(HttpStatus.NOT_FOUND)
@@ -362,7 +376,7 @@ describe('Purchase Module', () => {
             error: {
               detail: `Entity with id ${nonExistingPurchaseId} not found`,
               source: {
-                pointer: `${endpoint}/${nonExistingPurchaseId}`,
+                pointer: `${endpoint}/${nonExistingPurchaseId}/status`,
               },
               status: HttpStatus.NOT_FOUND.toString(),
               title: 'Entity not found',
@@ -380,7 +394,7 @@ describe('Purchase Module', () => {
       } as UpdatePurchaseDto;
 
       return await request(app.getHttpServer())
-        .patch(`${endpoint}/${purchaseId}`)
+        .patch(`${endpoint}/${purchaseId}/status`)
         .auth(superAdminToken, { type: 'bearer' })
         .send(updatePurchaseDto)
         .expect(HttpStatus.BAD_REQUEST)
@@ -389,7 +403,7 @@ describe('Purchase Module', () => {
             error: {
               detail: `${STATUS_TRANSITION_MESSAGE} ${PurchaseStatus.COMPLETED} to ${updatePurchaseDto.status} ${IS_NOT_VALID_MESSAGE}`,
               source: {
-                pointer: `${endpoint}/${purchaseId}`,
+                pointer: `${endpoint}/${purchaseId}/status`,
               },
               status: HttpStatus.BAD_REQUEST.toString(),
               title: 'Invalid purchase',
@@ -407,7 +421,7 @@ describe('Purchase Module', () => {
       } as UpdatePurchaseDto;
 
       return await request(app.getHttpServer())
-        .patch(`${endpoint}/${existingPurchaseId}`)
+        .patch(`${endpoint}/${existingPurchaseId}/status`)
         .auth(adminToken, { type: 'bearer' })
         .send(updatePurchaseDto)
         .expect(HttpStatus.FORBIDDEN)
@@ -416,7 +430,7 @@ describe('Purchase Module', () => {
             error: {
               detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
               source: {
-                pointer: `${endpoint}/${existingPurchaseId}`,
+                pointer: `${endpoint}/${existingPurchaseId}/status`,
               },
               status: HttpStatus.FORBIDDEN.toString(),
               title: 'Forbidden',
