@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { titleCase } from 'change-case-all';
 import { Repository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
@@ -20,7 +21,11 @@ export class PaymentMethodPostgresRepository
     protected readonly repository: Repository<PaymentMethodEntity>,
     private readonly paymentMethodMapper: PaymentMethodMapper,
   ) {
-    super(repository, paymentMethodMapper);
+    super(
+      repository,
+      paymentMethodMapper,
+      titleCase(PaymentMethodEntity.name.replace('Entity', '')),
+    );
   }
 
   async saveOne(entity: PaymentMethod): Promise<PaymentMethod> {
@@ -28,7 +33,7 @@ export class PaymentMethodPostgresRepository
     const paymentMethod = await this.findEntityByName(name);
 
     if (paymentMethod) {
-      throw new EntityAlreadyExistsException('name', name);
+      throw new EntityAlreadyExistsException('name', name, this.entityType);
     }
 
     return this.repository.save(entity);
