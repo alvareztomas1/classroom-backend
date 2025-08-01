@@ -10,18 +10,18 @@ import { PolicyHandlerStorage } from '@iam/authorization/infrastructure/policy/s
 import { Purchase } from '@purchase/domain/purchase.entity';
 
 @Injectable()
-export class UpdatePurchasePolicyHandler
+export class ManagePurchasePolicyHandler
   extends BasePolicyHandler
   implements IPolicyHandler
 {
-  private readonly action = AppAction.Update;
+  private readonly action = AppAction.Manage;
 
   constructor(
     private readonly policyHandlerStorage: PolicyHandlerStorage,
     private readonly authorizationService: AuthorizationService,
   ) {
     super();
-    this.policyHandlerStorage.add(UpdatePurchasePolicyHandler, this);
+    this.policyHandlerStorage.add(ManagePurchasePolicyHandler, this);
   }
 
   handle(request: Request): void {

@@ -428,7 +428,7 @@ describe('Purchase Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+              detail: `You are not allowed to ${AppAction.Manage.toUpperCase()} this resource`,
               source: {
                 pointer: `${endpoint}/${existingPurchaseId}/status`,
               },
