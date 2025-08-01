@@ -11,6 +11,8 @@ import {
 
 import { BaseDto } from '@common/base/application/dto/base.dto';
 
+import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
+
 import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
 
 export class PurchaseDto extends BaseDto {
@@ -34,6 +36,10 @@ export class PurchaseDto extends BaseDto {
   amount!: number;
 
   @IsNotEmpty()
+  @IsUUID()
+  paymentMethodId!: string;
+
+  @IsNotEmpty()
   @IsEnum(PurchaseStatus)
   status!: PurchaseStatus;
 
@@ -44,4 +50,6 @@ export class PurchaseDto extends BaseDto {
   @IsOptional()
   @IsString()
   refundTransactionId?: string;
+
+  paymentMethod?: PaymentMethod;
 }
