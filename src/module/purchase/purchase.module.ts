@@ -11,8 +11,9 @@ import { PaymentMethodModule } from '@payment-method/payment-method.module';
 
 import { PurchaseDtoMapper } from '@purchase/application/mapper/purchase-dto.mapper';
 import { PurchaseMapper } from '@purchase/application/mapper/purchase.mapper';
+import { ManagePurchasePolicyHandler } from '@purchase/application/policy/manage-purchase-policy.handler';
 import { ReadPurchasePolicyHandler } from '@purchase/application/policy/read-purchase-policy.handler';
-import { UpdatePurchasePolicyHandler } from '@purchase/application/policy/update-purchase-policy.handler';
+import { UpdatePurchasePaymentMethodPolicyHandler } from '@purchase/application/policy/update-purchase-payment-method.policy.handler';
 import { PURCHASE_REPOSITORY_KEY } from '@purchase/application/repository/purchase-repository.interface';
 import { PURCHASE_CRUD_SERVICE_KEY } from '@purchase/application/service/purchase-CRUD-service.interface';
 import { PurchaseCRUDService } from '@purchase/application/service/purchase-CRUD.service';
@@ -34,7 +35,8 @@ const purchaseCRUDServiceProvider: Provider = {
 
 const policyHandlersProviders = [
   ReadPurchasePolicyHandler,
-  UpdatePurchasePolicyHandler,
+  ManagePurchasePolicyHandler,
+  UpdatePurchasePaymentMethodPolicyHandler,
 ];
 
 @Module({

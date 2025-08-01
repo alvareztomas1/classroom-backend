@@ -14,6 +14,7 @@ import { IS_NOT_VALID_MESSAGE } from '@common/base/application/exception/base-ex
 import { AppAction } from '@iam/authorization/domain/app.action.enum';
 
 import { CreatePurchaseDtoRequest } from '@purchase/application/dto/create-purchase.dto';
+import { UpdatePurchasePaymentMethodDto } from '@purchase/application/dto/update-purchase-payment-method.dto';
 import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
 import {
   CAN_NOT_BUY_OWN_COURSE_MESSAGE,
@@ -315,10 +316,38 @@ describe('Purchase Module', () => {
           expect(body).toEqual(expectedResponse);
         });
     });
+
+    it('Should throw an error if the payment method does not exist', async () => {
+      const nonExistingPaymentMethodId = 'a078e065-e85b-45f0-8d6c-f68c54d8b3ee';
+
+      const createPurchaseDto = {
+        courseId: existingCourses.third.id,
+        paymentMethodId: nonExistingPaymentMethodId,
+      } as CreatePurchaseDtoRequest;
+
+      return await request(app.getHttpServer())
+        .post(endpoint)
+        .auth(regularToken, { type: 'bearer' })
+        .send(createPurchaseDto)
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `Entity with id ${nonExistingPaymentMethodId} not found`,
+              source: {
+                pointer: endpoint,
+              },
+              status: HttpStatus.NOT_FOUND.toString(),
+              title: 'Entity not found',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
   });
 
   describe('PATCH - /purchase/:id/status', () => {
-    it('Should update a purchase', async () => {
+    it('Should update a purchase status', async () => {
       const existingPurchaseId = 'e6c78b10-d9b0-4819-ac4e-a36ca36f8554';
       const paymentTransactionId = '00000000-0000-0000-0000-000000000000';
       const updatePurchaseDto = {
@@ -341,6 +370,7 @@ describe('Purchase Module', () => {
                 amount: expect.any(Number),
                 userId: expect.any(String),
                 courseId: expect.any(String),
+                createdAt: expect.any(String),
                 updatedAt: expect.any(String),
                 paymentTransactionId,
               }),
@@ -428,9 +458,133 @@ describe('Purchase Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+              detail: `You are not allowed to ${AppAction.Manage.toUpperCase()} this resource`,
               source: {
                 pointer: `${endpoint}/${existingPurchaseId}/status`,
+              },
+              status: HttpStatus.FORBIDDEN.toString(),
+              title: 'Forbidden',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+  });
+
+  describe('PATCH - /purchase/:id/payment-method', () => {
+    it('Should update a purchase payment method', async () => {
+      const newPaymentMethodId = '48c7bbe1-46d6-4e85-9dbf-610d52544ef7';
+      const existingPurchaseId = '7bd80f77-433d-4b57-9f00-28e29e93bad5';
+      const updatePurchasePaymentMethodDto = {
+        paymentMethodId: newPaymentMethodId,
+      } as UpdatePurchasePaymentMethodDto;
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${existingPurchaseId}/payment-method`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(updatePurchasePaymentMethodDto)
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.objectContaining({
+              id: existingPurchaseId,
+              type: Purchase.getEntityName(),
+              attributes: expect.objectContaining({
+                status: PurchaseStatus.PENDING,
+                amount: expect.any(Number),
+                userId: expect.any(String),
+                courseId: expect.any(String),
+                paymentMethodId: newPaymentMethodId,
+                paymentTransactionId: null,
+                refundTransactionId: null,
+                createdAt: expect.any(String),
+                updatedAt: expect.any(String),
+              }),
+            }),
+            links: expect.arrayContaining([
+              expect.objectContaining({
+                rel: 'self',
+                href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}/payment-method`,
+                ),
+                method: HttpMethod.PATCH,
+              }),
+            ]),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+
+      return await request(app.getHttpServer())
+        .get(`${endpoint}/${existingPurchaseId}`)
+        .auth(superAdminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            data: expect.objectContaining({
+              id: existingPurchaseId,
+              type: Purchase.getEntityName(),
+              attributes: expect.objectContaining({
+                status: PurchaseStatus.PENDING,
+                amount: expect.any(Number),
+                userId: expect.any(String),
+                courseId: expect.any(String),
+                paymentMethodId: newPaymentMethodId,
+                paymentTransactionId: null,
+                refundTransactionId: null,
+                createdAt: expect.any(String),
+                updatedAt: expect.any(String),
+              }),
+            }),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should throw an error if the payment method does not exist', async () => {
+      const nonExistingPaymentMethodId = '78ace669-9c6f-4fe3-84e9-a2b55291191c';
+      const existingPurchaseId = '7bd80f77-433d-4b57-9f00-28e29e93bad5';
+      const updatePurchasePaymentMethodDto = {
+        paymentMethodId: nonExistingPaymentMethodId,
+      } as UpdatePurchasePaymentMethodDto;
+
+      return await request(app.getHttpServer())
+        .patch(`${endpoint}/${existingPurchaseId}/payment-method`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(updatePurchasePaymentMethodDto)
+        .expect(HttpStatus.NOT_FOUND)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `Entity with id ${nonExistingPaymentMethodId} not found`,
+              source: {
+                pointer: `${endpoint}/${existingPurchaseId}/payment-method`,
+              },
+              status: HttpStatus.NOT_FOUND.toString(),
+              title: 'Entity not found',
+            },
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
+    it('Should deny access to a user who is not the owner of the purchase', async () => {
+      const newPaymentMethodId = '48c7bbe1-46d6-4e85-9dbf-610d52544ef7';
+      const existingPurchaseId = '7bd80f77-433d-4b57-9f00-28e29e93bad5';
+      const updatePurchasePaymentMethodDto = {
+        paymentMethodId: newPaymentMethodId,
+      } as UpdatePurchasePaymentMethodDto;
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${existingPurchaseId}/payment-method`)
+        .auth(regularToken, { type: 'bearer' })
+        .send(updatePurchasePaymentMethodDto)
+        .expect(HttpStatus.FORBIDDEN)
+        .then(({ body }) => {
+          const expectedResponse = expect.objectContaining({
+            error: {
+              detail: `You are not allowed to ${AppAction.Update.toUpperCase()} this resource`,
+              source: {
+                pointer: `${endpoint}/${existingPurchaseId}/payment-method`,
               },
               status: HttpStatus.FORBIDDEN.toString(),
               title: 'Forbidden',

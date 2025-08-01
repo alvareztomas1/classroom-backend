@@ -17,9 +17,11 @@ import { User } from '@iam/user/domain/user.entity';
 
 import { CreatePurchaseDtoRequest } from '@purchase/application/dto/create-purchase.dto';
 import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
+import { UpdatePurchasePaymentMethodDto } from '@purchase/application/dto/update-purchase-payment-method.dto';
 import { UpdatePurchaseStatusDto } from '@purchase/application/dto/update-purchase-status.dto';
+import { ManagePurchasePolicyHandler } from '@purchase/application/policy/manage-purchase-policy.handler';
 import { ReadPurchasePolicyHandler } from '@purchase/application/policy/read-purchase-policy.handler';
-import { UpdatePurchasePolicyHandler } from '@purchase/application/policy/update-purchase-policy.handler';
+import { UpdatePurchasePaymentMethodPolicyHandler } from '@purchase/application/policy/update-purchase-payment-method.policy.handler';
 import {
   IPurchaseCRUDService,
   PURCHASE_CRUD_SERVICE_KEY,
@@ -53,7 +55,7 @@ export class PurchaseController {
   }
 
   @Patch(':id/status')
-  @Policies(UpdatePurchasePolicyHandler)
+  @Policies(ManagePurchasePolicyHandler)
   async updateOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePurchaseDto: UpdatePurchaseStatusDto,
@@ -61,6 +63,18 @@ export class PurchaseController {
     return await this.purchaseService.updateStatusByIdOrFail(
       id,
       updatePurchaseDto,
+    );
+  }
+
+  @Patch(':id/payment-method')
+  @Policies(UpdatePurchasePaymentMethodPolicyHandler)
+  async updatePaymentMethod(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updatePurchasePaymentMethodDto: UpdatePurchasePaymentMethodDto,
+  ): Promise<PurchaseResponseDto> {
+    return await this.purchaseService.updatePaymentMethodByIdOrFail(
+      id,
+      updatePurchasePaymentMethodDto,
     );
   }
 }
