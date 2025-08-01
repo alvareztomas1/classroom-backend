@@ -53,8 +53,11 @@ export class PurchaseEntity extends BaseEntity {
     paymentTransactionId?: string,
     refundTransactionId?: string,
     id?: string,
+    createdAt?: Date,
+    updatedAt?: Date,
+    deletedAt?: Date,
   ) {
-    super(id);
+    super(id, createdAt, updatedAt, deletedAt);
 
     this.userId = userId;
     this.courseId = courseId;

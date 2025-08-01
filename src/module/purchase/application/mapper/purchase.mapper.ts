@@ -55,6 +55,9 @@ export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {
       paymentTransactionId,
       refundTransactionId,
       id,
+      createdAt,
+      updatedAt,
+      deletedAt,
     } = domain;
 
     return new PurchaseEntity(
@@ -66,6 +69,9 @@ export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {
       paymentTransactionId,
       refundTransactionId,
       id,
+      createdAt ? new Date(createdAt) : undefined,
+      updatedAt ? new Date(updatedAt) : undefined,
+      deletedAt ? new Date(deletedAt) : undefined,
     );
   }
 }

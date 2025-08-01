@@ -10,8 +10,11 @@ import {
   ICourseRepository,
 } from '@course/application/repository/repository.interface';
 
+import { PAYMENT_METHOD_REPOSITORY_KEY } from '@payment-method/application/repository/payment-method-repository.interface';
+
 import { CreatePurchaseDto } from '@purchase/application/dto/create-purchase.dto';
 import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
+import { UpdatePurchasePaymentMethodDto } from '@purchase/application/dto/update-purchase-payment-method.dto';
 import { UpdatePurchaseStatusDto } from '@purchase/application/dto/update-purchase-status.dto';
 import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
 import { CourseNotPublishedException } from '@purchase/application/exception/course-not-published.exception';
@@ -56,6 +59,8 @@ export class PurchaseCRUDService
     private readonly purchaseDtoMapper: PurchaseDtoMapper,
     @Inject(COURSE_REPOSITORY_KEY)
     private readonly courseRepository: ICourseRepository,
+    @Inject(PAYMENT_METHOD_REPOSITORY_KEY)
+    private readonly paymentMethodRepository: IPurchaseRepository,
   ) {
     super(
       purchaseRepository as unknown as BaseRepository<Purchase, PurchaseEntity>,
@@ -65,7 +70,9 @@ export class PurchaseCRUDService
   }
 
   async saveOne(createDto: CreatePurchaseDto): Promise<PurchaseResponseDto> {
-    const { courseId, userId } = createDto;
+    const { courseId, userId, paymentMethodId } = createDto;
+    await this.verifyPaymentMethodExistence(paymentMethodId);
+
     const course = await this.courseRepository.getOneByIdOrFail(courseId);
     const existingPurchase = await this.purchaseRepository.findUserPurchase(
       userId,
@@ -97,13 +104,29 @@ export class PurchaseCRUDService
 
     const purchase = this.purchaseDtoMapper.fromUpdateDtoToEntity(
       purchaseToUpdate,
-      updatePurchaseStatusDto,
+      updatePurchaseStatusDto as UpdatePurchaseDto,
     );
     const updatedPurchase = await this.purchaseRepository.saveOne(purchase);
     const responseDto =
       this.purchaseDtoMapper.fromEntityToResponseDto(updatedPurchase);
 
     return responseDto;
+  }
+
+  async updatePaymentMethodByIdOrFail(
+    id: string,
+    updatePurchasePaymentMethodDto: UpdatePurchasePaymentMethodDto,
+  ): Promise<PurchaseResponseDto> {
+    const { paymentMethodId } = updatePurchasePaymentMethodDto;
+    await this.verifyPaymentMethodExistence(paymentMethodId);
+    const purchaseToUpdate = await this.purchaseRepository.getOneByIdOrFail(id);
+    const purchase = this.purchaseDtoMapper.fromUpdateDtoToEntity(
+      purchaseToUpdate,
+      updatePurchasePaymentMethodDto as UpdatePurchaseDto,
+    );
+
+    const updatedPurchase = await this.purchaseRepository.saveOne(purchase);
+    return this.purchaseDtoMapper.fromEntityToResponseDto(updatedPurchase);
   }
 
   private validatePurchase(
@@ -147,5 +170,11 @@ export class PurchaseCRUDService
         message: `${STATUS_TRANSITION_MESSAGE} ${current} to ${next} ${IS_NOT_VALID_MESSAGE}`,
       });
     }
+  }
+
+  private async verifyPaymentMethodExistence(
+    paymentMethodId: string,
+  ): Promise<void> {
+    await this.paymentMethodRepository.getOneByIdOrFail(paymentMethodId);
   }
 }

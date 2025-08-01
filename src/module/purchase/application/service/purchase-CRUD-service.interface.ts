@@ -2,6 +2,7 @@ import { ICRUDService } from '@common/base/application/service/crud-service.inte
 
 import { CreatePurchaseDto } from '@purchase/application/dto/create-purchase.dto';
 import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
+import { UpdatePurchasePaymentMethodDto } from '@purchase/application/dto/update-purchase-payment-method.dto';
 import { UpdatePurchaseStatusDto } from '@purchase/application/dto/update-purchase-status.dto';
 import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
 import { Purchase } from '@purchase/domain/purchase.entity';
@@ -21,5 +22,9 @@ export interface IPurchaseCRUDService
   updateStatusByIdOrFail(
     id: string,
     updatePurchaseStatusDto: UpdatePurchaseStatusDto,
+  ): Promise<PurchaseResponseDto>;
+  updatePaymentMethodByIdOrFail(
+    id: string,
+    updatePurchasePaymentMethodDto: UpdatePurchasePaymentMethodDto,
   ): Promise<PurchaseResponseDto>;
 }
