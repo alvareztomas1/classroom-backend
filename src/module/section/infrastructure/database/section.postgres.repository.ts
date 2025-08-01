@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { titleCase } from 'change-case-all';
 import { Repository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
@@ -19,7 +20,11 @@ export class SectionPostgresRepository
     @InjectRepository(SectionEntity) repository: Repository<SectionEntity>,
     private readonly sectionMapper: SectionMapper,
   ) {
-    super(repository, sectionMapper);
+    super(
+      repository,
+      sectionMapper,
+      titleCase(SectionEntity.name.replace('Entity', '')),
+    );
   }
 
   async deleteOneByIdOrFail(id: string): Promise<void> {
@@ -29,7 +34,7 @@ export class SectionPostgresRepository
     });
 
     if (!section) {
-      throw new EntityNotFoundException(id);
+      throw new EntityNotFoundException('id', id, this.entityType);
     }
 
     await this.repository.softRemove(section);
