@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { titleCase } from 'change-case-all';
 import { Repository, TreeRepository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
@@ -24,7 +25,11 @@ export class CoursePostgresRepository
     @Inject(CATEGORY_TREE_REPOSITORY_KEY)
     private readonly categoryTreeRepository: TreeRepository<CategoryEntity>,
   ) {
-    super(repository, courseMapper);
+    super(
+      repository,
+      courseMapper,
+      titleCase(CourseEntity.name.replace('Entity', '')),
+    );
   }
 
   async getOneById(
@@ -54,7 +59,7 @@ export class CoursePostgresRepository
     const entity = await this.getOneById(id, include);
 
     if (!entity) {
-      throw new EntityNotFoundException(id);
+      throw new EntityNotFoundException('id', id, this.entityType);
     }
 
     return entity;
@@ -77,7 +82,7 @@ export class CoursePostgresRepository
     });
 
     if (!course) {
-      throw new EntityNotFoundException(id);
+      throw new EntityNotFoundException('id', id, this.entityType);
     }
 
     await this.repository.softRemove(course);

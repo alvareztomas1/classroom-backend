@@ -330,7 +330,7 @@ describe('Course Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCourseId} not found`,
+              detail: `Course with id ${nonExistingCourseId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingCourseId}`,
               },
@@ -875,7 +875,7 @@ describe('Course Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCourseId} not found`,
+              detail: `Course with id ${nonExistingCourseId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingCourseId}`,
               },
@@ -1088,7 +1088,7 @@ describe('Course Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCourseId} not found`,
+              detail: `Course with id ${nonExistingCourseId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingCourseId}`,
               },
