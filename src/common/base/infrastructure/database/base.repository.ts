@@ -28,13 +28,16 @@ abstract class BaseRepository<
     DomainEntity,
     PersistenceEntity
   >;
+  protected readonly entityType: string;
 
   constructor(
     repository: Repository<PersistenceEntity>,
     entityMapper: IEntityMapper<DomainEntity, PersistenceEntity>,
+    entityType: string,
   ) {
     this.repository = repository;
     this.entityMapper = entityMapper;
+    this.entityType = entityType;
   }
 
   async getAll(
@@ -82,7 +85,7 @@ abstract class BaseRepository<
     const entity = await this.getOneById(id, include);
 
     if (!entity) {
-      throw new EntityNotFoundException(id);
+      throw new EntityNotFoundException('id', id, this.entityType);
     }
 
     return entity;
@@ -101,7 +104,7 @@ abstract class BaseRepository<
     } as FindOneOptions<PersistenceEntity>);
 
     if (!entityToDelete) {
-      throw new EntityNotFoundException(id);
+      throw new EntityNotFoundException('id', id, this.entityType);
     }
 
     await this.repository.softDelete({
