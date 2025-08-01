@@ -317,7 +317,7 @@ describe('Category Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCategoryId} not found`,
+              detail: `Category with id ${nonExistingCategoryId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingCategoryId}`,
               },
@@ -428,7 +428,7 @@ describe('Category Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCategoryId} not found`,
+              detail: `Category with id ${nonExistingCategoryId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingCategoryId}`,
               },
@@ -593,7 +593,7 @@ describe('Category Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCategoryId} not found`,
+              detail: `Category with id ${nonExistingCategoryId} not found`,
               source: {
                 pointer: endpoint,
               },
@@ -729,7 +729,7 @@ describe('Category Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCategoryId} not found`,
+              detail: `Category with id ${nonExistingCategoryId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingCategoryId}`,
               },
@@ -888,7 +888,7 @@ describe('Category Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCategoryId} not found`,
+              detail: `Category with id ${nonExistingCategoryId} not found`,
               source: {
                 pointer: `${endpoint}/${categoryId}`,
               },
@@ -1003,7 +1003,7 @@ describe('Category Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${categoryId} not found`,
+              detail: `Category with id ${categoryId} not found`,
               source: {
                 pointer: `${endpoint}/${categoryId}`,
               },
@@ -1025,7 +1025,7 @@ describe('Category Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCategoryId} not found`,
+              detail: `Category with id ${nonExistingCategoryId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingCategoryId}`,
               },
