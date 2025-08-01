@@ -9,7 +9,7 @@ export type SimpleProps<T> = {
 }[keyof T];
 
 type ComplexProps<T> = {
-  [K in keyof T]: T[K] extends object | object[] ? K : never;
+  [K in keyof T]: NonNullable<T[K]> extends object | object[] ? K : never;
 }[keyof T];
 
 export type Filter<T> = Partial<Pick<T, SimpleProps<T>>>;
