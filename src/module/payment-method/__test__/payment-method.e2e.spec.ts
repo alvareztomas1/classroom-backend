@@ -252,7 +252,7 @@ describe('PaymentMethod Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingPaymentMethodId} not found`,
+              detail: `PaymentMethod with id ${nonExistingPaymentMethodId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingPaymentMethodId}`,
               },
@@ -375,7 +375,7 @@ describe('PaymentMethod Module', () => {
           }) => {
             const expectedResponse = expect.objectContaining({
               error: {
-                detail: `Entity with name '${createPaymentMethod.name}' already exists`,
+                detail: `PaymentMethod with name '${createPaymentMethod.name}' already exists`,
                 source: {
                   pointer: endpoint,
                 },
@@ -551,7 +551,7 @@ describe('PaymentMethod Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingPaymentMethodId} not found`,
+              detail: `PaymentMethod with id ${nonExistingPaymentMethodId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingPaymentMethodId}`,
               },
@@ -745,7 +745,7 @@ describe('PaymentMethod Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingPaymentMethodId} not found`,
+              detail: `PaymentMethod with id ${nonExistingPaymentMethodId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingPaymentMethodId}`,
               },

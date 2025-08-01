@@ -131,7 +131,7 @@ describe('Purchase Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingPurchaseId} not found`,
+              detail: `Purchase with id ${nonExistingPurchaseId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingPurchaseId}`,
               },
@@ -250,7 +250,7 @@ describe('Purchase Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingCourseId} not found`,
+              detail: `Course with id ${nonExistingCourseId} not found`,
               source: {
                 pointer: endpoint,
               },
@@ -333,7 +333,7 @@ describe('Purchase Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingPaymentMethodId} not found`,
+              detail: `PaymentMethod with id ${nonExistingPaymentMethodId} not found`,
               source: {
                 pointer: endpoint,
               },
@@ -404,7 +404,7 @@ describe('Purchase Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingPurchaseId} not found`,
+              detail: `Purchase with id ${nonExistingPurchaseId} not found`,
               source: {
                 pointer: `${endpoint}/${nonExistingPurchaseId}/status`,
               },
@@ -555,7 +555,7 @@ describe('Purchase Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingPaymentMethodId} not found`,
+              detail: `PaymentMethod with id ${nonExistingPaymentMethodId} not found`,
               source: {
                 pointer: `${endpoint}/${existingPurchaseId}/payment-method`,
               },

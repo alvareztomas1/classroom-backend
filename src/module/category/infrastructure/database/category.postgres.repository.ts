@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { titleCase } from 'change-case-all';
 import { IsNull, Repository, TreeRepository } from 'typeorm';
 
 import { ICollection } from '@common/base/application/dto/collection.interface';
@@ -28,7 +29,11 @@ export class CategoryPostgresRepository
     private readonly treeRepository: TreeRepository<CategoryEntity>,
     private readonly categoryMapper: CategoryMapper,
   ) {
-    super(categoryRepository, categoryMapper);
+    super(
+      categoryRepository,
+      categoryMapper,
+      titleCase(CategoryEntity.name.replace('Entity', '')),
+    );
   }
 
   async getCategoriesRoot(): Promise<ICollection<Category>> {
@@ -45,7 +50,7 @@ export class CategoryPostgresRepository
     const category = await this.getOneById(id);
 
     if (!category) {
-      throw new EntityNotFoundException(id);
+      throw new EntityNotFoundException('id', id, this.entityType);
     }
 
     const children = await this.findChildren(id);
@@ -68,7 +73,7 @@ export class CategoryPostgresRepository
     const category = await this.getOneEntityById(id);
 
     if (!category) {
-      throw new EntityNotFoundException(id);
+      throw new EntityNotFoundException('id', id, this.entityType);
     }
 
     const categoryWithAncestors =
@@ -100,7 +105,7 @@ export class CategoryPostgresRepository
     });
 
     if (!category) {
-      throw new EntityNotFoundException(id);
+      throw new EntityNotFoundException('id', id, this.entityType);
     }
 
     const categoryWithDescendants =

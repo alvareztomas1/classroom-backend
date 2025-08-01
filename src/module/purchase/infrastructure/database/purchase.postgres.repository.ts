@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { titleCase } from 'change-case-all';
 import { In, Repository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
@@ -22,7 +23,11 @@ export class PurchasePostgresRepository
     private readonly purchaseRepository: Repository<PurchaseEntity>,
     private readonly purchaseMapper: PurchaseMapper,
   ) {
-    super(purchaseRepository, purchaseMapper);
+    super(
+      purchaseRepository,
+      purchaseMapper,
+      titleCase(PurchaseEntity.name.replace('Entity', '')),
+    );
   }
 
   async findUserPurchase(
