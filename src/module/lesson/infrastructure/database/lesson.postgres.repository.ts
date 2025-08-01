@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { titleCase } from 'change-case-all';
 import { Repository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
@@ -18,6 +19,10 @@ export class LessonPostgresRepository
     @InjectRepository(LessonEntity) repository: Repository<LessonEntity>,
     private readonly lessonMapper: LessonMapper,
   ) {
-    super(repository, lessonMapper);
+    super(
+      repository,
+      lessonMapper,
+      titleCase(LessonEntity.name.replace('Entity', '')),
+    );
   }
 }

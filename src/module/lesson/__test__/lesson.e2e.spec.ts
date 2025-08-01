@@ -194,7 +194,7 @@ describe('Lesson Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingId} not found`,
+              detail: `Lesson with id ${nonExistingId} not found`,
               source: {
                 pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${nonExistingId}`,
               },
@@ -470,7 +470,7 @@ describe('Lesson Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingSectionId} not found`,
+              detail: `Section with id ${nonExistingSectionId} not found`,
               source: {
                 pointer: `${endpoint}/${existingIds.course.first}/section/${nonExistingSectionId}/lesson`,
               },
@@ -610,7 +610,7 @@ describe('Lesson Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingId} not found`,
+              detail: `Lesson with id ${nonExistingId} not found`,
               source: {
                 pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${nonExistingId}`,
               },
@@ -838,7 +838,7 @@ describe('Lesson Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${lessonId} not found`,
+              detail: `Lesson with id ${lessonId} not found`,
               source: {
                 pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${lessonId}`,
               },
@@ -862,7 +862,7 @@ describe('Lesson Module', () => {
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
             error: {
-              detail: `Entity with id ${nonExistingId} not found`,
+              detail: `Lesson with id ${nonExistingId} not found`,
               source: {
                 pointer: `${endpoint}/${existingIds.course.first}/section/${existingIds.section.first}/lesson/${nonExistingId}`,
               },
