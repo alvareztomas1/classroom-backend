@@ -10,7 +10,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { Hypermedia } from '@common/base/application/decorator/hypermedia.decorator';
+import { HttpMethod } from '@common/base/application/enum/http-method.enum';
+
 import { CurrentUser } from '@iam/authentication/infrastructure/decorator/current-user.decorator';
+import { AppAction } from '@iam/authorization/domain/app.action.enum';
 import { Policies } from '@iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
 import { User } from '@iam/user/domain/user.entity';
@@ -26,6 +30,7 @@ import {
   IPurchaseCRUDService,
   PURCHASE_CRUD_SERVICE_KEY,
 } from '@purchase/application/service/purchase-CRUD-service.interface';
+import { Purchase } from '@purchase/domain/purchase.entity';
 
 @Controller('purchase')
 @UseGuards(PoliciesGuard)
@@ -37,6 +42,25 @@ export class PurchaseController {
 
   @Get(':id')
   @Policies(ReadPurchasePolicyHandler)
+  @Hypermedia([
+    {
+      rel: 'create-purchase',
+      endpoint: '/purchase',
+      method: HttpMethod.POST,
+    },
+    {
+      rel: 'update-payment-method',
+      endpoint: '/purchase/:id/payment-method',
+      method: HttpMethod.PATCH,
+    },
+    {
+      rel: 'update-status',
+      endpoint: '/purchase/:id/status',
+      method: HttpMethod.PATCH,
+      action: AppAction.Manage,
+      subject: Purchase,
+    },
+  ])
   async getOneById(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<PurchaseResponseDto> {
@@ -44,6 +68,25 @@ export class PurchaseController {
   }
 
   @Post()
+  @Hypermedia([
+    {
+      rel: 'get-purchase',
+      endpoint: '/purchase/:id',
+      method: HttpMethod.GET,
+    },
+    {
+      rel: 'update-payment-method',
+      endpoint: '/purchase/:id/payment-method',
+      method: HttpMethod.PATCH,
+    },
+    {
+      rel: 'update-status',
+      endpoint: '/purchase/:id/status',
+      method: HttpMethod.PATCH,
+      action: AppAction.Manage,
+      subject: Purchase,
+    },
+  ])
   async saveOne(
     @Body() createPurchaseDto: CreatePurchaseDtoRequest,
     @CurrentUser() user: User,
@@ -56,6 +99,23 @@ export class PurchaseController {
 
   @Patch(':id/status')
   @Policies(ManagePurchasePolicyHandler)
+  @Hypermedia([
+    {
+      rel: 'get-purchase',
+      endpoint: '/purchase/:id',
+      method: HttpMethod.GET,
+    },
+    {
+      rel: 'create-purchase',
+      endpoint: '/purchase',
+      method: HttpMethod.POST,
+    },
+    {
+      rel: 'update-payment-method',
+      endpoint: '/purchase/:id/payment-method',
+      method: HttpMethod.PATCH,
+    },
+  ])
   async updateOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePurchaseDto: UpdatePurchaseStatusDto,
@@ -68,6 +128,25 @@ export class PurchaseController {
 
   @Patch(':id/payment-method')
   @Policies(UpdatePurchasePaymentMethodPolicyHandler)
+  @Hypermedia([
+    {
+      rel: 'get-purchase',
+      endpoint: '/purchase/:id',
+      method: HttpMethod.GET,
+    },
+    {
+      rel: 'create-purchase',
+      endpoint: '/purchase',
+      method: HttpMethod.POST,
+    },
+    {
+      rel: 'update-status',
+      endpoint: '/purchase/:id/status',
+      method: HttpMethod.PATCH,
+      action: AppAction.Manage,
+      subject: Purchase,
+    },
+  ])
   async updatePaymentMethod(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePurchasePaymentMethodDto: UpdatePurchasePaymentMethodDto,

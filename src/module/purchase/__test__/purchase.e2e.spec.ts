@@ -8,12 +8,14 @@ import { datasourceOptions } from '@config/orm.config';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
+import { SerializedResponseDto } from '@common/base/application/dto/serialized-response.dto';
 import { HttpMethod } from '@common/base/application/enum/http-method.enum';
 import { IS_NOT_VALID_MESSAGE } from '@common/base/application/exception/base-exception.messages';
 
 import { AppAction } from '@iam/authorization/domain/app.action.enum';
 
 import { CreatePurchaseDtoRequest } from '@purchase/application/dto/create-purchase.dto';
+import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
 import { UpdatePurchasePaymentMethodDto } from '@purchase/application/dto/update-purchase-payment-method.dto';
 import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
 import {
@@ -78,6 +80,9 @@ describe('Purchase Module', () => {
     regular: {
       id: '5e822193-13ca-4846-9b60-9f2f38d7eefa',
     },
+    superAdmin: {
+      id: '87b0859c-cb93-4b3b-b84e-95909fb4ea89',
+    },
   };
   const existingPaymentMethodId = '361cb833-1f51-4b21-b5e9-1089c5d09b09';
 
@@ -87,7 +92,7 @@ describe('Purchase Module', () => {
 
       return await request(app.getHttpServer())
         .get(`${endpoint}/${existingPurchaseId}`)
-        .auth(regularToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(({ body }) => {
           const expectedResponse = expect.objectContaining({
@@ -114,11 +119,67 @@ describe('Purchase Module', () => {
                 ),
                 method: HttpMethod.GET,
               }),
+              expect.objectContaining({
+                rel: 'create-purchase',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                rel: 'update-payment-method',
+                href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}/payment-method`,
+                ),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'update-status',
+                href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}/status`,
+                ),
+                method: HttpMethod.PATCH,
+              }),
             ]),
           });
 
           expect(body).toEqual(expectedResponse);
         });
+    });
+
+    it('Should filter links by authorization', async () => {
+      const existingPurchaseId = 'a5978602-defc-4415-ae50-33ce6902e113';
+
+      return await request(app.getHttpServer())
+        .get(`${endpoint}/${existingPurchaseId}`)
+        .auth(regularToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(
+          ({ body }: { body: SerializedResponseDto<PurchaseResponseDto> }) => {
+            const expectedLinks = expect.arrayContaining([
+              expect.objectContaining({
+                rel: 'self',
+                href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}`,
+                ),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'create-purchase',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                rel: 'update-payment-method',
+                href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}/payment-method`,
+                ),
+                method: HttpMethod.PATCH,
+              }),
+            ]);
+
+            expect(body.links).toEqual(expectedLinks);
+            expect(body.links).toHaveLength(3);
+          },
+        );
     });
 
     it('Should throw an error if the purchase does not exist', async () => {
@@ -175,36 +236,96 @@ describe('Purchase Module', () => {
 
       return await request(app.getHttpServer())
         .post(endpoint)
+        .auth(superAdminToken, { type: 'bearer' })
+        .send(createPurchaseDto)
+        .expect(HttpStatus.CREATED)
+        .then(
+          ({ body }: { body: SerializedResponseDto<PurchaseResponseDto> }) => {
+            const { id } = body.data;
+            const expectedResponse = {
+              data: expect.objectContaining({
+                id: expect.any(String),
+                type: Purchase.getEntityName(),
+                attributes: expect.objectContaining({
+                  status: PurchaseStatus.PENDING,
+                  amount: existingCourses.first.amount,
+                  userId: existingUsers.superAdmin.id,
+                  courseId: existingCourses.first.id,
+                  paymentMethodId: existingPaymentMethodId,
+                  paymentTransactionId: null,
+                  refundTransactionId: null,
+                  createdAt: expect.any(String),
+                }),
+              }),
+              links: expect.arrayContaining([
+                expect.objectContaining({
+                  rel: 'self',
+                  href: expect.stringContaining(`${endpoint}`),
+                  method: HttpMethod.POST,
+                }),
+                expect.objectContaining({
+                  rel: 'get-purchase',
+                  href: expect.stringContaining(`${endpoint}/${id}`),
+                  method: HttpMethod.GET,
+                }),
+                expect.objectContaining({
+                  rel: 'update-payment-method',
+                  href: expect.stringContaining(
+                    `${endpoint}/${id}/payment-method`,
+                  ),
+                  method: HttpMethod.PATCH,
+                }),
+                expect.objectContaining({
+                  rel: 'update-status',
+                  href: expect.stringContaining(`${endpoint}/${id}/status`),
+                  method: HttpMethod.PATCH,
+                }),
+              ]),
+            };
+
+            expect(body).toEqual(expectedResponse);
+          },
+        );
+    });
+
+    it('Should filter links by authorization', async () => {
+      const createPurchaseDto = {
+        courseId: existingCourses.first.id,
+        paymentMethodId: existingPaymentMethodId,
+      } as CreatePurchaseDtoRequest;
+
+      return await request(app.getHttpServer())
+        .post(endpoint)
         .auth(regularToken, { type: 'bearer' })
         .send(createPurchaseDto)
         .expect(HttpStatus.CREATED)
-        .then(({ body }) => {
-          const expectedResponse = {
-            data: expect.objectContaining({
-              id: expect.any(String),
-              type: Purchase.getEntityName(),
-              attributes: expect.objectContaining({
-                status: PurchaseStatus.PENDING,
-                amount: existingCourses.first.amount,
-                userId: existingUsers.regular.id,
-                courseId: existingCourses.first.id,
-                paymentMethodId: existingPaymentMethodId,
-                paymentTransactionId: null,
-                refundTransactionId: null,
-                createdAt: expect.any(String),
-              }),
-            }),
-            links: expect.arrayContaining([
+        .then(
+          ({ body }: { body: SerializedResponseDto<PurchaseResponseDto> }) => {
+            const { id } = body.data;
+            const expectedLinks = expect.arrayContaining([
               expect.objectContaining({
                 rel: 'self',
                 href: expect.stringContaining(`${endpoint}`),
                 method: HttpMethod.POST,
               }),
-            ]),
-          };
+              expect.objectContaining({
+                rel: 'get-purchase',
+                href: expect.stringContaining(`${endpoint}/${id}`),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'update-payment-method',
+                href: expect.stringContaining(
+                  `${endpoint}/${id}/payment-method`,
+                ),
+                method: HttpMethod.PATCH,
+              }),
+            ]);
 
-          expect(body).toEqual(expectedResponse);
-        });
+            expect(body.links).toEqual(expectedLinks);
+            expect(body.links).toHaveLength(3);
+          },
+        );
     });
 
     it('Should deny purchases for not published courses', async () => {
@@ -379,7 +500,26 @@ describe('Purchase Module', () => {
               expect.objectContaining({
                 rel: 'self',
                 href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}/status`,
+                ),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'get-purchase',
+                href: expect.stringContaining(
                   `${endpoint}/${existingPurchaseId}`,
+                ),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'create-purchase',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                rel: 'update-payment-method',
+                href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}/payment-method`,
                 ),
                 method: HttpMethod.PATCH,
               }),
@@ -481,7 +621,7 @@ describe('Purchase Module', () => {
 
       await request(app.getHttpServer())
         .patch(`${endpoint}/${existingPurchaseId}/payment-method`)
-        .auth(adminToken, { type: 'bearer' })
+        .auth(superAdminToken, { type: 'bearer' })
         .send(updatePurchasePaymentMethodDto)
         .expect(HttpStatus.OK)
         .then(({ body }) => {
@@ -506,6 +646,25 @@ describe('Purchase Module', () => {
                 rel: 'self',
                 href: expect.stringContaining(
                   `${endpoint}/${existingPurchaseId}/payment-method`,
+                ),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'get-purchase',
+                href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}`,
+                ),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'create-purchase',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.POST,
+              }),
+              expect.objectContaining({
+                rel: 'update-status',
+                href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}/status`,
                 ),
                 method: HttpMethod.PATCH,
               }),
@@ -538,6 +697,48 @@ describe('Purchase Module', () => {
           });
           expect(body).toEqual(expectedResponse);
         });
+    });
+
+    it('Should filter links by authoriztaion', async () => {
+      const newPaymentMethodId = '48c7bbe1-46d6-4e85-9dbf-610d52544ef7';
+      const existingPurchaseId = '7bd80f77-433d-4b57-9f00-28e29e93bad5';
+      const updatePurchasePaymentMethodDto = {
+        paymentMethodId: newPaymentMethodId,
+      } as UpdatePurchasePaymentMethodDto;
+
+      await request(app.getHttpServer())
+        .patch(`${endpoint}/${existingPurchaseId}/payment-method`)
+        .auth(adminToken, { type: 'bearer' })
+        .send(updatePurchasePaymentMethodDto)
+        .expect(HttpStatus.OK)
+        .then(
+          ({ body }: { body: SerializedResponseDto<PurchaseResponseDto> }) => {
+            const expectedLinks = expect.arrayContaining([
+              expect.objectContaining({
+                rel: 'self',
+                href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}/payment-method`,
+                ),
+                method: HttpMethod.PATCH,
+              }),
+              expect.objectContaining({
+                rel: 'get-purchase',
+                href: expect.stringContaining(
+                  `${endpoint}/${existingPurchaseId}`,
+                ),
+                method: HttpMethod.GET,
+              }),
+              expect.objectContaining({
+                rel: 'create-purchase',
+                href: expect.stringContaining(endpoint),
+                method: HttpMethod.POST,
+              }),
+            ]);
+
+            expect(body.links).toEqual(expectedLinks);
+            expect(body.links.length).toEqual(3);
+          },
+        );
     });
 
     it('Should throw an error if the payment method does not exist', async () => {
