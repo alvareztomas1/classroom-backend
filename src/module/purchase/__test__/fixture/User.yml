@@ -1,6 +1,7 @@
 entity: user
 items:
   super-admin-user:
+    id: '87b0859c-cb93-4b3b-b84e-95909fb4ea89'
     firstName: super-admin-name
     lastName: super-admin-surname
     email: 'test_super_admin@email.co'
