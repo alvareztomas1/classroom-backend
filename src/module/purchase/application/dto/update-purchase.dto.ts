@@ -1,10 +1,6 @@
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  IsUUID,
-  ValidateIf,
-} from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+
+import { PaymentMethod } from '@payment/domain/payment-method.enum';
 
 import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
 
@@ -14,8 +10,8 @@ export class UpdatePurchaseDto {
   status!: PurchaseStatus;
 
   @IsNotEmpty()
-  @IsUUID()
-  paymentMethodId!: string;
+  @IsEnum(PaymentMethod)
+  paymentMethod!: PaymentMethod;
 
   @ValidateIf(
     (o: UpdatePurchaseDto) =>
