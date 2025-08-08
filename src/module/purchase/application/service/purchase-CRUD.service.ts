@@ -10,8 +10,6 @@ import {
   ICourseRepository,
 } from '@course/application/repository/repository.interface';
 
-import { PAYMENT_METHOD_REPOSITORY_KEY } from '@payment-method/application/repository/payment-method-repository.interface';
-
 import { CreatePurchaseDto } from '@purchase/application/dto/create-purchase.dto';
 import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
 import { UpdatePurchasePaymentMethodDto } from '@purchase/application/dto/update-purchase-payment-method.dto';
@@ -59,8 +57,6 @@ export class PurchaseCRUDService
     private readonly purchaseDtoMapper: PurchaseDtoMapper,
     @Inject(COURSE_REPOSITORY_KEY)
     private readonly courseRepository: ICourseRepository,
-    @Inject(PAYMENT_METHOD_REPOSITORY_KEY)
-    private readonly paymentMethodRepository: IPurchaseRepository,
   ) {
     super(
       purchaseRepository as unknown as BaseRepository<Purchase, PurchaseEntity>,
@@ -70,8 +66,7 @@ export class PurchaseCRUDService
   }
 
   async saveOne(createDto: CreatePurchaseDto): Promise<PurchaseResponseDto> {
-    const { courseId, userId, paymentMethodId } = createDto;
-    await this.verifyPaymentMethodExistence(paymentMethodId);
+    const { courseId, userId } = createDto;
 
     const course = await this.courseRepository.getOneByIdOrFail(courseId);
     const existingPurchase = await this.purchaseRepository.findUserPurchase(
@@ -117,8 +112,6 @@ export class PurchaseCRUDService
     id: string,
     updatePurchasePaymentMethodDto: UpdatePurchasePaymentMethodDto,
   ): Promise<PurchaseResponseDto> {
-    const { paymentMethodId } = updatePurchasePaymentMethodDto;
-    await this.verifyPaymentMethodExistence(paymentMethodId);
     const purchaseToUpdate = await this.purchaseRepository.getOneByIdOrFail(id);
     const purchase = this.purchaseDtoMapper.fromUpdateDtoToEntity(
       purchaseToUpdate,
@@ -170,11 +163,5 @@ export class PurchaseCRUDService
         message: `${STATUS_TRANSITION_MESSAGE} ${current} to ${next} ${IS_NOT_VALID_MESSAGE}`,
       });
     }
-  }
-
-  private async verifyPaymentMethodExistence(
-    paymentMethodId: string,
-  ): Promise<void> {
-    await this.paymentMethodRepository.getOneByIdOrFail(paymentMethodId);
   }
 }

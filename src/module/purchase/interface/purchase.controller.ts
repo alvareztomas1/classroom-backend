@@ -64,7 +64,7 @@ export class PurchaseController {
   async getOneById(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<PurchaseResponseDto> {
-    return await this.purchaseService.getOneByIdOrFail(id, ['paymentMethod']);
+    return await this.purchaseService.getOneByIdOrFail(id);
   }
 
   @Post()
