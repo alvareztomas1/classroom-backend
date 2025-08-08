@@ -4,5 +4,5 @@ import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto
 
 export class UpdatePurchasePaymentMethodDto extends PickType(
   UpdatePurchaseDto,
-  ['paymentMethodId'],
+  ['paymentMethod'],
 ) {}

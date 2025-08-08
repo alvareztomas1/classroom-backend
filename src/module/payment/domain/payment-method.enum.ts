@@ -1,1 +1,3 @@
-export enum PaymentMethod {}
+export enum PaymentMethod {
+  PayPal = 'PayPal',
+}

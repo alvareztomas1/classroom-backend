@@ -1,8 +1,0 @@
-entity: payment_method
-items:
-  payment-method1:
-    id: '361cb833-1f51-4b21-b5e9-1089c5d09b09'
-    name: 'Stellar'
-  payment-method2:
-    id: '48c7bbe1-46d6-4e85-9dbf-610d52544ef7'
-    name: 'Stripe'

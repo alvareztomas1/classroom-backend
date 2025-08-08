@@ -6,14 +6,14 @@ items:
     courseId: 'ba7fc4eb-e4f7-47a9-b963-f1e733d39748'
     status: pending
     amount: 49.99
-    paymentMethodId: '361cb833-1f51-4b21-b5e9-1089c5d09b09'
+    paymentMethod: 'PayPal'
   purchase1:
     id: 'a5978602-defc-4415-ae50-33ce6902e113'
     userId: '5e822193-13ca-4846-9b60-9f2f38d7eefa'
     courseId: '57732eea-ce64-4e9b-80c6-63a08ee82764'
     status: completed
     amount: 39.99
-    paymentMethodId: '361cb833-1f51-4b21-b5e9-1089c5d09b09'
+    paymentMethod: 'PayPal'
     paymentTransactionId: 'payment-transaction-1'
   purchase2:
     id: '7bd80f77-433d-4b57-9f00-28e29e93bad5'
@@ -21,4 +21,4 @@ items:
     courseId: '57732eea-ce64-4e9b-80c6-63a08ee82764'
     status: pending
     amount: 49.99
-    paymentMethodId: '361cb833-1f51-4b21-b5e9-1089c5d09b09'
+    paymentMethod: 'Stellar'

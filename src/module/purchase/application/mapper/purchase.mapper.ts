@@ -2,25 +2,20 @@ import { Injectable } from '@nestjs/common';
 
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { PaymentMethodMapper } from '@payment-method/application/mapper/payment-method.mapper';
-
 import { Purchase } from '@purchase/domain/purchase.entity';
 import { PurchaseEntity } from '@purchase/infrastructure/database/purchase.entity';
 
 @Injectable()
 export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {
-  constructor(private readonly paymentMethodMapper: PaymentMethodMapper) {}
-
   toDomainEntity(entity: PurchaseEntity): Purchase {
     const {
       userId,
       courseId,
       amount,
       status,
-      paymentMethodId,
+      paymentMethod,
       paymentTransactionId,
       refundTransactionId,
-      paymentMethod,
       id,
       createdAt,
       updatedAt,
@@ -32,12 +27,9 @@ export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {
       courseId,
       amount,
       status,
-      paymentMethodId,
+      paymentMethod,
       paymentTransactionId,
       refundTransactionId,
-      paymentMethod
-        ? this.paymentMethodMapper.toDomainEntity(paymentMethod)
-        : undefined,
       id,
       createdAt?.toISOString(),
       updatedAt?.toISOString(),
@@ -51,7 +43,7 @@ export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {
       courseId,
       amount,
       status,
-      paymentMethodId,
+      paymentMethod,
       paymentTransactionId,
       refundTransactionId,
       id,
@@ -65,7 +57,7 @@ export class PurchaseMapper implements IEntityMapper<Purchase, PurchaseEntity> {
       courseId,
       amount,
       status,
-      paymentMethodId,
+      paymentMethod,
       paymentTransactionId,
       refundTransactionId,
       id,

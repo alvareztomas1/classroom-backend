@@ -1,23 +1,17 @@
 import { BaseResponseDto } from '@common/base/application/dto/base.response.dto';
 
-import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
+import { PaymentMethod } from '@payment/domain/payment-method.enum';
 
 import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
-
-export type PaymentMethodPurchaseResponseDto = Pick<
-  PaymentMethod,
-  'id' | 'name'
->;
 
 export class PurchaseResponseDto extends BaseResponseDto {
   userId: string;
   courseId: string;
   amount: number;
   status: PurchaseStatus;
-  paymentMethodId: string;
+  paymentMethod: PaymentMethod;
   paymentTransactionId?: string;
   refundTransactionId?: string;
-  paymentMethod?: PaymentMethodPurchaseResponseDto;
   createdAt?: string;
   updatedAt?: string;
 
@@ -27,10 +21,9 @@ export class PurchaseResponseDto extends BaseResponseDto {
     courseId: string,
     amount: number,
     status: PurchaseStatus,
-    paymentMethodId: string,
+    paymentMethod: PaymentMethod,
     paymentTransactionId?: string,
     refundTransactionId?: string,
-    paymentMethod?: PaymentMethodPurchaseResponseDto,
     id?: string,
     createdAt?: string,
     updatedAt?: string,
@@ -41,7 +34,7 @@ export class PurchaseResponseDto extends BaseResponseDto {
     this.courseId = courseId;
     this.amount = amount;
     this.status = status;
-    this.paymentMethodId = paymentMethodId;
+    this.paymentMethod = paymentMethod;
     this.paymentTransactionId = paymentTransactionId;
     this.refundTransactionId = refundTransactionId;
     this.paymentMethod = paymentMethod;
