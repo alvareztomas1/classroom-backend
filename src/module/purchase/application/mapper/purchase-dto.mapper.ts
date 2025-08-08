@@ -2,13 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { IDtoMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
-
 import { CreatePurchaseDto } from '@purchase/application/dto/create-purchase.dto';
-import {
-  PaymentMethodPurchaseResponseDto,
-  PurchaseResponseDto,
-} from '@purchase/application/dto/purchase-response.dto';
+import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
 import { UpdatePurchaseDto } from '@purchase/application/dto/update-purchase.dto';
 import { Purchase } from '@purchase/domain/purchase.entity';
 
@@ -28,10 +23,9 @@ export class PurchaseDtoMapper
       courseId,
       amount,
       status,
-      paymentMethodId,
+      paymentMethod,
       paymentTransactionId,
       refundTransactionId,
-      paymentMethod,
       id,
       createdAt,
       deletedAt,
@@ -43,10 +37,9 @@ export class PurchaseDtoMapper
       courseId,
       amount as number,
       status,
-      paymentMethodId,
+      paymentMethod,
       paymentTransactionId,
       refundTransactionId,
-      paymentMethod,
       id,
       createdAt,
       updatedAt,
@@ -60,10 +53,9 @@ export class PurchaseDtoMapper
       courseId,
       amount,
       status,
-      paymentMethodId,
+      paymentMethod,
       paymentTransactionId,
       refundTransactionId,
-      paymentMethod,
       id,
       createdAt,
       updatedAt,
@@ -75,10 +67,9 @@ export class PurchaseDtoMapper
       courseId,
       amount,
       dto.status ?? status,
-      dto.paymentMethodId ?? paymentMethodId,
+      dto.paymentMethod ?? paymentMethod,
       dto.paymentTransactionId ?? paymentTransactionId,
       dto.refundTransactionId ?? refundTransactionId,
-      paymentMethod,
       id,
       createdAt,
       updatedAt,
@@ -92,10 +83,9 @@ export class PurchaseDtoMapper
       courseId,
       amount,
       status,
-      paymentMethodId,
+      paymentMethod,
       paymentTransactionId,
       refundTransactionId,
-      paymentMethod,
       id,
       createdAt,
       updatedAt,
@@ -107,24 +97,12 @@ export class PurchaseDtoMapper
       courseId,
       amount,
       status,
-      paymentMethodId,
+      paymentMethod,
       paymentTransactionId,
       refundTransactionId,
-      paymentMethod
-        ? this.buildPaymentMethodPurchaseDto(paymentMethod)
-        : undefined,
       id,
       createdAt,
       updatedAt,
     );
-  }
-
-  private buildPaymentMethodPurchaseDto(
-    paymentMethod: PaymentMethod,
-  ): PaymentMethodPurchaseResponseDto {
-    return {
-      id: paymentMethod.id,
-      name: paymentMethod.name,
-    };
   }
 }
