@@ -22,6 +22,8 @@ import { LessonModule } from '@lesson/lesson.module';
 
 import { PaymentMethodModule } from '@payment-method/payment-method.module';
 
+import { PaymentModule } from '@payment/payment.module';
+
 import { PurchaseModule } from '@purchase/purchase.module';
 
 @Global()
@@ -45,6 +47,7 @@ import { PurchaseModule } from '@purchase/purchase.module';
     PaymentMethodModule,
     CategoryModule,
     PurchaseModule,
+    PaymentModule,
   ],
   providers: [LinkBuilderService, SlugService],
   exports: [LinkBuilderService, SlugService],
