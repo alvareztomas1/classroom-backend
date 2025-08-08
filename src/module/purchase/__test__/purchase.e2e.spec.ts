@@ -14,6 +14,8 @@ import { IS_NOT_VALID_MESSAGE } from '@common/base/application/exception/base-ex
 
 import { AppAction } from '@iam/authorization/domain/app.action.enum';
 
+import { PaymentMethod } from '@payment/domain/payment-method.enum';
+
 import { CreatePurchaseDtoRequest } from '@purchase/application/dto/create-purchase.dto';
 import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
 import { UpdatePurchasePaymentMethodDto } from '@purchase/application/dto/update-purchase-payment-method.dto';
@@ -84,7 +86,6 @@ describe('Purchase Module', () => {
       id: '87b0859c-cb93-4b3b-b84e-95909fb4ea89',
     },
   };
-  const existingPaymentMethodId = '361cb833-1f51-4b21-b5e9-1089c5d09b09';
 
   describe('GET - /purchase/:id', () => {
     it('Should return a purchase', async () => {
@@ -106,7 +107,7 @@ describe('Purchase Module', () => {
                 courseId: expect.any(String),
                 paymentTransactionId: expect.any(String),
                 refundTransactionId: null,
-                paymentMethodId: existingPaymentMethodId,
+                paymentMethod: expect.any(String),
                 createdAt: expect.any(String),
                 updatedAt: expect.any(String),
               }),
@@ -231,7 +232,7 @@ describe('Purchase Module', () => {
     it('Should create a purchase', async () => {
       const createPurchaseDto = {
         courseId: existingCourses.first.id,
-        paymentMethodId: existingPaymentMethodId,
+        paymentMethod: PaymentMethod.PayPal,
       } as CreatePurchaseDtoRequest;
 
       return await request(app.getHttpServer())
@@ -251,7 +252,7 @@ describe('Purchase Module', () => {
                   amount: existingCourses.first.amount,
                   userId: existingUsers.superAdmin.id,
                   courseId: existingCourses.first.id,
-                  paymentMethodId: existingPaymentMethodId,
+                  paymentMethod: createPurchaseDto.paymentMethod,
                   paymentTransactionId: null,
                   refundTransactionId: null,
                   createdAt: expect.any(String),
@@ -291,7 +292,7 @@ describe('Purchase Module', () => {
     it('Should filter links by authorization', async () => {
       const createPurchaseDto = {
         courseId: existingCourses.first.id,
-        paymentMethodId: existingPaymentMethodId,
+        paymentMethod: PaymentMethod.PayPal,
       } as CreatePurchaseDtoRequest;
 
       return await request(app.getHttpServer())
@@ -332,7 +333,7 @@ describe('Purchase Module', () => {
       const courseId = existingCourses.second.id;
       const createPurchaseDto = {
         courseId,
-        paymentMethodId: existingPaymentMethodId,
+        paymentMethod: PaymentMethod.PayPal,
       } as CreatePurchaseDtoRequest;
 
       return await request(app.getHttpServer())
@@ -360,7 +361,7 @@ describe('Purchase Module', () => {
 
       const createPurchaseDto = {
         courseId: nonExistingCourseId,
-        paymentMethodId: existingPaymentMethodId,
+        paymentMethod: PaymentMethod.PayPal,
       } as CreatePurchaseDtoRequest;
 
       return await request(app.getHttpServer())
@@ -387,7 +388,7 @@ describe('Purchase Module', () => {
       const courseId = existingCourses.first.id;
       const createPurchaseDto = {
         courseId,
-        paymentMethodId: existingPaymentMethodId,
+        paymentMethod: PaymentMethod.PayPal,
       } as CreatePurchaseDtoRequest;
 
       return await request(app.getHttpServer())
@@ -415,7 +416,7 @@ describe('Purchase Module', () => {
 
       const createPurchaseDto = {
         courseId,
-        paymentMethodId: existingPaymentMethodId,
+        paymentMethod: PaymentMethod.PayPal,
       } as CreatePurchaseDtoRequest;
 
       return await request(app.getHttpServer())
@@ -432,34 +433,6 @@ describe('Purchase Module', () => {
               },
               status: HttpStatus.CONFLICT.toString(),
               title: 'Purchase already exists',
-            },
-          });
-          expect(body).toEqual(expectedResponse);
-        });
-    });
-
-    it('Should throw an error if the payment method does not exist', async () => {
-      const nonExistingPaymentMethodId = 'a078e065-e85b-45f0-8d6c-f68c54d8b3ee';
-
-      const createPurchaseDto = {
-        courseId: existingCourses.third.id,
-        paymentMethodId: nonExistingPaymentMethodId,
-      } as CreatePurchaseDtoRequest;
-
-      return await request(app.getHttpServer())
-        .post(endpoint)
-        .auth(regularToken, { type: 'bearer' })
-        .send(createPurchaseDto)
-        .expect(HttpStatus.NOT_FOUND)
-        .then(({ body }) => {
-          const expectedResponse = expect.objectContaining({
-            error: {
-              detail: `PaymentMethod with id ${nonExistingPaymentMethodId} not found`,
-              source: {
-                pointer: endpoint,
-              },
-              status: HttpStatus.NOT_FOUND.toString(),
-              title: 'Entity not found',
             },
           });
           expect(body).toEqual(expectedResponse);
@@ -613,10 +586,9 @@ describe('Purchase Module', () => {
 
   describe('PATCH - /purchase/:id/payment-method', () => {
     it('Should update a purchase payment method', async () => {
-      const newPaymentMethodId = '48c7bbe1-46d6-4e85-9dbf-610d52544ef7';
       const existingPurchaseId = '7bd80f77-433d-4b57-9f00-28e29e93bad5';
       const updatePurchasePaymentMethodDto = {
-        paymentMethodId: newPaymentMethodId,
+        paymentMethod: PaymentMethod.PayPal,
       } as UpdatePurchasePaymentMethodDto;
 
       await request(app.getHttpServer())
@@ -634,7 +606,7 @@ describe('Purchase Module', () => {
                 amount: expect.any(Number),
                 userId: expect.any(String),
                 courseId: expect.any(String),
-                paymentMethodId: newPaymentMethodId,
+                paymentMethod: updatePurchasePaymentMethodDto.paymentMethod,
                 paymentTransactionId: null,
                 refundTransactionId: null,
                 createdAt: expect.any(String),
@@ -687,7 +659,7 @@ describe('Purchase Module', () => {
                 amount: expect.any(Number),
                 userId: expect.any(String),
                 courseId: expect.any(String),
-                paymentMethodId: newPaymentMethodId,
+                paymentMethod: updatePurchasePaymentMethodDto.paymentMethod,
                 paymentTransactionId: null,
                 refundTransactionId: null,
                 createdAt: expect.any(String),
@@ -699,11 +671,10 @@ describe('Purchase Module', () => {
         });
     });
 
-    it('Should filter links by authoriztaion', async () => {
-      const newPaymentMethodId = '48c7bbe1-46d6-4e85-9dbf-610d52544ef7';
+    it('Should filter links by authorization', async () => {
       const existingPurchaseId = '7bd80f77-433d-4b57-9f00-28e29e93bad5';
       const updatePurchasePaymentMethodDto = {
-        paymentMethodId: newPaymentMethodId,
+        paymentMethod: PaymentMethod.PayPal,
       } as UpdatePurchasePaymentMethodDto;
 
       await request(app.getHttpServer())
@@ -741,38 +712,10 @@ describe('Purchase Module', () => {
         );
     });
 
-    it('Should throw an error if the payment method does not exist', async () => {
-      const nonExistingPaymentMethodId = '78ace669-9c6f-4fe3-84e9-a2b55291191c';
-      const existingPurchaseId = '7bd80f77-433d-4b57-9f00-28e29e93bad5';
-      const updatePurchasePaymentMethodDto = {
-        paymentMethodId: nonExistingPaymentMethodId,
-      } as UpdatePurchasePaymentMethodDto;
-
-      return await request(app.getHttpServer())
-        .patch(`${endpoint}/${existingPurchaseId}/payment-method`)
-        .auth(adminToken, { type: 'bearer' })
-        .send(updatePurchasePaymentMethodDto)
-        .expect(HttpStatus.NOT_FOUND)
-        .then(({ body }) => {
-          const expectedResponse = expect.objectContaining({
-            error: {
-              detail: `PaymentMethod with id ${nonExistingPaymentMethodId} not found`,
-              source: {
-                pointer: `${endpoint}/${existingPurchaseId}/payment-method`,
-              },
-              status: HttpStatus.NOT_FOUND.toString(),
-              title: 'Entity not found',
-            },
-          });
-          expect(body).toEqual(expectedResponse);
-        });
-    });
-
     it('Should deny access to a user who is not the owner of the purchase', async () => {
-      const newPaymentMethodId = '48c7bbe1-46d6-4e85-9dbf-610d52544ef7';
       const existingPurchaseId = '7bd80f77-433d-4b57-9f00-28e29e93bad5';
       const updatePurchasePaymentMethodDto = {
-        paymentMethodId: newPaymentMethodId,
+        paymentMethod: PaymentMethod.PayPal,
       } as UpdatePurchasePaymentMethodDto;
 
       await request(app.getHttpServer())
