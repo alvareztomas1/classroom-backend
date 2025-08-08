@@ -10,8 +10,6 @@ import { Section } from '@section/domain/section.entity';
 
 import { Lesson } from '@lesson/domain/lesson.entity';
 
-import { PaymentMethod } from '@payment-method/domain/payment-method.entity';
-
 import { Purchase } from '@purchase/domain/purchase.entity';
 
 export type AppSubjects =
@@ -24,8 +22,6 @@ export type AppSubjects =
       | Section
       | typeof Lesson
       | Lesson
-      | typeof PaymentMethod
-      | PaymentMethod
       | typeof Purchase
       | Purchase
       | Category

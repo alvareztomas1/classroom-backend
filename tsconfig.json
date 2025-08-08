@@ -30,7 +30,6 @@
       "@section/*": ["src/module/section/*"],
       "@lesson/*": ["src/module/lesson/*"],
       "@purchase/*": ["src/module/purchase/*"],
-      "@payment-method/*": ["src/module/payment-method/*"],
       "@payment/*": ["src/module/payment/*"],
       "@module/*": ["src/module/*"],
       "@test/*": ["src/test/*"],

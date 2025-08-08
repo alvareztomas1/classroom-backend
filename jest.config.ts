@@ -27,7 +27,6 @@ export default async (): Promise<Config> => {
       '^@category/(.*)$': '<rootDir>/module/category/$1',
       '^@section/(.*)$': '<rootDir>/module/section/$1',
       '^@lesson/(.*)$': '<rootDir>/module/lesson/$1',
-      '^@payment-method/(.*)$': '<rootDir>/module/payment-method/$1',
       '^@purchase/(.*)$': '<rootDir>/module/purchase/$1',
       '^@payment/(.*)$': '<rootDir>/module/payment/$1',
       '^@module/(.*)$': '<rootDir>/module/$1',

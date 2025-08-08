@@ -20,8 +20,6 @@ import { SectionModule } from '@section/section.module';
 
 import { LessonModule } from '@lesson/lesson.module';
 
-import { PaymentMethodModule } from '@payment-method/payment-method.module';
-
 import { PaymentModule } from '@payment/payment.module';
 
 import { PurchaseModule } from '@purchase/purchase.module';
@@ -44,7 +42,6 @@ import { PurchaseModule } from '@purchase/purchase.module';
     CourseModule,
     SectionModule,
     LessonModule,
-    PaymentMethodModule,
     CategoryModule,
     PurchaseModule,
     PaymentModule,
