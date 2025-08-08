@@ -17,7 +17,6 @@
     "^@category/(.*)$",
     "^@section/(.*)$",
     "^@lesson/(.*)$",
-    "^@payment-method/(.*)$",
     "^@payment/(.*)$",
     "^@purchase/(.*)$",
     "^@module/(.*)$",
