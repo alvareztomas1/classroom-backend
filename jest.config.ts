@@ -29,6 +29,7 @@ export default async (): Promise<Config> => {
       '^@lesson/(.*)$': '<rootDir>/module/lesson/$1',
       '^@payment-method/(.*)$': '<rootDir>/module/payment-method/$1',
       '^@purchase/(.*)$': '<rootDir>/module/purchase/$1',
+      '^@payment/(.*)$': '<rootDir>/module/payment/$1',
       '^@module/(.*)$': '<rootDir>/module/$1',
       '^@test/(.*)$': '<rootDir>/test/$1',
       '^@root/(.*)$': '<rootDir>/../$1',
