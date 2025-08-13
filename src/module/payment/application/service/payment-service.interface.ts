@@ -1,16 +1,16 @@
-import { IPaymentResponse } from '@payment/application/interface/payment-response.interface';
+import { IPaymentOrderResponse } from '@payment/application/interface/payment-order-response.interface';
 import { PaymentMethod } from '@payment/domain/payment-method.enum';
 
 export interface IPaymentService {
-  createPayment(
+  createPaymentOrder(
     providerName: PaymentMethod,
     amount: number,
-    userId: string,
     buyer?: IBuyer,
-  ): Promise<IPaymentResponse>;
+  ): Promise<IPaymentOrderResponse>;
 }
 
 export interface IBuyer {
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
 }

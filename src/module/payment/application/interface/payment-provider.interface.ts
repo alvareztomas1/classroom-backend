@@ -1,11 +1,10 @@
-import { IPaymentResponse } from '@payment/application/interface/payment-response.interface';
+import { IPaymentOrderResponse } from '@payment/application/interface/payment-order-response.interface';
 import { IBuyer } from '@payment/application/service/payment-service.interface';
 
 export interface IPaymentProvider {
-  createPayment(
+  createPaymentOrder(
     currency: string,
     amount: number,
-    userId: string,
     buyer?: IBuyer,
-  ): Promise<IPaymentResponse>;
+  ): Promise<IPaymentOrderResponse>;
 }
