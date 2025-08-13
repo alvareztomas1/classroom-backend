@@ -45,6 +45,10 @@ export class PurchaseDto extends BaseDto {
 
   @IsOptional()
   @IsString()
+  paymentOrderId?: string;
+
+  @IsOptional()
+  @IsString()
   paymentTransactionId?: string;
 
   @IsOptional()
