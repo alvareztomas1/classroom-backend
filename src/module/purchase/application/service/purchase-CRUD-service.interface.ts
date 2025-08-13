@@ -19,6 +19,12 @@ export interface IPurchaseCRUDService
     >,
     'deleteOneByIdOrFail' | 'updateOneByIdOrFail'
   > {
+  saveOne(
+    createDto: CreatePurchaseDto,
+    userFirstName?: string,
+    userLastName?: string,
+    userEmail?: string,
+  ): Promise<PurchaseResponseDto>;
   updateStatusByIdOrFail(
     id: string,
     updatePurchaseStatusDto: UpdatePurchaseStatusDto,

@@ -10,6 +10,8 @@ import {
   ICourseRepository,
 } from '@course/application/repository/repository.interface';
 
+import { PaymentService } from '@payment/application/service/payment.service';
+
 import { CreatePurchaseDto } from '@purchase/application/dto/create-purchase.dto';
 import { PurchaseResponseDto } from '@purchase/application/dto/purchase-response.dto';
 import { UpdatePurchasePaymentMethodDto } from '@purchase/application/dto/update-purchase-payment-method.dto';
@@ -57,6 +59,7 @@ export class PurchaseCRUDService
     private readonly purchaseDtoMapper: PurchaseDtoMapper,
     @Inject(COURSE_REPOSITORY_KEY)
     private readonly courseRepository: ICourseRepository,
+    private readonly paymentService: PaymentService,
   ) {
     super(
       purchaseRepository as unknown as BaseRepository<Purchase, PurchaseEntity>,
@@ -65,8 +68,13 @@ export class PurchaseCRUDService
     );
   }
 
-  async saveOne(createDto: CreatePurchaseDto): Promise<PurchaseResponseDto> {
-    const { courseId, userId } = createDto;
+  async saveOne(
+    createDto: CreatePurchaseDto,
+    userFirstName?: string,
+    userLastName?: string,
+    userEmail?: string,
+  ): Promise<PurchaseResponseDto> {
+    const { courseId, userId, paymentMethod } = createDto;
 
     const course = await this.courseRepository.getOneByIdOrFail(courseId);
     const existingPurchase = await this.purchaseRepository.findUserPurchase(
@@ -82,8 +90,27 @@ export class PurchaseCRUDService
       course.status,
     );
 
+    const { paymentOrderId, approveUrl } =
+      await this.paymentService.createPaymentOrder(
+        paymentMethod,
+        course.price!,
+        {
+          firstName: userFirstName,
+          lastName: userLastName,
+          email: userEmail,
+        },
+      );
+
     createDto.amount = course.price!;
-    return await super.saveOne(createDto);
+    createDto.paymentOrderId = paymentOrderId;
+
+    const purchase = this.purchaseDtoMapper.fromCreateDtoToEntity(createDto);
+    const savedPurchase = await this.purchaseRepository.saveOne(purchase);
+
+    return this.purchaseDtoMapper.fromEntityToResponseDto(
+      savedPurchase,
+      approveUrl,
+    );
   }
 
   async updateStatusByIdOrFail(

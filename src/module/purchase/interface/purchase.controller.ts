@@ -91,10 +91,15 @@ export class PurchaseController {
     @Body() createPurchaseDto: CreatePurchaseDtoRequest,
     @CurrentUser() user: User,
   ): Promise<PurchaseResponseDto> {
-    return await this.purchaseService.saveOne({
-      ...createPurchaseDto,
-      userId: user.id!,
-    });
+    return await this.purchaseService.saveOne(
+      {
+        ...createPurchaseDto,
+        userId: user.id!,
+      },
+      user.firstName,
+      user.lastName,
+      user.email,
+    );
   }
 
   @Patch(':id/status')
