@@ -3,6 +3,7 @@ export const environmentConfig = (): Record<string, any> => ({
   server: {
     port: Number(process.env.PORT),
     baseUrl: process.env.BASE_APP_URL,
+    environment: process.env.NODE_ENV,
   },
   cognito: {
     userPoolId: process.env.COGNITO_USER_POOL_ID,
@@ -23,5 +24,9 @@ export const environmentConfig = (): Record<string, any> => ({
   },
   s3: {
     bucket: process.env.S3_BUCKET,
+  },
+  paypal: {
+    clientId: process.env.PAYPAL_CLIENT_ID,
+    clientSecret: process.env.PAYPAL_CLIENT_SECRET,
   },
 });
