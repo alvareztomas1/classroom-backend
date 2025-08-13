@@ -22,6 +22,8 @@ declare global {
       COGNITO_ENDPOINT: string;
       COGNITO_ISSUER: string;
       S3_BUCKET: string;
+      PAYPAL_CLIENT_ID: string;
+      PAYPAL_CLIENT_SECRET: string;
     }
   }
 }

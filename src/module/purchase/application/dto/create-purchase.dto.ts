@@ -5,10 +5,12 @@ import { PurchaseStatus } from '@purchase/domain/purchase.status.enum';
 
 export class CreatePurchaseDto extends OmitType(PurchaseDto, [
   'amount',
+  'paymentOrderId',
   'paymentTransactionId',
   'refundTransactionId',
 ]) {
   amount?: number;
+  paymentOrderId?: string;
   paymentTransactionId?: string;
   refundTransactionId?: string;
 }

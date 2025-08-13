@@ -7,6 +7,8 @@ import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/c
 import { CourseModule } from '@course/course.module';
 import { CourseEntity } from '@course/infrastructure/database/course.entity';
 
+import { PaymentModule } from '@payment/payment.module';
+
 import { PurchaseDtoMapper } from '@purchase/application/mapper/purchase-dto.mapper';
 import { PurchaseMapper } from '@purchase/application/mapper/purchase.mapper';
 import { ManagePurchasePolicyHandler } from '@purchase/application/policy/manage-purchase-policy.handler';
@@ -42,6 +44,7 @@ const policyHandlersProviders = [
     TypeOrmModule.forFeature([PurchaseEntity, CourseEntity]),
     CourseModule,
     AuthorizationModule.forFeature(),
+    PaymentModule,
   ],
   providers: [
     purchaseRepositoryProvider,

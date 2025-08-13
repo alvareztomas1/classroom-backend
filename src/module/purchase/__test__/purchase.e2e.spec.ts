@@ -253,6 +253,8 @@ describe('Purchase Module', () => {
                   userId: existingUsers.superAdmin.id,
                   courseId: existingCourses.first.id,
                   paymentMethod: createPurchaseDto.paymentMethod,
+                  paymentOrderId: 'payment-order-id',
+                  approveUrl: 'approve-url',
                   paymentTransactionId: null,
                   refundTransactionId: null,
                   createdAt: expect.any(String),

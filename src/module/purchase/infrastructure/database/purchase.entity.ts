@@ -33,6 +33,9 @@ export class PurchaseEntity extends BaseEntity {
   paymentMethod: PaymentMethod;
 
   @Column({ type: 'varchar', nullable: true })
+  paymentOrderId?: string;
+
+  @Column({ type: 'varchar', nullable: true })
   paymentTransactionId?: string;
 
   @Column({ type: 'varchar', nullable: true })
@@ -44,6 +47,7 @@ export class PurchaseEntity extends BaseEntity {
     amount: number,
     status: PurchaseStatus,
     paymentMethod: PaymentMethod,
+    paymentOrderId?: string,
     paymentTransactionId?: string,
     refundTransactionId?: string,
     id?: string,
@@ -58,6 +62,7 @@ export class PurchaseEntity extends BaseEntity {
     this.amount = amount;
     this.status = status;
     this.paymentMethod = paymentMethod;
+    this.paymentOrderId = paymentOrderId;
     this.paymentTransactionId = paymentTransactionId;
     this.refundTransactionId = refundTransactionId;
   }

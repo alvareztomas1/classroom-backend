@@ -10,6 +10,7 @@ export class Purchase extends Base {
   amount: number;
   status: PurchaseStatus;
   paymentMethod: PaymentMethod;
+  paymentOrderId?: string;
   paymentTransactionId?: string;
   refundTransactionId?: string;
 
@@ -19,6 +20,7 @@ export class Purchase extends Base {
     amount: number,
     status: PurchaseStatus,
     paymentMethod: PaymentMethod,
+    paymentOrderId?: string,
     paymentTransactionId?: string,
     refundTransactionId?: string,
     id?: string,
@@ -33,6 +35,7 @@ export class Purchase extends Base {
     this.amount = amount;
     this.status = status;
     this.paymentMethod = paymentMethod;
+    this.paymentOrderId = paymentOrderId;
     this.paymentTransactionId = paymentTransactionId;
     this.refundTransactionId = refundTransactionId;
   }

@@ -10,8 +10,10 @@ export class PurchaseResponseDto extends BaseResponseDto {
   amount: number;
   status: PurchaseStatus;
   paymentMethod: PaymentMethod;
+  paymentOrderId?: string;
   paymentTransactionId?: string;
   refundTransactionId?: string;
+  approveUrl?: string;
   createdAt?: string;
   updatedAt?: string;
 
@@ -22,8 +24,10 @@ export class PurchaseResponseDto extends BaseResponseDto {
     amount: number,
     status: PurchaseStatus,
     paymentMethod: PaymentMethod,
+    paymentOrderId?: string,
     paymentTransactionId?: string,
     refundTransactionId?: string,
+    approveUrl?: string,
     id?: string,
     createdAt?: string,
     updatedAt?: string,
@@ -35,9 +39,11 @@ export class PurchaseResponseDto extends BaseResponseDto {
     this.amount = amount;
     this.status = status;
     this.paymentMethod = paymentMethod;
+    this.paymentOrderId = paymentOrderId;
     this.paymentTransactionId = paymentTransactionId;
     this.refundTransactionId = refundTransactionId;
     this.paymentMethod = paymentMethod;
+    this.approveUrl = approveUrl;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }

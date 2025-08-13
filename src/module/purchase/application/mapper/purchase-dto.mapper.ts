@@ -24,6 +24,7 @@ export class PurchaseDtoMapper
       amount,
       status,
       paymentMethod,
+      paymentOrderId,
       paymentTransactionId,
       refundTransactionId,
       id,
@@ -38,6 +39,7 @@ export class PurchaseDtoMapper
       amount as number,
       status,
       paymentMethod,
+      paymentOrderId,
       paymentTransactionId,
       refundTransactionId,
       id,
@@ -54,6 +56,7 @@ export class PurchaseDtoMapper
       amount,
       status,
       paymentMethod,
+      paymentOrderId,
       paymentTransactionId,
       refundTransactionId,
       id,
@@ -68,6 +71,7 @@ export class PurchaseDtoMapper
       amount,
       dto.status ?? status,
       dto.paymentMethod ?? paymentMethod,
+      paymentOrderId,
       dto.paymentTransactionId ?? paymentTransactionId,
       dto.refundTransactionId ?? refundTransactionId,
       id,
@@ -77,13 +81,17 @@ export class PurchaseDtoMapper
     );
   }
 
-  fromEntityToResponseDto(entity: Purchase): PurchaseResponseDto {
+  fromEntityToResponseDto(
+    entity: Purchase,
+    approveUrl?: string,
+  ): PurchaseResponseDto {
     const {
       userId,
       courseId,
       amount,
       status,
       paymentMethod,
+      paymentOrderId,
       paymentTransactionId,
       refundTransactionId,
       id,
@@ -98,8 +106,10 @@ export class PurchaseDtoMapper
       amount,
       status,
       paymentMethod,
+      paymentOrderId,
       paymentTransactionId,
       refundTransactionId,
+      approveUrl,
       id,
       createdAt,
       updatedAt,

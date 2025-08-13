@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { IPaymentResponse } from '@payment/application/interface/payment-response.interface';
+import { IPaymentOrderResponse } from '@payment/application/interface/payment-order-response.interface';
 import {
   IBuyer,
   IPaymentService,
@@ -15,18 +15,15 @@ export class PaymentService implements IPaymentService {
     private readonly paymentProviderStorage: PaymentProviderStorage,
   ) {}
 
-  async createPayment(
+  async createPaymentOrder(
     providerName: PaymentMethod,
     amount: number,
-    userId: string,
     buyer?: IBuyer,
-  ): Promise<IPaymentResponse> {
+  ): Promise<IPaymentOrderResponse> {
     const paymentProvider = this.paymentProviderStorage.get(providerName);
-
-    return await paymentProvider.createPayment(
+    return await paymentProvider.createPaymentOrder(
       this.CURRENCY,
       amount,
-      userId,
       buyer,
     );
   }

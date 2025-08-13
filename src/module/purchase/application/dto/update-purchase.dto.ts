@@ -22,8 +22,7 @@ export class UpdatePurchaseDto {
   @IsString()
   paymentTransactionId?: string;
 
-  @ValidateIf((o: UpdatePurchaseDto) => o.status === PurchaseStatus.REFUNDED)
-  @IsNotEmpty()
-  @IsString()
+  paymentOrderId?: string;
+
   refundTransactionId?: string;
 }
