@@ -18,6 +18,7 @@
     "^@section/(.*)$",
     "^@lesson/(.*)$",
     "^@payment/(.*)$",
+    "^@paypal/(.*)$",
     "^@purchase/(.*)$",
     "^@module/(.*)$",
     "^@test/(.*)$",
