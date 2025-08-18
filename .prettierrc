@@ -18,7 +18,7 @@
     "^@section/(.*)$",
     "^@lesson/(.*)$",
     "^@payment/(.*)$",
-    "^@paypal/(.*)$",
+    "^@paypal/(?!paypal-server-sdk)(.*)$",
     "^@purchase/(.*)$",
     "^@module/(.*)$",
     "^@test/(.*)$",
