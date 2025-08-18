@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,6 +23,8 @@ import { LessonModule } from '@lesson/lesson.module';
 
 import { PaymentModule } from '@payment/payment.module';
 
+import { PaypalModule } from '@paypal/paypal.module';
+
 import { PurchaseModule } from '@purchase/purchase.module';
 
 @Global()
@@ -37,6 +40,7 @@ import { PurchaseModule } from '@purchase/purchase.module';
         autoLoadEntities: true,
       }),
     }),
+    HttpModule,
     CloudModule,
     IamModule,
     CourseModule,
@@ -45,6 +49,7 @@ import { PurchaseModule } from '@purchase/purchase.module';
     CategoryModule,
     PurchaseModule,
     PaymentModule,
+    PaypalModule,
   ],
   providers: [LinkBuilderService, SlugService],
   exports: [LinkBuilderService, SlugService],
