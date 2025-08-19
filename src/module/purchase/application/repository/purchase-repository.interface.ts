@@ -11,4 +11,6 @@ export interface IPurchaseRepository
     'deleteOneByIdOrFail'
   > {
   findUserPurchase(userId: string, courseId: string): Promise<Purchase | null>;
+  findByPaymentOrderId(paymentOrderId: string): Promise<Purchase | null>;
+  findByPaymentOrderIdOrFail(paymentOrderId: string): Promise<Purchase>;
 }
