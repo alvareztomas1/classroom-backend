@@ -3,4 +3,5 @@ export enum PurchaseStatus {
   COMPLETED = 'completed',
   FAILED = 'failed',
   REFUNDED = 'refunded',
+  CANCELLED = 'cancelled',
 }

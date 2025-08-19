@@ -4,6 +4,7 @@ import { titleCase } from 'change-case-all';
 import { In, Repository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
+import EntityNotFoundException from '@common/base/infrastructure/exception/not.found.exception';
 
 import { PurchaseMapper } from '@purchase/application/mapper/purchase.mapper';
 import { IPurchaseRepository } from '@purchase/application/repository/purchase-repository.interface';
@@ -43,5 +44,31 @@ export class PurchasePostgresRepository
     return purchaseEntity
       ? this.purchaseMapper.toDomainEntity(purchaseEntity)
       : null;
+  }
+
+  async findByPaymentOrderId(paymentOrderId: string): Promise<Purchase | null> {
+    const purchaseEntity = await this.purchaseRepository.findOne({
+      where: {
+        paymentOrderId,
+      },
+    });
+
+    return purchaseEntity
+      ? this.purchaseMapper.toDomainEntity(purchaseEntity)
+      : null;
+  }
+
+  async findByPaymentOrderIdOrFail(paymentOrderId: string): Promise<Purchase> {
+    const purchaseEntity = await this.findByPaymentOrderId(paymentOrderId);
+
+    if (!purchaseEntity) {
+      throw new EntityNotFoundException(
+        'paymentOrderId',
+        paymentOrderId,
+        this.entityType,
+      );
+    }
+
+    return purchaseEntity;
   }
 }

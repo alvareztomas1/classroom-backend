@@ -183,6 +183,7 @@ export class PurchaseCRUDService
       [PurchaseStatus.COMPLETED]: [PurchaseStatus.REFUNDED],
       [PurchaseStatus.FAILED]: [],
       [PurchaseStatus.REFUNDED]: [],
+      [PurchaseStatus.CANCELLED]: [],
     };
 
     if (!validTransitions[current].includes(next)) {

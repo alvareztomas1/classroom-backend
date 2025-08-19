@@ -1,0 +1,18 @@
+entity: user
+items:
+  admin-user:
+    id: a90108bf-42c6-481f-a63f-4b51fed1300c
+    firstName: admin-name
+    lastName: admin-surname
+    email: 'test_admin@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000Y'
+    roles: regular,admin
+  regular-user:
+    id: '5e822193-13ca-4846-9b60-9f2f38d7eefa'
+    firstName: regular-name
+    lastName: regular-surname
+    email: 'test_regular@email.co'
+    avatarUrl: '{{internet.url}}'
+    externalId: '00000000-0000-0000-0000-00000000000Z'
+    roles: regular
