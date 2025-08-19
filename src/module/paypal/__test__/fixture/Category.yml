@@ -1,0 +1,5 @@
+entity: category
+items:
+  category1:
+    id: '2d915994-8c06-425c-9a64-23a7b2b8603e'
+    name: 'Category 1'

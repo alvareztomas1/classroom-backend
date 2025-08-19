@@ -1,0 +1,46 @@
+entity: course
+items:
+  course1:
+    id: '29694b5e-c5d1-487e-a6e8-3f7aa6c4238c'
+    title: 'Introduction to Programming'
+    description: 'Learn the basics of programming with JavaScript'
+    price: 49.99
+    imageUrl: '{{internet.url}}/intro-programming.jpg'
+    status: published
+    slug: 'introduction-to-programming'
+    difficulty: beginner
+    instructor: '@admin-user'
+    category: '@category1'
+  course2:
+    id: '386ece9b-eaab-4a82-ac53-727579f67cd8'
+    title: 'Advanced Web Development'
+    description: 'Master React, Node.js and modern web architectures'
+    price: 89.99
+    imageUrl: '{{internet.url}}/advanced-web.jpg'
+    status: published
+    slug: 'advanced-web-development'
+    difficulty: advanced
+    instructor: '@admin-user'
+    category: '@category1'
+  course3:
+    id: 'bec20f92-fa5c-48d7-9736-880f8b704287'
+    title: 'Advanced Mathematics'
+    description: 'Master Calculus and Linear Algebra'
+    price: 89.99
+    imageUrl: '{{internet.url}}/advanced-web.jpg'
+    status: published
+    slug: 'advanced-mathematics'
+    difficulty: advanced
+    instructor: '@admin-user'
+    category: '@category1'
+  course4:
+    id: '30d153df-b6ab-47a7-97c7-bf2081fc6737'
+    title: 'Advanced English'
+    description: 'Master Grammar and Vocabulary'
+    price: 89.99
+    imageUrl: '{{internet.url}}/advanced-web.jpg'
+    status: published
+    slug: 'advanced-english'
+    difficulty: advanced
+    instructor: '@admin-user'
+    category: '@category1'

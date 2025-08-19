@@ -1,0 +1,34 @@
+entity: purchase
+items:
+  purchase:
+    id: 'e6c78b10-d9b0-4819-ac4e-a36ca36f8554'
+    userId: '5e822193-13ca-4846-9b60-9f2f38d7eefa'
+    courseId: 'ba7fc4eb-e4f7-47a9-b963-f1e733d39748'
+    status: pending
+    amount: 49.99
+    paymentMethod: 'PayPal'
+    paymentOrderId: '8U481631H66031715'
+  purchase1:
+    id: 'c3d3c40b-c9c1-4b48-a806-63f78bf439bd'
+    userId: '5e822193-13ca-4846-9b60-9f2f38d7eefa'
+    courseId: '386ece9b-eaab-4a82-ac53-727579f67cd8'
+    status: pending
+    amount: 49.99
+    paymentMethod: 'PayPal'
+    paymentOrderId: '8U481631H66031716'
+  purchase2:
+    id: '379867ec-c038-438a-9ef0-d2abedcd4a52'
+    userId: '5e822193-13ca-4846-9b60-9f2f38d7eefa'
+    courseId: 'bec20f92-fa5c-48d7-9736-880f8b704287'
+    status: pending
+    amount: 49.99
+    paymentMethod: 'PayPal'
+    paymentOrderId: '8U481631H66031717'
+  purchase3:
+    id: '8ce5b26e-1264-4552-9e84-a3fd16d2b2b9'
+    userId: '5e822193-13ca-4846-9b60-9f2f38d7eefa'
+    courseId: '30d153df-b6ab-47a7-97c7-bf2081fc6737'
+    status: pending
+    amount: 49.99
+    paymentMethod: 'PayPal'
+    paymentOrderId: '8U481631H66031718'
