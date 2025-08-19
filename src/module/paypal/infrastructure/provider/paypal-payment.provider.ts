@@ -93,6 +93,10 @@ export class PaypalPaymentProvider
 
       return data.verification_status === 'SUCCESS';
     } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+
       throw new InternalServerErrorException(
         `${WEBHOOK_VERIFICATION_ERROR} - ${(error as Error).message}`,
       );

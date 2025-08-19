@@ -276,7 +276,7 @@ describe('PaypalPaymentProvider', () => {
   });
 
   describe('getAccessToken', () => {
-    it('should return access token when successful', async () => {
+    it('Should return access token when successful', async () => {
       const result = await paypalPaymentProvider.getAccessToken();
       expect(result).toBe(mockAccessToken);
       expect(
@@ -305,6 +305,32 @@ describe('PaypalPaymentProvider', () => {
 
       await expect(paypalPaymentProvider.getAccessToken()).rejects.toThrow(
         apiError,
+      );
+      expect(
+        mockClient.clientCredentialsAuthManager.fetchToken,
+      ).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should throw the paypal error when token request fails', async () => {
+      const error = new CustomError(
+        {
+          request: {
+            method: 'POST',
+            url: 'https://api-m.sandbox.paypal.com/v1/oauth2/token',
+          },
+          response: {
+            statusCode: 400,
+            body: 'Paypal error',
+          },
+        } as HttpContext,
+        'Paypal error',
+      );
+      (
+        mockClient.clientCredentialsAuthManager.fetchToken as jest.Mock
+      ).mockRejectedValueOnce(error);
+
+      await expect(paypalPaymentProvider.getAccessToken()).rejects.toThrow(
+        error,
       );
       expect(
         mockClient.clientCredentialsAuthManager.fetchToken,
@@ -341,7 +367,7 @@ describe('PaypalPaymentProvider', () => {
       },
     };
 
-    it('should return true when verification succeeds', async () => {
+    it('Should return true when verification succeeds', async () => {
       mockHttpService.axiosRef.post.mockResolvedValueOnce({
         data: { verification_status: 'SUCCESS' },
       });
@@ -373,6 +399,30 @@ describe('PaypalPaymentProvider', () => {
         mockPayload,
       );
       expect(result).toBe(false);
+    });
+
+    it('Should throw the paypal error when verification request fails', async () => {
+      const error = new CustomError(
+        {
+          request: {
+            method: 'POST',
+            url: 'https://api-m.sandbox.paypal.com/v2/notifications/verify-webhook-signature',
+          },
+          response: {
+            statusCode: 400,
+            body: 'Paypal error',
+          },
+        } as HttpContext,
+        'Paypal error',
+      );
+      mockHttpService.axiosRef.post.mockRejectedValueOnce(error);
+
+      await expect(
+        paypalPaymentProvider.verifyWebhookSignature(
+          mockAccessToken,
+          mockPayload,
+        ),
+      ).rejects.toThrow(error);
     });
 
     it('Should throw InternalServerErrorException when verification request fails', async () => {
