@@ -54,7 +54,7 @@ const policyHandlersProviders = [
     ...policyHandlersProviders,
   ],
   controllers: [PurchaseController],
-  exports: [],
+  exports: [purchaseRepositoryProvider],
 })
 export class PurchaseModule implements OnModuleInit {
   constructor(private readonly registry: AppSubjectPermissionStorage) {}
