@@ -179,6 +179,7 @@ export class PurchaseCRUDService
       [PurchaseStatus.PENDING]: [
         PurchaseStatus.COMPLETED,
         PurchaseStatus.FAILED,
+        PurchaseStatus.CANCELLED,
       ],
       [PurchaseStatus.COMPLETED]: [PurchaseStatus.REFUNDED],
       [PurchaseStatus.FAILED]: [],
