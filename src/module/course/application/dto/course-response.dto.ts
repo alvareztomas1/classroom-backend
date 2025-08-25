@@ -6,9 +6,16 @@ import { User } from '@iam/user/domain/user.entity';
 
 import { Category } from '@category/domain/category.entity';
 
+import { Section } from '@section/domain/section.entity';
+
 export type CourseResponseInstructor = Pick<
   User,
   'firstName' | 'lastName' | 'avatarUrl'
+>;
+
+export type CourseResponseSection = Pick<
+  Section,
+  'title' | 'description' | 'position'
 >;
 
 export class CourseResponseDto extends BaseResponseDto {
@@ -22,6 +29,7 @@ export class CourseResponseDto extends BaseResponseDto {
   difficulty?: Difficulty;
   instructor?: CourseResponseInstructor;
   category?: Category;
+  sections?: CourseResponseSection[];
 
   constructor(
     type: string,
@@ -36,6 +44,7 @@ export class CourseResponseDto extends BaseResponseDto {
     instructor?: CourseResponseInstructor,
     id?: string,
     category?: Category,
+    sections?: CourseResponseSection[],
   ) {
     super(type, id);
 
@@ -51,5 +60,6 @@ export class CourseResponseDto extends BaseResponseDto {
       this.instructor = instructor;
     }
     this.category = category;
+    this.sections = sections;
   }
 }

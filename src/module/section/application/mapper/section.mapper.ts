@@ -1,15 +1,23 @@
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
+
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { Course } from '@course/domain/course.entity';
-import { CourseEntity } from '@course/infrastructure/database/course.entity';
+import { CourseMapper } from '@course/application/mapper/course.mapper';
 
 import { Section } from '@section/domain/section.entity';
 import { SectionEntity } from '@section/infrastructure/database/section.entity';
 
-import { Lesson } from '@lesson/domain/lesson.entity';
-import { LessonEntity } from '@lesson/infrastructure/database/lesson.entity';
+import { LessonMapper } from '@lesson/application/mapper/lesson.mapper';
 
+@Injectable()
 export class SectionMapper implements IEntityMapper<Section, SectionEntity> {
+  constructor(
+    @Inject(forwardRef(() => CourseMapper))
+    private readonly courseMapper: CourseMapper,
+    @Inject(forwardRef(() => LessonMapper))
+    private readonly lessonMapper: LessonMapper,
+  ) {}
+
   toDomainEntity(entity: SectionEntity): Section {
     return new Section(
       entity.courseId,
@@ -17,8 +25,14 @@ export class SectionMapper implements IEntityMapper<Section, SectionEntity> {
       entity.description,
       entity.position,
       entity.id,
-      entity.course as Course,
-      entity.lessons as Lesson[],
+      entity.course
+        ? this.courseMapper.toDomainEntity(entity.course)
+        : undefined,
+      entity.lessons
+        ? entity.lessons?.map((lesson) =>
+            this.lessonMapper.toDomainEntity(lesson),
+          )
+        : undefined,
     );
   }
 
@@ -29,8 +43,14 @@ export class SectionMapper implements IEntityMapper<Section, SectionEntity> {
       entity.title,
       entity.description,
       entity.position,
-      entity.course as CourseEntity,
-      entity.lessons as LessonEntity[],
+      entity.course
+        ? this.courseMapper.toPersistenceEntity(entity.course)
+        : undefined,
+      entity.lessons
+        ? entity.lessons.map((lesson) =>
+            this.lessonMapper.toPersistenceEntity(lesson),
+          )
+        : undefined,
     );
   }
 }

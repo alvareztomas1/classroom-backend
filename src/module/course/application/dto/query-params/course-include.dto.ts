@@ -8,7 +8,7 @@ import { Course } from '@course/domain/course.entity';
 
 type CourseRelations = IGetAllOptions<Course>['include'];
 export class CourseIncludeQueryDto {
-  @IsIn(['instructor', 'category'], {
+  @IsIn(['instructor', 'category', 'sections'], {
     each: true,
   })
   @IsOptional()
