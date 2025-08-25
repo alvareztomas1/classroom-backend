@@ -1,8 +1,9 @@
-import { Module, OnModuleInit, Provider } from '@nestjs/common';
+import { Module, OnModuleInit, Provider, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthorizationModule } from '@iam/authorization/authorization.module';
 import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+import { UserModule } from '@iam/user/user.module';
 
 import { CourseDtoMapper } from '@course/application/mapper/course-dto.mapper';
 import { CourseMapper } from '@course/application/mapper/course.mapper';
@@ -20,6 +21,8 @@ import { CourseController } from '@course/interface/course.controller';
 import { CategoryModule } from '@category/category.module';
 import { CategoryEntity } from '@category/infrastructure/database/category.entity';
 
+import { SectionModule } from '@section/section.module';
+
 const courseRepositoryProvider: Provider = {
   provide: COURSE_REPOSITORY_KEY,
   useClass: CoursePostgresRepository,
@@ -36,6 +39,8 @@ const policyHandlersProviders = [
     TypeOrmModule.forFeature([CourseEntity, CategoryEntity]),
     AuthorizationModule.forFeature(),
     CategoryModule,
+    UserModule,
+    forwardRef(() => SectionModule),
   ],
   providers: [
     CourseService,
@@ -45,7 +50,7 @@ const policyHandlersProviders = [
     ...policyHandlersProviders,
   ],
   controllers: [CourseController],
-  exports: [courseRepositoryProvider],
+  exports: [courseRepositoryProvider, CourseMapper],
 })
 export class CourseModule implements OnModuleInit {
   constructor(private readonly registry: AppSubjectPermissionStorage) {}

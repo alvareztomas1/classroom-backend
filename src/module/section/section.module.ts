@@ -1,10 +1,13 @@
-import { Module, OnModuleInit, Provider } from '@nestjs/common';
+import { Module, OnModuleInit, Provider, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthorizationModule } from '@iam/authorization/authorization.module';
 import { AppSubjectPermissionStorage } from '@iam/authorization/infrastructure/casl/storage/app-subject-permissions-storage';
+import { UserModule } from '@iam/user/user.module';
 
 import { CourseModule } from '@course/course.module';
+
+import { CategoryModule } from '@category/category.module';
 
 import { SectionDtoMapper } from '@section/application/mapper/section-dto.mapper';
 import { SectionMapper } from '@section/application/mapper/section.mapper';
@@ -18,6 +21,8 @@ import { sectionPermissions } from '@section/domain/section.permissions';
 import { SectionEntity } from '@section/infrastructure/database/section.entity';
 import { SectionPostgresRepository } from '@section/infrastructure/database/section.postgres.repository';
 import { SectionController } from '@section/interface/section.controller';
+
+import { LessonModule } from '@lesson/lesson.module';
 
 export const sectionRepositoryProvider: Provider = {
   provide: SECTION_REPOSITORY_KEY,
@@ -34,10 +39,12 @@ const policyHandlersProviders = [
   imports: [
     TypeOrmModule.forFeature([SectionEntity]),
     AuthorizationModule.forFeature(),
-    CourseModule,
+    UserModule,
+    CategoryModule,
+    forwardRef(() => CourseModule),
+    forwardRef(() => LessonModule),
   ],
   providers: [
-    CourseModule,
     SectionService,
     sectionRepositoryProvider,
     SectionDtoMapper,
@@ -45,7 +52,7 @@ const policyHandlersProviders = [
     ...policyHandlersProviders,
   ],
   controllers: [SectionController],
-  exports: [sectionRepositoryProvider],
+  exports: [sectionRepositoryProvider, SectionMapper],
 })
 export class SectionModule implements OnModuleInit {
   constructor(private readonly registry: AppSubjectPermissionStorage) {}

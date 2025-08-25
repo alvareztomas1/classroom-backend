@@ -34,7 +34,7 @@ const userRepositoryProvider: Provider = {
     UserService,
     ...policyHandlersProviders,
   ],
-  exports: [userRepositoryProvider, UserDtoMapper],
+  exports: [userRepositoryProvider, UserDtoMapper, UserMapper],
 })
 export class UserModule implements OnModuleInit {
   constructor(private readonly registry: AppSubjectPermissionStorage) {}

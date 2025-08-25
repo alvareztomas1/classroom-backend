@@ -1,19 +1,25 @@
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
+
 import { Difficulty } from '@common/base/application/enum/difficulty.enum';
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
-import { User } from '@iam/user/domain/user.entity';
-import { UserEntity } from '@iam/user/infrastructure/database/user.entity';
+import { UserMapper } from '@iam/user/application/mapper/user.mapper';
 
 import { Course } from '@course/domain/course.entity';
 import { CourseEntity } from '@course/infrastructure/database/course.entity';
 
-import { Category } from '@category/domain/category.entity';
-import { CategoryEntity } from '@category/infrastructure/database/category.entity';
+import { CategoryMapper } from '@category/application/mapper/category.mapper';
 
-import { Section } from '@section/domain/section.entity';
-import { SectionEntity } from '@section/infrastructure/database/section.entity';
+import { SectionMapper } from '@section/application/mapper/section.mapper';
 
+@Injectable()
 export class CourseMapper implements IEntityMapper<Course, CourseEntity> {
+  constructor(
+    private readonly userMapper: UserMapper,
+    @Inject(forwardRef(() => SectionMapper))
+    private readonly sectionMapper: SectionMapper,
+    private readonly categoryMapper: CategoryMapper,
+  ) {}
   toDomainEntity(entity: CourseEntity): Course {
     return new Course(
       entity.instructorId,
@@ -25,9 +31,17 @@ export class CourseMapper implements IEntityMapper<Course, CourseEntity> {
       entity.slug,
       entity.difficulty as Difficulty,
       entity.status,
-      entity.instructor as User,
-      entity.sections as Section[],
-      entity.category as Category,
+      entity.instructor
+        ? this.userMapper.toDomainEntity(entity.instructor)
+        : undefined,
+      entity.sections
+        ? entity.sections.map((section) =>
+            this.sectionMapper.toDomainEntity(section),
+          )
+        : undefined,
+      entity.category
+        ? this.categoryMapper.toDomainEntity(entity.category)
+        : undefined,
     );
   }
 
@@ -42,9 +56,17 @@ export class CourseMapper implements IEntityMapper<Course, CourseEntity> {
       domainEntity.status,
       domainEntity.slug,
       domainEntity.difficulty,
-      domainEntity.instructor as UserEntity,
-      domainEntity.sections as SectionEntity[],
-      domainEntity.category as CategoryEntity,
+      domainEntity.instructor
+        ? this.userMapper.toPersistenceEntity(domainEntity.instructor)
+        : undefined,
+      domainEntity.sections
+        ? domainEntity.sections.map((section) =>
+            this.sectionMapper.toPersistenceEntity(section),
+          )
+        : undefined,
+      domainEntity.category
+        ? this.categoryMapper.toPersistenceEntity(domainEntity.category)
+        : undefined,
     );
   }
 }

@@ -1,4 +1,4 @@
-import { Module, OnModuleInit, Provider } from '@nestjs/common';
+import { Module, OnModuleInit, Provider, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthorizationModule } from '@iam/authorization/authorization.module';
@@ -34,7 +34,7 @@ const policyHandlersProvider = [
   imports: [
     TypeOrmModule.forFeature([LessonEntity]),
     AuthorizationModule.forFeature(),
-    SectionModule,
+    forwardRef(() => SectionModule),
   ],
   providers: [
     LessonService,
@@ -44,6 +44,7 @@ const policyHandlersProvider = [
     ...policyHandlersProvider,
   ],
   controllers: [LessonController],
+  exports: [LessonMapper],
 })
 export class LessonModule implements OnModuleInit {
   constructor(private readonly registry: AppSubjectPermissionStorage) {}

@@ -1,8 +1,11 @@
+import { Injectable } from '@nestjs/common';
+
 import { IEntityMapper } from '@common/base/application/mapper/entity.mapper';
 
 import { Category } from '@category/domain/category.entity';
 import { CategoryEntity } from '@category/infrastructure/database/category.entity';
 
+@Injectable()
 export class CategoryMapper implements IEntityMapper<Category, CategoryEntity> {
   toDomainEntity(entity: CategoryEntity): Category {
     const { id, name, parent, children } = entity;

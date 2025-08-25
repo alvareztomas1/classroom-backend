@@ -5,12 +5,15 @@ import { User } from '@iam/user/domain/user.entity';
 import {
   CourseResponseDto,
   CourseResponseInstructor,
+  CourseResponseSection,
 } from '@course/application/dto/course-response.dto';
 import { CreateCourseDto } from '@course/application/dto/create-course.dto';
 import { UpdateCourseDto } from '@course/application/dto/update-course.dto';
 import { Course } from '@course/domain/course.entity';
 
 import { Category } from '@category/domain/category.entity';
+
+import { Section } from '@section/domain/section.entity';
 
 export class CourseDtoMapper
   implements
@@ -68,6 +71,11 @@ export class CourseDtoMapper
       instructor,
       entity.id,
       entity.category ? this.buildCategoryPath(entity.category) : undefined,
+      entity.sections
+        ? entity.sections.map((section) =>
+            this.fromSectionToSectionResponseDto(section),
+          )
+        : undefined,
     );
   }
 
@@ -92,5 +100,17 @@ export class CourseDtoMapper
     }
 
     return categoryPath;
+  }
+
+  private fromSectionToSectionResponseDto(
+    section: Section,
+  ): CourseResponseSection {
+    const { title, description, position } = section;
+
+    return {
+      title,
+      description,
+      position,
+    };
   }
 }
