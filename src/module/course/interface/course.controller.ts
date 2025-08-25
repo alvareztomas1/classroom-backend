@@ -28,12 +28,12 @@ import { Policies } from '@iam/authorization/infrastructure/policy/decorator/pol
 import { PoliciesGuard } from '@iam/authorization/infrastructure/policy/guard/policy.guard';
 import { User } from '@iam/user/domain/user.entity';
 
-import { CourseFieldsQueryParamsDto } from '@course/application/dto/course-fields-query-params.dto';
-import { CourseFilterQueryParamsDto } from '@course/application/dto/course-filter-query-params.dto';
-import { CourseIncludeQueryDto } from '@course/application/dto/course-include.dto';
 import { CourseResponseDto } from '@course/application/dto/course-response.dto';
-import { CourseSortQueryParamsDto } from '@course/application/dto/course-sort-query-params.dto';
 import { CreateCourseRequestDto } from '@course/application/dto/create-course.dto';
+import { CourseFieldsQueryParamsDto } from '@course/application/dto/query-params/course-fields-query-params.dto';
+import { CourseFilterQueryParamsDto } from '@course/application/dto/query-params/course-filter-query-params.dto';
+import { CourseIncludeQueryDto } from '@course/application/dto/query-params/course-include.dto';
+import { CourseSortQueryParamsDto } from '@course/application/dto/query-params/course-sort-query-params.dto';
 import { UpdateCourseDto } from '@course/application/dto/update-course.dto';
 import { CreateCoursePolicyHandler } from '@course/application/policy/create-course-policy-handler';
 import { DeleteCoursePolicyHandler } from '@course/application/policy/delete-course-policy-handler';
